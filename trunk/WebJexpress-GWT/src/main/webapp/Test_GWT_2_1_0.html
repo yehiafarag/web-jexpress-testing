@@ -1,0 +1,107 @@
+<!doctype html>
+<!-- The DOCTYPE declaration above will set the    -->
+<!-- browser's rendering engine into               -->
+<!-- "Standards Mode". Replacing this declaration  -->
+<!-- with a "Quirks Mode" doctype may lead to some -->
+<!-- differences in layout.                        -->
+
+<html>
+    <head>
+          
+        <meta http-equiv="X-UA-Compatible" content="IE=5,6,8,9,10" > 
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        
+        <!--                                                               -->
+        <!-- Consider inlining CSS to reduce the number of requested files -->
+        <!--                                                               -->
+        <link type="text/css" rel="stylesheet" href="Test_GWT_2_1_0.css">
+
+        <!--                                           -->
+        <!-- Any title is fine                         -->
+        <!--                                           -->
+        <title>Web-Jexpress</title>
+
+        <!--                                           -->
+        <!-- This script loads your compiled module.   -->
+        <!-- If you add any GWT meta tags, they must   -->
+        <!-- be added before this line.                -->
+        <!--                                           -->
+         <script type="text/javascript" language="javascript" src="test_gwt_2_1_0/test_gwt_2_1_0.nocache.js"></script>
+         <script type="text/javascript"  src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"> </script>
+<script type="text/javascript" src="js/highcharts.js"></script>
+     </head>
+
+    <!--                                           -->
+    <!-- The body can have arbitrary html, or      -->
+    <!-- you can leave the body empty if you want  -->
+    <!-- to create a completely dynamic UI.        -->
+    <!--                                           -->
+    <body>
+
+       <noscript>
+        <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+            Your web browser must have JavaScript enabled
+            in order for this application to display correctly.
+        </div>
+        </noscript>
+        <div id="header" style="background-color: #999999;border-color:black;height: 70px;width: 100%;border-style: solid">
+            <h1 align="center">Web Jexpress Testing</h1>
+        </div>
+        <div id="datasetList"  align="left" style="margin-left: 20px;margin-top: 20px;"></div>
+        <div id="body">
+        
+
+            <div id="datasetInfo" align="left" style="margin-left: 10px;margin-top: 20px;">
+                <ul style="list-style-type: none;height: 100px;">
+                    <li id="row"></li>
+                    <li id="col"></li>
+                    <li id="rowGroups"></li>
+                    <li id="colGroups"></li>
+                </ul>
+            </div>
+            <div id="menubuttons" align="left"  style="background-color: #cccccc;border-color:black;height: 40px;width: 100%;border-style: solid; "></div>
+
+            <table style="width: 100%;border-color:black;border-style: solid;" align="center" >
+                <tr>
+                    <td style="width: 30%; " >    
+                        <ul style="list-style-type: none;">
+                            <li id="geneTable"></li>                        
+                        </ul>
+                    </td>
+                     <td style="width: 70%; height: 100%; border-color:black;border-style: solid "  >    
+                        <ul id="visualisations" style="list-style-type: none;">
+                            <li >
+                            <div>
+                                <div  id="SomClusteringResults"></div>
+                            </div> 
+                            </li> 
+                            <li >
+                            <div>
+                                <div  id="LineChartResults"></div>
+                            </div> 
+                            </li> 
+                        </ul>
+                    </td>
+                </tr>
+                </table>
+            
+            
+            
+            
+            
+           
+                            
+                            <table align="center">
+                            <tr>
+                                <td colspan="1" style="color:red;" id="errorLabelContainer"></td><td></td><td></td>
+                            </tr>    
+                            <tr>
+                                <td ><h3>Selection results</h3></td><td ></td><td><div id="selection"></div></td>
+                            </tr>
+
+                        </table>
+                    
+            
+        </div>
+    </body>
+</html>
