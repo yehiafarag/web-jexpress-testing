@@ -18,10 +18,11 @@ public class JexpressUtil {
 
     public DataSet initJexpressDataset() {
         file = new File("F:\\files\\diauxic shift.txt");
+         
+         
 //        file = new File("/home/probe/diauxic_shift.txt");
 
-        System.out.println("'>>>> >>>> >.>> >>> file exist /diauxic_shift.txt" + file.exists());
-
+       
         this.dataset = fr.readDataset(file);
         return this.dataset;
 

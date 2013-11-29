@@ -2,15 +2,22 @@ package web.jexpress.server;
 
 import web.jexpress.client.GreetingService;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import java.util.ArrayList;
 import java.util.TreeMap;
 import no.uib.jexpress_modularized.core.dataset.DataSet;
+import no.uib.jexpress_modularized.rank.computation.ComputeRank;
+import web.jexpress.server.model.HMGen;
 import web.jexpress.server.model.JexpressUtil;
+import web.jexpress.server.model.PCAUtil;
 import web.jexpress.server.model.SOMClustUtil;
 import web.jexpress.shared.beans.LineChartResults;
+import web.jexpress.shared.beans.PCAResults;
+import web.jexpress.shared.beans.RankResult;
 import web.jexpress.shared.beans.SomClusteringResults;
 import web.jexpress.shared.model.core.model.dataset.Dataset;
 import web.jexpress.shared.model.core.model.dataset.DatasetInformation;
 import web.jexpress.shared.model.core.model.dataset.Group;
+import no.uib.jexpress_modularized.rank.computation.RPmodel;
 
 /**
  * The server side implementation of the RPC service.
@@ -23,9 +30,12 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     private Dataset dataset;
     private SOMClustUtil somClustUtil = new SOMClustUtil();
     private SomClusteringResults results;
+    private PCAUtil pcaUtil = new PCAUtil();
 
     @Override
     public DatasetInformation loadDataset(int datasetId) {
+        String conPass = this.getServletContext().getContextPath();
+       System.out.println(conPass);
         jDataset = util.initJexpressDataset();
         dataset = util.initWebDataset(jDataset, datasetId);
 
@@ -65,6 +75,9 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         datasetInfo.setDatasetInfo(dataset.getInfoHeaders()[0]);
         datasetInfo.setGeneTabelData(geneTableData);
         datasetInfo.setRowGroupsNames(rowGroupsNames);
+        String pass = this.getServletContext().getRealPath("/");
+        HMGen HMG = new HMGen(pass+"/js",jDataset);
+        datasetInfo.setPass(HMG.getPass());
 
 
 
@@ -103,19 +116,43 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         results.setGeneNames(jDataset.getRowIds());
         return results;
     }
-//	/**
-//	 * Escape an html string. Escaping data received from the client helps to
-//	 * prevent cross-site script vulnerabilities.
-//	 * 
-//	 * @param html the html string to escape
-//	 * @return the escaped string
-//	 */
-//	private String escapeHtml(String html) {
-//		if (html == null) {
-//			return null;
-//		}
-//		return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-//				.replaceAll(">", "&gt;");
-//	}
-//        
+
+    //	/**
+    //	 * Escape an html string. Escaping data received from the client helps to
+    //	 * prevent cross-site script vulnerabilities.
+    //	 *
+    //	 * @param html the html string to escape
+    //	 * @return the escaped string
+    //	 */
+    //	private String escapeHtml(String html) {
+    //		if (html == null) {
+    //			return null;
+    //		}
+    //		return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
+    //				.replaceAll(">", "&gt;");
+    //       
+    //
+    @Override
+    public PCAResults computePCA(int datasetId) {      
+        PCAResults res = pcaUtil.getPCAResults(jDataset,dataset,0,1);
+        res.setDatasetId(datasetId);
+        return res;
+////        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
+        @Override
+    public RankResult computeRank(int datasetId) {
+        String type = "TwoClassUnPaired";
+        int perm = 400;
+        int seed = 838809932;
+        int[] col1 = jDataset.getColumnGroups().get(0).getMembers();
+        int[] col2 = jDataset.getColumnGroups().get(1).getMembers();
+        boolean log2 = true;
+        ComputeRank cr = new ComputeRank(jDataset);
+        ArrayList<RPmodel> jResults= cr.createResult(type, perm, seed, col1, col2, log2);
+        
+        System.out.println("Rank is handeled");
+        return null;
+    }
 }

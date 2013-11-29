@@ -6,7 +6,6 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -15,11 +14,14 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import web.jexpress.client.geneTable.view.GeneTable;
 import web.jexpress.client.linechart.view.LineChartComp;
+import web.jexpress.client.pca.view.PCAPlot;
 import web.jexpress.client.somclust.view.SomClustView;
 import web.jexpress.shared.model.core.model.SelectionManager;
 
 
 import web.jexpress.shared.beans.LineChartResults;
+import web.jexpress.shared.beans.PCAResults;
+import web.jexpress.shared.beans.RankResult;
 import web.jexpress.shared.beans.SomClusteringResults;
 import web.jexpress.shared.model.core.model.dataset.DatasetInformation;
 
@@ -37,10 +39,9 @@ public class Test_GWT_2_1_0 implements EntryPoint {
     private final SelectionManager selectionManager = new SelectionManager();
     private static final String SERVER_ERROR = "An error occurred while "
             + "attempting to contact the server. Please check your network "
-            + "connection and try again."; 
+            + "connection and try again.";
     final Label errorLabel = new Label();
     final Label datasetInfoLabel = new Label();
-    
     final Label rowLab = new Label();
     final Label colLab = new Label();
     final Label rowGroup = new Label();
@@ -72,83 +73,94 @@ public class Test_GWT_2_1_0 implements EntryPoint {
         RootPanel.get("colGroups").add(colGroup);
         HorizontalPanel hp = new HorizontalPanel();
         hp.setSpacing(10);
-        
+
         RootPanel.get("menubuttons").add(hp);
         final Button somClustBtn = new Button("Hierarchical Clustering");
         // We can add style names to widgets
         somClustBtn.setEnabled(false);
         hp.add(somClustBtn);
-        
-     //   RootPanel.get("somClustBtn").add(somClustBtn);
+
+        //   RootPanel.get("somClustBtn").add(somClustBtn);
 
         final Button lineChartBtn = new Button("Line Chart");
         // We can add style names to widgets
         lineChartBtn.setEnabled(false);
-       // RootPanel.get("lineChartBtn").add(lineChartBtn);
-          hp.add(lineChartBtn);
+        // RootPanel.get("lineChartBtn").add(lineChartBtn);
+        hp.add(lineChartBtn);
 
         final Button pcaBtn = new Button("PCA");
         // We can add style names to widgets
         pcaBtn.setEnabled(false);
 //        RootPanel.get("pcaBtn").add(pcaBtn);
-          hp.add(pcaBtn);
+        hp.add(pcaBtn);
 
         final Button rankBtn = new Button("Rank Product");
         // We can add style names to widgets
         rankBtn.setEnabled(false);
 //        RootPanel.get("rankBtn").add(rankBtn);
-          hp.add(rankBtn);
-          
-          
+        hp.add(rankBtn);
+
+
 
 
 
         lb.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-            if (lb.getSelectedIndex() > 0) {
-                //datasetList
-                loadDataset(1);
-                somClustBtn.setEnabled(true);
-                lineChartBtn.setEnabled(true);
-                
-                
-               
-                ClickHandler somClustBtnHandler = new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                         runSomClustering();
-                       }
+                if (lb.getSelectedIndex() > 0) {
+                    //datasetList
+                    loadDataset(1);
+                    somClustBtn.setEnabled(true);
+                    lineChartBtn.setEnabled(true);
+                    pcaBtn.setEnabled(true);
+                    rankBtn.setEnabled(true);
+
+
+
+                    ClickHandler somClustBtnHandler = new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            runSomClustering();
+                        }
+                    };
+                    somClustBtn.addClickHandler(somClustBtnHandler);
+
+                    ClickHandler lineChartBtnHandler = new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            viewLineChart(1);
+                        }
+                    };
+                    lineChartBtn.addClickHandler(lineChartBtnHandler);
+
+
+                    ClickHandler PCAChartBtnHandler = new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            viewPCAChart(1);
+                        }
+                    };
+                    pcaBtn.addClickHandler(PCAChartBtnHandler);
+
+                    ClickHandler rankBtnHandler = new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent event) {
+                           viewRankTables(1);
+                        }
                 };
-                somClustBtn.addClickHandler(somClustBtnHandler);
-                
-                 ClickHandler lineChartBtnHandler = new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                         viewLineChart(1);
-                       }
-                };
-                lineChartBtn.addClickHandler(lineChartBtnHandler);
-
-            }
-            
-            
-
-
-
-                
-                
+                rankBtn.addClickHandler(rankBtnHandler);
                 }
+            }
         });
-            
-    // Add it to the root panel.
-        
-        
-       
-        
-        
-        
-        
+
+        // Add it to the root panel.
+
+
+
+
+
+
+
 //        // Create a handler for the sendButton and nameField
 //        class MyHandler implements ClickHandler, KeyUpHandler {
 //
@@ -198,18 +210,18 @@ public class Test_GWT_2_1_0 implements EntryPoint {
 
         // Add a handler to send the name to the server
 
-        
+
     }
-    
-        private void runSomClustering() {
-            
+
+    private void runSomClustering() {
+
 //            final Label versionLabel = new Label("d3.js current version: " + D3.version());
 //    RootPanel.get().add(versionLabel);
-            
-            ///////////////////////////////////////
-            
-            
-            
+
+        ///////////////////////////////////////
+
+
+
         greetingService.computeSomClustering("SomClustering",
                 new AsyncCallback<SomClusteringResults>() {
             @Override
@@ -221,35 +233,40 @@ public class Test_GWT_2_1_0 implements EntryPoint {
             @Override
             public void onSuccess(SomClusteringResults result) {
                 errorLabel.setText("");
-                SomClustView hc = new SomClustView(result, selectionManager);
+                SomClustView hc = new SomClustView(pass, result, selectionManager);
                 RootPanel.get("SomClusteringResults").clear();
                 RootPanel.get("SomClusteringResults").add(hc.asWidget());
 
             }
         });
     }
-    private void loadDataset(int datasetId){        
+
+    private void loadDataset(int datasetId) {
         greetingService.loadDataset(datasetId,
-                        new AsyncCallback<DatasetInformation>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        errorLabel.setText(SERVER_ERROR);
-                    }
-                    @Override
-                    public void onSuccess(DatasetInformation datasetInfo) {
-                        errorLabel.setText("");
+                new AsyncCallback<DatasetInformation>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                errorLabel.setText(SERVER_ERROR);
+            }
+
+            @Override
+            public void onSuccess(DatasetInformation datasetInfo) {
+                errorLabel.setText("");
 //                        dataset = rDataset;
-                        rowLab.setText("Rows : "+datasetInfo.getRowsNumb());
-                        colLab.setText("Columns : "+datasetInfo.getColNumb());
-                        rowGroup.setText("Row Groups : "+(datasetInfo.getRowGroupsNumb()));
-                        colGroup.setText("Column Groups : "+(datasetInfo.getColGroupsNumb()));
-                        GeneTable geneTable = new GeneTable(selectionManager, datasetInfo);
-                        RootPanel.get("geneTable").clear();
-                        RootPanel.get("geneTable").add(geneTable.getGwtTable());
-                        datasetInfo = null;
-                    }
-                });     
+                pass = datasetInfo.getPass();
+                rowLab.setText("Rows : " + datasetInfo.getRowsNumb());
+                colLab.setText("Columns : " + datasetInfo.getColNumb());
+                rowGroup.setText("Row Groups : " + (datasetInfo.getRowGroupsNumb()));
+                colGroup.setText("Column Groups : " + (datasetInfo.getColGroupsNumb()));
+                GeneTable geneTable = new GeneTable(selectionManager, datasetInfo);
+                RootPanel.get("geneTable").clear();
+                RootPanel.get("geneTable").add(geneTable.getGwtTable());
+                datasetInfo = null;
+
+            }
+        });
     }
+    private String pass = "";
 
     private void viewLineChart(int datasetId) {
 
@@ -274,6 +291,49 @@ public class Test_GWT_2_1_0 implements EntryPoint {
 
 
     }
+
+    private void viewPCAChart(int datasetId) {
+
+        greetingService.computePCA(datasetId,
+                new AsyncCallback<PCAResults>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                errorLabel.setText(SERVER_ERROR);
+            }
+
+            @Override
+            public void onSuccess(PCAResults results) {
+                errorLabel.setText("");
+//                        dataset = rDataset;
+                PCAPlot pca = new PCAPlot(results, 1, 2, selectionManager);
+                RootPanel.get("PCAChartResults").clear();
+                RootPanel.get("PCAChartResults").add(pca.getScatterPlotLayout());
+
+
+            }
+        });
+    }
+
+    private void viewRankTables(int datasetId) {
+        
+         greetingService.computeRank(datasetId,
+                new AsyncCallback<RankResult>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                errorLabel.setText(SERVER_ERROR);
+            }
+
+            @Override
+            public void onSuccess(RankResult results) {
+                errorLabel.setText("");
+//                        dataset = rDataset;
+               // PCAPlot pca = new PCAPlot(results, 1, 2, selectionManager);
+                RootPanel.get("RankTablesResults").clear();
+                RootPanel.get("PCAChartResults").add(new Label("rank table will be here "));
+
+
+            }
+        });
+        
+    }
 }
-
-

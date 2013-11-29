@@ -88,6 +88,7 @@ public class SOMClustUtil {
         
         somClustResults.setHeight(this.getHeightPix(dataset.getRowIds().length));
         somClustResults.setDatasetId(datasetId);
+       
         return somClustResults;
 
       
