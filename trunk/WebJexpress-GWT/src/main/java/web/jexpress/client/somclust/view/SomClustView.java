@@ -26,11 +26,11 @@ public class SomClustView extends ModularizedListener implements IsSerializable{
     
     private SomClustComp somClustCom;
 
-    public SomClustView(SomClusteringResults somClusteringResults,SelectionManager selectionManager)
+    public SomClustView(String pass,SomClusteringResults somClusteringResults,SelectionManager selectionManager)
     {
 
         
-        somClustCom = new SomClustComp(somClusteringResults, selectionManager);        
+        somClustCom = new SomClustComp(pass,somClusteringResults, selectionManager);        
         this.classtype=2;
         this.datasetId = somClusteringResults.getDatasetId();
         this.components.add(SomClustView.this);

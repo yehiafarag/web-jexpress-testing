@@ -4,7 +4,10 @@
  */
 package web.jexpress.client.somclust.view;
 
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.impl.ImageResourcePrototype;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import web.jexpress.shared.beans.SomClusteringResults;
 import web.jexpress.shared.model.core.model.SelectionManager;
 
@@ -15,15 +18,27 @@ import web.jexpress.shared.model.core.model.SelectionManager;
 public class SomClustComp extends HorizontalPanel {
 
     private TreeGraph sideTree;
-    public SomClustComp(SomClusteringResults results, SelectionManager selectionManager) {
+    public SomClustComp(String pass,SomClusteringResults results, SelectionManager selectionManager) {
         this.setBorderWidth(0);
         this.setSpacing(10);     
-//        sideTree = new TreeGraph(results, "left", selectionManager);         
-//        this.add(sideTree.asWidget());
+        sideTree = new TreeGraph(results, "left", selectionManager);
+        this.add(sideTree.asWidget());
+
+        Image image = new Image("js/java-heat-chart.png");
+
+
+        image.setWidth("300px");
+        image.setHeight("300px");
+      
+//        ImageResource ir = new ImageResourcePrototype("heatmap", "file:///F:/files/java-heat-chart.png", 0, 0, 500, 500, true, true);
+//
+//        image.setResource(new ImageResource );
+        //image.setUrl("file:///F:/files/java-heat-chart.png");
+        this.add(image);
 //        HeatMap hm = new HeatMap();
 //        this.add(hm.asWidget());
-        CustomHeatMap cheatma = new CustomHeatMap(results, selectionManager);
-        this.add(cheatma.getLayout());
+//        CustomHeatMap cheatma = new CustomHeatMap(results, selectionManager);
+//        this.add(cheatma.getLayout());
     }
 
    

@@ -18,6 +18,16 @@ public class DatasetInformation implements IsSerializable{
     private String datasetInfo;
     private String[] rowGroupsNames;
     private String[][] geneTabelData;
+    
+    private String pass;
+
+    public String getPass() {
+        return pass;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
 
     public String[][] getGeneTabelData() {
         return geneTabelData;
