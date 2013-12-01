@@ -1,0 +1,50 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package web.jexpress.server.model;
+
+import java.util.TreeMap;
+import no.uib.jexpress_modularized.core.dataset.DataSet;
+import no.uib.jexpress_modularized.pca.computation.PcaCompute;
+import web.jexpress.shared.beans.PCAPoint;
+import web.jexpress.shared.beans.PCAResults;
+import web.jexpress.shared.model.core.model.dataset.Dataset;
+import web.jexpress.shared.model.core.model.dataset.Group;
+
+/**
+ *
+ * @author Y.M
+ */
+public class PCAUtil {
+    
+    public PCAResults getPCAResults(DataSet jDataset,Dataset dataset,int pcx,int pcy) {
+        PcaCompute pcaCompute = new PcaCompute(jDataset);
+        
+        no.uib.jexpress_modularized.pca.computation.PcaResults jResults = pcaCompute.createPCA();  
+       TreeMap<String,PCAPoint> pointList = new TreeMap<String,PCAPoint>();
+        for(Group g:dataset.getRowGroups())
+        {
+            for (int i = 0; i < g.getIndices().size(); i++) {
+                PCAPoint point = new PCAPoint();
+               point.setX(jResults.ElementAt(g.getIndices().get(i), pcx));
+               point.setY(jResults.ElementAt(g.getIndices().get(i), pcy));
+               point.setGeneIndex(g.getIndices().get(i));
+               point.setGeneName(g.getGeneList().get(i));
+               point.setColor(g.getColor());
+               if(pointList.containsKey(point.getGeneName()) && point.getColor().equalsIgnoreCase("#000000"))
+                   ;
+               else
+                   pointList.put(point.getGeneName(),point);
+            }
+
+        }
+        PCAResults res = new PCAResults();
+        res.setPoints(pointList);
+        res.setHeader(dataset.getInfoHeaders()[0]);
+        return res;
+    }
+    
+    
+    
+}
