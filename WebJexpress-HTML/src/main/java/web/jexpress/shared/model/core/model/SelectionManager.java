@@ -4,7 +4,9 @@
  */
 package web.jexpress.shared.model.core.model;
 
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.IsSerializable;
+import com.google.gwt.user.client.ui.RootPanel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +90,7 @@ public class SelectionManager implements IsSerializable {
         } else {
             selectedColumns.put(datasetId, s);
         }
-        selectionChangedEvent(datasetId, Selection.TYPE.OF_COLUMNS);
+        selectionChangedEvent(datasetId, Selection.TYPE.OF_COLUMNS,selectedColumns.size());
     }
 
     /**
@@ -107,7 +109,7 @@ public class SelectionManager implements IsSerializable {
         } else {
             selectedRows.put(datasetId, s);
         }
-        selectionChangedEvent(datasetId, Selection.TYPE.OF_ROWS);
+        selectionChangedEvent(datasetId, Selection.TYPE.OF_ROWS,selectedRows.size());
     }
 
     /**
@@ -116,14 +118,32 @@ public class SelectionManager implements IsSerializable {
      * @param dataset - dataset that has changed selection
      * @param type - of the selection (on row/columns)
      */
-    private void selectionChangedEvent(int datasetId, Selection.TYPE type) {
+    private int selectionTimerIndex = 0;
+    private Timer timer;
+
+    private void selectionChangedEvent(final int datasetId, final Selection.TYPE type,int size) {
         if (datasetId == 0 || !selectionChangeListeners.containsKey(datasetId)) {
             return;
         }
-
-        for (SelectionChangeListener listener : selectionChangeListeners.get(datasetId)) {
-            listener.selectionChanged(type);
-        }
+        selectionTimerIndex = 0;
+        timer = new Timer() {
+            @Override
+            public void run() {
+                if (selectionTimerIndex < selectionChangeListeners.get(datasetId).size()) {
+                    SelectionChangeListener listener = selectionChangeListeners.get(datasetId).get(selectionTimerIndex);
+                    listener.selectionChanged(type);
+                    selectionTimerIndex++;
+                } else {
+                    timer.cancel();
+                    RootPanel.get("loaderImage").setVisible(false);
+                }
+            }
+        };
+        RootPanel.get("loaderImage").setVisible(true);
+        timer.scheduleRepeating(Math.min(100,size));
+//        for (SelectionChangeListener listener : selectionChangeListeners.get(datasetId)) {
+//            listener.selectionChanged(type);
+//        }
     }
 
     /*

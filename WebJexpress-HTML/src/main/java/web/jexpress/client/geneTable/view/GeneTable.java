@@ -119,8 +119,12 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
             ListGridRecord record = new ListGridRecord();
             record.setAttribute("gene", datasetInfo.getGeneTabelData()[0][x]);
             record.setAttribute("all", "<font color = " + "#000000" + " >" + "&diams;" + "</font>");
-            record.setAttribute(datasetInfo.getRowGroupsNames()[0], "<font color = " + datasetInfo.getGeneTabelData()[2][x] + " >" + "&diams;" + "</font>");
-            record.setAttribute(datasetInfo.getRowGroupsNames()[1], "<font color = " + datasetInfo.getGeneTabelData()[3][x] + " >" + "&diams;" + "</font>");
+            for(int c=0;c<datasetInfo.getRowGroupsNames().length;c++){
+                        record.setAttribute(datasetInfo.getRowGroupsNames()[c], "<font color = " + datasetInfo.getGeneTabelData()[c+2][x] + " >" + "&diams;" + "</font>");
+
+            }
+//            record.setAttribute(datasetInfo.getRowGroupsNames()[0], "<font color = " + datasetInfo.getGeneTabelData()[2][x] + " >" + "&diams;" + "</font>");
+//            record.setAttribute(datasetInfo.getRowGroupsNames()[1], "<font color = " + datasetInfo.getGeneTabelData()[3][x] + " >" + "&diams;" + "</font>");
             record.setAttribute("index", x);
             recordsInit[x] = record;
         }

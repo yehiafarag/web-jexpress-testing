@@ -19,10 +19,13 @@ public interface GreetingService extends RemoteService {
 
     LineChartResults computeLineChart(int datasetId);
 
-    SomClusteringResults computeSomClustering(String name) throws IllegalArgumentException;
+    SomClusteringResults computeSomClustering(int datasetId) throws IllegalArgumentException;
     
     PCAResults computePCA(int datasetId);
     
     RankResult computeRank(int datasetId);
+    
+    Boolean createGroup(int datasetId,String name,String color,String type,int[] selection);
 
+    DatasetInformation updateDatasetInfo(int datasetId);
 }

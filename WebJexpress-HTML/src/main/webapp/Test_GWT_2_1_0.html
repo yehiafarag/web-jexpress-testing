@@ -38,7 +38,7 @@
     <!-- you can leave the body empty if you want  -->
     <!-- to create a completely dynamic UI.        -->
     <!--                                           -->
-    <body>
+    <body style="width: 100%">
         
        <noscript>
         <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
@@ -55,6 +55,7 @@
             <div class="page">
                 <div class="header" >
                     <h1>Web J-express</h1>
+                    <div align="center" id="loaderImage" class="indicator"></div>
                     <div class="header-img" id="datasetInfo" style="background-image: url(images/header.jpg); background-repeat: repeat-x;height:170px; width:100%">
                         <div id="datasetList"  align="left"  style="margin-left: 20px;margin-top: 30px;height:30px"></div>
                         <ul style=" color: white;list-style-type: none;margin-left: 20px;height:80px">
@@ -62,45 +63,102 @@
                             <li id="col"></li>
                             <li id="rowGroups"></li>
                             <li id="colGroups"></li>
-                            <li style="color:red;" id="errorLabelContainer"></li>
-                
+                            <li style="color:red;" id="errorLabelContainer"></li>                
                         </ul>
-                        
+
                     </div>
                     <div id="menubuttons" class="topmenu" > </div>
                 </div>
                 <div class="content">
                     <div class="leftpanel">
-                        <h2>Genes Table</h2>                    
-                        
+                        <h2>Genes Table</h2>
                         <ul>
                             <li id="geneTable"></li>
                         </ul>
                     </div>
                     <div class="rightpanel">
                         <div class="rightbody">
+                            <table style="width: 100%">
+                                <tr>
+                                    <td>
+                                        <h1 class="title" id="lineChartTitle"></h1>
+                                        <div style="max-height: 500px;" id="LineChartResults"></div>
+                                    </td>
+                                    <td>
+                                        <h1 class="title" id="pcaTitle"></h1>
+                                        <div style="max-height: 500px;" id="PCAChartResults"></div>   
+                                    </td>
+                                </tr>
+                                </table> 
+                                                           
+                                        <h1 class="title" id="somClustTitle"></h1>
+                                        <div  id="SomClusteringResults"></div>
+                                        <p>&nbsp;</p>
+                                        
+                                        <h1 class="title" id="rankTitle"></h1>
+                                        <div  id="RankTablesResults"></div>
+                                        <p>&nbsp;</p>
+                             
+                        </div>
+                    </div> 
+                    <!--<div class="rightpanel">
+                        <div class="rightbody">
                             <h1 class="title">Line Chart</h1>
-                            <div style="max-height: 300px;" id="LineChartResults"></div>
                             <p>&nbsp;</p>
-                            <h1 class="title">PCA </h1>
-                             <div style="max-height: 500px;" id="PCAChartResults"></div>   
+                            <h1 class="title">PCA </h1>   
                             <p>&nbsp;</p>
                             <h1 class="title">Clustering </h1>
-                              <div  id="SomClusteringResults"></div>
                             <p>&nbsp;</p>
                              <h1 class="title">Differential Expressions</h1>
-                               <div  id="RankTablesResults"></div>
-                            <p>&nbsp;</p>
-                                   
-                            </div>
-                    </div>
+                            <p>&nbsp;</p> 
+                        </div>
+                        </div> -->                      
                 </div>
             </div>
         </div>
+        
 
 
         <!-- template is end here -->
 
+        
+        
+        <script type="text/javascript" src="js/canvas.js"></script>
+        <script type="text/javascript">
+                var cSpeed=5;
+                var cTotalFrames=8;
+                var cFrameWidth=128;
+                var cImageSrc='images/sprites.png';	
+                var cImageTimeout=false;	
+                function startAnimation(){
+		
+                        document.getElementById('loaderImage').innerHTML='<canvas id="canvas"><p>Your browser does not support the canvas element.</p></canvas>';
+		
+                        //FPS = Math.round(100/(maxSpeed+2-speed));
+                        FPS = Math.round(100/cSpeed);
+                        SECONDS_BETWEEN_FRAMES = 1 / FPS;
+                        g_GameObjectManager = null;
+                        g_run=genImage;
+
+                        g_run.width=cTotalFrames*cFrameWidth;
+                        genImage.onload=function (){cImageTimeout=setTimeout(fun, 0)};
+                        initCanvas();
+                }
+	
+	
+                function imageLoader(s, fun)//Pre-loads the sprites image
+                {
+                        clearTimeout(cImageTimeout);
+                        cImageTimeout=0;
+                        genImage = new Image();
+                        genImage.onload=function (){cImageTimeout=setTimeout(fun, 0)};
+                        genImage.onerror=new Function('alert(\'Could not load the image\')');
+                        genImage.src=s;
+                }
+	
+                //The following code starts the animation
+                new imageLoader(cImageSrc, 'startAnimation()');
+        </script>
 
     </body>
 </html>

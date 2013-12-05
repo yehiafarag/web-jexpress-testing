@@ -8,6 +8,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -15,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 import org.moxieapps.gwt.highcharts.client.Chart;
+import org.moxieapps.gwt.highcharts.client.ChartTitle;
 import org.moxieapps.gwt.highcharts.client.Legend;
 import org.moxieapps.gwt.highcharts.client.Series;
 import org.moxieapps.gwt.highcharts.client.ToolTip;
@@ -54,6 +58,7 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
         }
     }
     private VerticalPanel layout;
+    private VerticalPanel buttonsLayout;
     private Chart chart;
     private CustomPoint[] points;
     private PCAResults results;
@@ -70,10 +75,16 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
 
 
             layout = new VerticalPanel();
-            layout.setHeight("400px");
-            layout.setWidth("80%");
+            layout.setHeight("350px");
+            layout.setWidth("350px");
+            
+            
+            buttonsLayout = new VerticalPanel();
+            buttonsLayout.setWidth("100%");
+            buttonsLayout.setHeight("50px");
+            
 
-            chart = new Chart().setHeight(300).setWidth(500)
+            chart = new Chart().setHeight(300).setWidth(300)
                     .setType(Series.Type.SCATTER).setZoomType(Chart.ZoomType.X_AND_Y).setReflow(false)
                     .setLegend(new Legend().setLayout(Legend.Layout.VERTICAL)
                     .setAlign(Legend.Align.LEFT).setVerticalAlign(Legend.VerticalAlign.TOP)
@@ -96,7 +107,6 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
                     .setEndOnTick(true)
                     .setShowLastLabel(true);
             chart.getYAxis().setAxisTitleText("Principal Component " + (pcy + 1));
-
             chart.showLoading("loading...");
             chart.setSelectionEventHandler(new ChartSelectionEventHandler() {
                 @Override
@@ -119,6 +129,7 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
                 selectAll(true);
                 selectAll = true;
             }
+            chart.setChartTitleText("PCA-Chart");
 
             // Make a new check box, and select it by default.
             layout.add(chart);
@@ -130,9 +141,9 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
                     zoom = ((CheckBox) event.getSource()).isChecked();
                 }
             });
-            layout.add(cb);
+            buttonsLayout.add(cb);
 
-            CheckBox cb2 = new CheckBox("Select All");
+            CheckBox cb2 = new CheckBox("Show All");
             cb2.setChecked(selectAll);    // Hook up a handler to find out when it's clicked.
             cb2.addClickHandler(new ClickHandler() {
                 @Override
@@ -141,7 +152,13 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
                     selectAll(selectAll);
                 }
             });
-            layout.add(cb2);
+            buttonsLayout.add(cb2);
+            buttonsLayout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+            buttonsLayout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+            layout.add(buttonsLayout);
+            layout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+            layout.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
+            
 
         } catch (Exception e) {
 //            RootPanel.get().add(new Label("error" + e.getLocalizedMessage()));

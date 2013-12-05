@@ -81,7 +81,7 @@ public class RankTable extends ModularizedListener implements SelectionChangedHa
         table.setShowRecordComponents(true);
         table.setShowRecordComponentsByCell(true);
         table.setCanRemoveRecords(false);
-        table.setHeight("400px");
+        table.setHeight("200px");
         table.setShowAllRecords(true);
         table.setCanSort(Boolean.FALSE);
         ListGridField[] fields = new ListGridField[headers.length];

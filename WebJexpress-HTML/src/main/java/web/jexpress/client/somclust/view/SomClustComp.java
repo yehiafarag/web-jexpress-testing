@@ -4,8 +4,6 @@
  */
 package web.jexpress.client.somclust.view;
 
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.impl.ImageResourcePrototype;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import web.jexpress.shared.beans.SomClusteringResults;
@@ -25,10 +23,11 @@ public class SomClustComp extends HorizontalPanel {
         this.add(sideTree.asWidget());
 
         Image image = new Image("js/java-heat-chart.png");
+        image.setPixelSize(300, 500);
 
 
-        image.setWidth("164px");
-        image.setHeight("600px");
+        image.setWidth("100%");
+        image.setHeight("500px");
       
 //        ImageResource ir = new ImageResourcePrototype("heatmap", "file:///F:/files/java-heat-chart.png", 0, 0, 500, 500, true, true);
 //
