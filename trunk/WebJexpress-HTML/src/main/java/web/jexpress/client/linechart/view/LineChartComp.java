@@ -4,6 +4,10 @@
  */
 package web.jexpress.client.linechart.view;
 
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import org.moxieapps.gwt.highcharts.client.Chart;
 import org.moxieapps.gwt.highcharts.client.Legend;
 import org.moxieapps.gwt.highcharts.client.Series;
@@ -35,6 +39,8 @@ public class LineChartComp  extends ModularizedListener  {
 
 //    private Dataset dataset;
      private Chart chart;
+     private VerticalPanel layout;
+     private HorizontalPanel buttonsLayout;
      private LineChartResults results;
     public LineChartComp(LineChartResults results,SelectionManager selectionManager)
     {
@@ -44,6 +50,14 @@ public class LineChartComp  extends ModularizedListener  {
         this.selectionManager = selectionManager;
         this.selectionManager.addSelectionChangeListener(datasetId, LineChartComp.this);
 
+        layout = new VerticalPanel();
+        layout.setHeight("350px");
+        layout.setWidth("350px");
+        
+         buttonsLayout = new HorizontalPanel();
+            buttonsLayout.setWidth("100%");
+            buttonsLayout.setHeight("50px");
+            
         this.results = results;
 
         chart = new Chart()
@@ -51,7 +65,7 @@ public class LineChartComp  extends ModularizedListener  {
                 .setChartTitleText("Line Chart")
                 .setMarginRight(10);  
         chart.setHeight(300);
-        chart.setWidth(500);
+        chart.setWidth(300);
         
         chart.setAnimation(false);
         chart.setLegend(new Legend().setEnabled(false));
@@ -75,6 +89,14 @@ public class LineChartComp  extends ModularizedListener  {
 
         }
         chart.redraw();
+        
+        layout.add(chart);
+        layout.add(buttonsLayout);
+        buttonsLayout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+            buttonsLayout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+            layout.add(buttonsLayout);
+            layout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+            layout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
          
         
@@ -86,10 +108,7 @@ public class LineChartComp  extends ModularizedListener  {
             }         
                 
     }
-    public Chart getChart()
-    {
-        return chart;
-    }
+   
 
     private void updateSelection(int[] selection) {
         if (selection != null && selection.length > 0) {
@@ -139,5 +158,9 @@ public class LineChartComp  extends ModularizedListener  {
             //chart.redraw();
         }
 
+    }
+
+    public VerticalPanel getLayout() {
+        return layout;
     }
 }

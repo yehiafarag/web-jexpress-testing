@@ -4,11 +4,8 @@
  */
 package web.jexpress.client.somclust.view;
 
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import org.thechiselgroup.choosel.protovis.client.PVEventHandler;
-import org.thechiselgroup.choosel.protovis.client.jsutil.JsArgs;
 import web.jexpress.shared.model.core.model.SelectionManager;
 import web.jexpress.shared.beans.SomClusteringResults;
 import web.jexpress.shared.model.core.model.ModularizedListener;

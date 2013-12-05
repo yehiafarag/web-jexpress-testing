@@ -6,6 +6,7 @@ package web.jexpress.client.somclust.view;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Widget;
+
 import java.util.TreeMap;
 import org.thechiselgroup.choosel.protovis.client.PV;
 import org.thechiselgroup.choosel.protovis.client.PVClusterLayout;
@@ -51,8 +52,6 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
         this.nodesMap = root.getNodesMap();
         this.selectionManager = selectionManager;
         this.results = results;
-
-
     }
 
     @Override
@@ -70,8 +69,16 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
             if (_this != null && d != null && (!d.nodeName().equalsIgnoreCase(clickNode))) {
                 clickNode = d.nodeName();
                 clickedNode = nodesMap.get(clickNode);
-                updateSelectedList(clickedNode.getSelectedNodes());
                 vis.render();
+//                 Timer timer = new Timer() {
+//                    @Override
+//                    public void run() {
+                        updateSelectedList(clickedNode.getSelectedNodes());                
+//                    }
+//                };
+//
+//                timer.schedule(1000);
+                
 
             }
         }
@@ -94,8 +101,8 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
 
     private void createVisualization(Unit root) {
 
-        vis = getPVPanel().width(300).height(500).left(160).right(10)
-                .top(22).bottom(0);//.def("i", "-1").def("ii", "-1");
+        vis = getPVPanel().width(400).height(500).left(160).right(10)
+                .top(0).bottom(0);//.def("i", "-1").def("ii", "-1");
 
         PVClusterLayout layout = vis
                 .add(PV.Layout.Cluster())

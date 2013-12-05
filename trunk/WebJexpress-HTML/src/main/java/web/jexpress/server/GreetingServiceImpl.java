@@ -2,9 +2,13 @@ package web.jexpress.server;
 
 import web.jexpress.client.GreetingService;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import java.awt.Color;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.TreeMap;
 import no.uib.jexpress_modularized.core.dataset.DataSet;
+import no.uib.jexpress_modularized.core.model.Selection;
 import no.uib.jexpress_modularized.rank.computation.ComputeRank;
 import web.jexpress.server.model.HMGen;
 import web.jexpress.server.model.JexpressUtil;
@@ -33,13 +37,21 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     private SomClusteringResults results;
     private PCAUtil pcaUtil = new PCAUtil();
     private RankUtil rankUtil = new RankUtil();
+    private DatasetInformation datasetInfo;
 
     @Override
     public DatasetInformation loadDataset(int datasetId) {
         jDataset = util.initJexpressDataset();
         dataset = util.initWebDataset(jDataset, datasetId);
+        datasetInfo = this.updateDatasetInfo(datasetId);
 
 
+        return datasetInfo;
+    }
+    @Override
+    public DatasetInformation updateDatasetInfo(int datasetId)
+    {
+         
         String[] geneTableData[] = new String[dataset.getRowGroups().size() + 1][dataset.getRowIds().length];
         //init gene names with index
         String[] geneNamesArr = util.initGeneNamesArr(dataset.getGeneIndexNameMap());
@@ -66,10 +78,10 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
             index++;
 
         }
-        DatasetInformation datasetInfo = new DatasetInformation();
+        datasetInfo = new DatasetInformation();
         datasetInfo.setId(dataset.getId());
         datasetInfo.setRowsNumb(dataset.getDataLength());
-        datasetInfo.setColNumb(dataset.getDataLength());
+        datasetInfo.setColNumb(dataset.getDataWidth());
         datasetInfo.setRowGroupsNumb(dataset.getRowGroups().size() - 1);
         datasetInfo.setColGroupsNumb(dataset.getColumnGroups().size() - 1);
         datasetInfo.setDatasetInfo(dataset.getInfoHeaders()[0]);
@@ -78,11 +90,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         String pass = this.getServletContext().getRealPath("/");
         HMGen HMG = new HMGen(pass+"/js",jDataset);
         datasetInfo.setPass(HMG.getPass());
-
-
-
-
-        return datasetInfo;
+        return datasetInfo;   
     }
 
     @Override
@@ -106,7 +114,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     }
 
     @Override
-    public SomClusteringResults computeSomClustering(String input) throws IllegalArgumentException {
+    public SomClusteringResults computeSomClustering(int datasetId) throws IllegalArgumentException {
 
         results = somClustUtil.initHC(jDataset, 0, "UPGMA", true, dataset.getId());
         results = somClustUtil.initSelectedNodes(results);
@@ -146,8 +154,8 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         String type = "TwoClassUnPaired";
         int perm = 400;
         int seed = 838809932;
-        int[] col1 = jDataset.getColumnGroups().get(0).getMembers();
-        int[] col2 = jDataset.getColumnGroups().get(1).getMembers();
+        int[] col1 = jDataset.getColumnGroups().get(1).getMembers();
+        int[] col2 = jDataset.getColumnGroups().get(2).getMembers();
         boolean log2 = true;
         ComputeRank cr = new ComputeRank(jDataset);
         ArrayList<RPmodel> jResults= cr.createResult(type, perm, seed, col1, col2, log2);
@@ -156,4 +164,42 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         System.out.println("Rank is handeled");
         return rankResults;
     }
+        
+        @Override
+        public Boolean createGroup(int datasetId,String name,String color,String type,int[] selection)
+        {
+            
+            no.uib.jexpress_modularized.core.dataset.Group jG = new no.uib.jexpress_modularized.core.dataset.Group("Created Group "+name, generatRandColor(), new Selection(Selection.TYPE.OF_ROWS, selection));
+            jG.setActive(true);
+            jDataset.addRowGroup(jG);
+             String hex = "#" + Integer.toHexString(jG.getColor().getRGB()).substring(2);
+                Group g = new Group();
+                g.setType("Row");
+                g.setColor(hex);
+                List<Integer> ind = new ArrayList<Integer>();
+                for (int x : jG.getMembers()) {
+                    ind.add(x);
+                }
+                g.setIndices(ind);
+
+                g.setGeneList(util.initGroupGeneList(dataset, jG.getMembers()));
+                g.setId(jG.getName());
+                dataset.addRowGroup(g);
+                System.out.println("done !!!");
+                return true;
+        
+        
+        
+        }
+          
+     private Random rand = new Random();
+     private Color generatRandColor()
+     {
+        
+        float r = rand.nextFloat();
+        float g = rand.nextFloat();
+        float b = rand.nextFloat();
+        Color randomColor = new Color(r, g, b);
+        return randomColor;
+     }
 }

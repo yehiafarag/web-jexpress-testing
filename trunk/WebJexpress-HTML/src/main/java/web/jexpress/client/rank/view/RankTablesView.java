@@ -21,14 +21,14 @@ public class RankTablesView extends HorizontalPanel {
     public RankTablesView(SelectionManager selectionManager,RankResult results)
     {
 
-        this.setWidth("600px");
-        this.setHeight("600px");
+        this.setWidth("100%");
+        this.setHeight("300px");
         //this.setAlign(Alignment.CENTER);
        
         SectionStack secStackI = new SectionStack();
         secStackI.setVisibilityMode(VisibilityMode.MULTIPLE);  
-        secStackI.setWidth(500);  
-        secStackI.setHeight(400);  
+        secStackI.setWidth(400);  
+        secStackI.setHeight(200);  
         RankTable posRankTable = new RankTable(selectionManager, results.getDatasetId(),results.getPosTableHeader(), results.getPosTableData(),results.getPosRankToIndex(),results.getPosIndexToRank());
         
         SectionStackSection section1 = new SectionStackSection("Positive Score");  
@@ -40,8 +40,8 @@ public class RankTablesView extends HorizontalPanel {
         
         SectionStack secStackII = new SectionStack();
         secStackII.setVisibilityMode(VisibilityMode.MULTIPLE);  
-        secStackII.setWidth(500);  
-        secStackII.setHeight(400);  
+        secStackII.setWidth(400);  
+        secStackII.setHeight(200);  
         RankTable negRankTable = new RankTable(selectionManager, results.getDatasetId(),results.getNegTableHeader(), results.getNegTableData(),results.getNegRankToIndex(),results.getNegIndexToRank());
         
         SectionStackSection section11 = new SectionStackSection("Negative Score");  

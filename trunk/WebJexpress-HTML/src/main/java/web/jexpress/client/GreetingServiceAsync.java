@@ -17,9 +17,9 @@ public interface GreetingServiceAsync {
  
     public void loadDataset(int datasetId,AsyncCallback<DatasetInformation> asyncCallback);
     public void computeLineChart(int datasetId,AsyncCallback<LineChartResults> asyncCallback);
-    public void computeSomClustering(String str,AsyncCallback<SomClusteringResults> asyncCallback);
-    public void computePCA(int datasetId,AsyncCallback<PCAResults> asyncCallback );
-    public void computeRank(int datasetId,AsyncCallback<RankResult>asyncCallback);
-    
-   
+    public void computeSomClustering(int datasetId,AsyncCallback<SomClusteringResults> asyncCallback);
+    public void computePCA(int datasetId, AsyncCallback<PCAResults> asyncCallback);
+    public void computeRank(int datasetId, AsyncCallback<RankResult> asyncCallback);
+    public void createGroup(int datasetId, String name, String color, String type, int[] selection, AsyncCallback<Boolean> asyncCallback);
+    public void updateDatasetInfo(int datasetId, AsyncCallback<DatasetInformation> asyncCallback);
 }
