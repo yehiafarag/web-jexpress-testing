@@ -5,6 +5,7 @@
 package web.jexpress.shared.beans;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import java.util.Map;
 
 /**
  *
@@ -15,6 +16,7 @@ public class LineChartResults implements IsSerializable{
     private int datasetId;
     private String[] colours;
     private String[] geneNames;
+    private  Map<String,Number[][]> indicesGroup;
 
     public Number[][] getLineChartPoints() {
         return lineChartPoints;
@@ -46,6 +48,14 @@ public class LineChartResults implements IsSerializable{
 
     public void setGeneNames(String[] geneNames) {
         this.geneNames = geneNames;
+    }
+
+    public Map<String,Number[][]> getIndicesGroup() {
+        return indicesGroup;
+    }
+
+    public void setIndicesGroup(Map<String,Number[][]> indicesGroup) {
+        this.indicesGroup = indicesGroup;
     }
     
 }

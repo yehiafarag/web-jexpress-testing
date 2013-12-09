@@ -76,18 +76,34 @@ public class LineChartComp  extends ModularizedListener  {
                 .setMarker(new Marker().setSymbol(Marker.Symbol.CIRCLE)
                 .setEnabled(false).setRadius(0.001)));
 
-        //init data for line chart        
-        for (int x = 0; x < results.getGeneNames().length; x++) {
-            Number[] points = results.getLineChartPoints()[x];
-            Series series = chart.createSeries().setPoints(points);
+        //init data for line chart    
+        for(String color:results.getIndicesGroup().keySet())
+        {
+            Number[][] points = results.getIndicesGroup().get(color);
+            for(Number[] row:points){
+            Series series = chart.createSeries().setPoints(row);            
             series.setPlotOptions(new LinePlotOptions()
                     .setLineWidth(1)
                     .setMarker(new Marker().setSymbol(Marker.Symbol.CIRCLE)
-                    .setEnabled(false).setRadius(0.001)).setColor(results.getColours()[x]));
+                    .setEnabled(false).setRadius(0.001)).setColor(color));
 //            series.setName(""+x);
             chart.addSeries(series);
-
+            }
+        
+        
+        
         }
+//        for (int x = 0; x < results.getGeneNames().length; x++) {
+//            Number[] points = results.getLineChartPoints()[x];
+//            Series series = chart.createSeries().setPoints(points);
+//            series.setPlotOptions(new LinePlotOptions()
+//                    .setLineWidth(1)
+//                    .setMarker(new Marker().setSymbol(Marker.Symbol.CIRCLE)
+//                    .setEnabled(false).setRadius(0.001)).setColor(results.getColours()[x]));
+////            series.setName(""+x);
+//            chart.addSeries(series);
+
+//        }
         chart.redraw();
         
         layout.add(chart);
