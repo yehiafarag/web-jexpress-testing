@@ -8,11 +8,12 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 import no.uib.jexpress_modularized.core.computation.JMath;
 import no.uib.jexpress_modularized.core.dataset.Dataset;
-import no.uib.jexpress_modularized.somclust.model.Node;
 import org.tc33.jheatchart.HeatChart;
+import web.jexpress.shared.beans.ImgResult;
 
 /**
  *
@@ -30,11 +31,13 @@ public class HMGen {
     private int mode = 0;
     private String heatMapString;
     private List<String> indexer;
+    private ImgResult results;
 
     public HMGen(String pass, Dataset dataset,List<String> indexer) {
         this.dataset = dataset;
         this.pass = pass;
         this.indexer = indexer;
+        this.results = new ImgResult();
         this.heatMapString = generateImage();
         
 
@@ -43,17 +46,13 @@ public class HMGen {
     private String generateImage() {
 
         double[][] data = this.dataset.getData();// calcdistNoThread(false);
-        System.out.println(data.length+" -- "+indexer.size());
         double[][] sortedData = new double[data.length][];
         for (int x = 0; x < data.length; x++) {            
             double[] d = data[Integer.valueOf(indexer.get(x))]; 
             sortedData[x] = d;
         }
-        /*new double[][]{{3, 2, 3, 4, 5, 6},
-         {2, 3, 4, 5, 6, 7},
-         {3, 4, 5, 6, 7, 6},
-         {4, 5, 6, 7, 6, 5}};*/
-        System.out.println("start heat map processing ");
+        
+//        System.out.println("start heat map processing ");
 // Step 1: Create our heat map chart using our data.
         HeatChart map = new HeatChart(sortedData){
 
@@ -83,210 +82,194 @@ public class HMGen {
              sortedCol[col.length-1-x] = col[x];
          }
         map.setXValues(sortedCol);
-//        int width = 10;//300/col.length;
-//        int hight = 10;//600/lab.length;
-//        map.setXValuesHorizontal(false);
-//        map.setCellSize(new Dimension(width, hight));
-//        map.setAxisThickness(2);
-////        map.setBackgroundColour(Color.BLACK);
-//       map.set
         map.setShowYAxisValues(false);
         map.setShowXAxisValues(false);
-//     map.setColourScale(5000);
+        
         map.setHighValueColour(new Color(255,154,154));
         map.setColourScale(1.0);
         map.setLowValueColour(new Color(44,162,95));
         map.setBackgroundColour(Color.WHITE);
         map.setAxisThickness(0);
         map.setChartMargin(0);
-        System.out.println("scaleis -->> "+map.getColourScale()+"  cell width is-->> "+map.getCellSize().toString()+"  frequ "+map.getXAxisValuesFrequency());
-//     
-//        System.out.println("loma lomaa ---->>>>>>>>>>>>>>>>>>>>>> "+map.getColourScale());
-//        map.setTitle("This is my heat chart title");
-//        map.setXAxisLabel("X Axis");
-//        map.setYAxisLabel("Y Axis");
-
-// Step 3: Output the chart to a file.
-    
+       // Step 3: Output the chart to a file.
+            results.setColNum(dataset.getDataWidth());
+        results.setMaxColour("#FF9A9A");
+        results.setMinColour("#2CA25F");
+        results.setMaxValue(map.getHighValue());
+        results.setMinValue(map.getLowValue());
+        results.setRowNum(data.length);
         File img = new File(/*pass*/"D:\\files", "java-heat-chart.png");
-         String base64 ="";    
+        String base64 = "";        
         try {
-           img.createNewFile();
+            img.createNewFile();
             map.saveToFile(img);
-             // Reading a Image file from file system
+            // Reading a Image file from file system
             FileInputStream imageInFile = new FileInputStream(img);
             byte imageData[] = new byte[(int) img.length()];
             imageInFile.read(imageData);
- 
-            // Converting Image byte array into Base64 String
-            //String imageDataString = encodeImage(imageData);
- 
-            // Converting a Base64 String into Image byte array
-           // byte[] imageByteArray = decodeImage(imageDataString);
-            
-           base64 =  Base64.encode(imageData);//com.google.gwt.user.server.Base64Utils.toBase64(imageData); 
-           base64 = "data:image/png;base64,"+base64;
-            System.out.println("base64 "+base64);
-            // System.out.println("the pass is ---->> .> .>>> "+f.getAbsolutePath()+"  "+f.getCanonicalPath()+" "+f.getPath());
+            base64 = Base64.encode(imageData);
+//com.google.gwt.user.server.Base64Utils.toBase64(imageData); 
+            base64 = "data:image/png;base64," + base64;
         } catch (Exception exp) {
             exp.printStackTrace();
         }
-        return  base64 ;
+        results.setImgString(base64);
+        return base64;
     }
 
-    public double[][] calcdistNoThread(final boolean transposed) {
-
-        jmath.setMetric(distance);
-
-        double[][] dist = null;
-
-        try {
-            if (!transposed) {
-                dist = makematrix(dataset.getDataLength());
-            } else {
-                dist = makematrix(dataset.getDataWidth());
-            }
-
-            if (!transposed) { //This is not the transposed version. Proceed without transposing.
-                double[][] dst = dataset.getData();
-                boolean[][] nulls = dataset.getMissingMeasurements();
-                int n = dist.length;
-
-                if (nulls != null) {   // nulls present, use the getnulls matrix.
-                    for (int i = 0; i < n; i++) {
-                        for (int j = 0; j < i; j++) {
-                            dist[i][j] = (float) jmath.dist(dst[i], dst[j], nulls[i], nulls[j]);
-
-                        }
-                    }
-                } else {   //No nulls, do not use the getnulls matrix.
-                    for (int i = 0; i < n; i++) {
-                        for (int j = 0; j < i; j++) {
-                            dist[i][j] = (float) jmath.dist(dst[i], dst[j]);
-
-                        }
-                    }
-                }
-
-                if (distanceClustering) {
-                    tmpDist = dist;
-                }
-            } else { //This is the transposed version. Proceed without transposing.
-
-                double[][] trans = dataset.getData();
-                boolean[][] transnulls = dataset.getMissingMeasurements();
-
-                double[][] dst = new double[trans[0].length][trans.length];
-                boolean[][] nulls = null;
-
-                boolean nullsPresent = false;
-                if (transnulls != null) {
-                    nulls = new boolean[transnulls[0].length][transnulls.length];
-                    nullsPresent = true;
-                }
-
-                for (int i = 0; i < trans.length; i++) {
-                    for (int j = 0; j < trans[0].length; j++) {
-                        dst[j][i] = trans[i][j];
-
-                        if (nullsPresent) {
-                            nulls[j][i] = transnulls[i][j];
-                        }
-                    }
-                }
-
-                int n = dist.length;
-
-                if (nulls != null) {   // nulls present, use the getnulls matrix.
-                    for (int i = 0; i < n; i++) {
-                        for (int j = 0; j < i; j++) {
-                            dist[i][j] = (float) jmath.dist(dst[i], dst[j], nulls[i], nulls[j]);
-
-                        }
-                    }
-                } else {   //No nulls, do not use the getnulls matrix.
-                    for (int i = 0; i < n; i++) {
-                        for (int j = 0; j < i; j++) {
-                            dist[i][j] = (float) jmath.dist(dst[i], dst[j]);
-
-                        }
-                    }
-                }
-
-            }
-        } catch (OutOfMemoryError er) {
-            dist = null;
-            System.gc();
-        }
-
-        controlDistanceMatrix(dist);
-
-        if (mode == 3) {
-//            if (!distanceMatrixOnly) {
-//                toproot = makeclusters(true, true, dist);
+//    public double[][] calcdistNoThread(final boolean transposed) {
+//
+//        jmath.setMetric(distance);
+//
+//        double[][] dist = null;
+//
+//        try {
+//            if (!transposed) {
+//                dist = makematrix(dataset.getDataLength());
+//            } else {
+//                dist = makematrix(dataset.getDataWidth());
 //            }
 //
-//            gocluster();
-//            return;
-        }
-
-        if (mode != 1) {
-//            if (!distanceMatrixOnly) {
-//                trunk = makeclusters(true, false, dist);
+//            if (!transposed) { //This is not the transposed version. Proceed without transposing.
+//                double[][] dst = dataset.getData();
+//                boolean[][] nulls = dataset.getMissingMeasurements();
+//                int n = dist.length;
+//
+//                if (nulls != null) {   // nulls present, use the getnulls matrix.
+//                    for (int i = 0; i < n; i++) {
+//                        for (int j = 0; j < i; j++) {
+//                            dist[i][j] = (float) jmath.dist(dst[i], dst[j], nulls[i], nulls[j]);
+//
+//                        }
+//                    }
+//                } else {   //No nulls, do not use the getnulls matrix.
+//                    for (int i = 0; i < n; i++) {
+//                        for (int j = 0; j < i; j++) {
+//                            dist[i][j] = (float) jmath.dist(dst[i], dst[j]);
+//
+//                        }
+//                    }
+//                }
+//
+//                if (distanceClustering) {
+//                    tmpDist = dist;
+//                }
+//            } else { //This is the transposed version. Proceed without transposing.
+//
+//                double[][] trans = dataset.getData();
+//                boolean[][] transnulls = dataset.getMissingMeasurements();
+//
+//                double[][] dst = new double[trans[0].length][trans.length];
+//                boolean[][] nulls = null;
+//
+//                boolean nullsPresent = false;
+//                if (transnulls != null) {
+//                    nulls = new boolean[transnulls[0].length][transnulls.length];
+//                    nullsPresent = true;
+//                }
+//
+//                for (int i = 0; i < trans.length; i++) {
+//                    for (int j = 0; j < trans[0].length; j++) {
+//                        dst[j][i] = trans[i][j];
+//
+//                        if (nullsPresent) {
+//                            nulls[j][i] = transnulls[i][j];
+//                        }
+//                    }
+//                }
+//
+//                int n = dist.length;
+//
+//                if (nulls != null) {   // nulls present, use the getnulls matrix.
+//                    for (int i = 0; i < n; i++) {
+//                        for (int j = 0; j < i; j++) {
+//                            dist[i][j] = (float) jmath.dist(dst[i], dst[j], nulls[i], nulls[j]);
+//
+//                        }
+//                    }
+//                } else {   //No nulls, do not use the getnulls matrix.
+//                    for (int i = 0; i < n; i++) {
+//                        for (int j = 0; j < i; j++) {
+//                            dist[i][j] = (float) jmath.dist(dst[i], dst[j]);
+//
+//                        }
+//                    }
+//                }
+//
 //            }
-//            if (!ClusterColumns) {
-//                gocluster();
-//            } else {
-//                mode = 3;
-//                calcdistNoThread(true); //recursive call for the top component..
+//        } catch (OutOfMemoryError er) {
+//            dist = null;
+//            System.gc();
+//        }
+//
+//        controlDistanceMatrix(dist);
+//
+//        if (mode == 3) {
+////            if (!distanceMatrixOnly) {
+////                toproot = makeclusters(true, true, dist);
+////            }
+////
+////            gocluster();
+////            return;
+//        }
+//
+//        if (mode != 1) {
+////            if (!distanceMatrixOnly) {
+////                trunk = makeclusters(true, false, dist);
+////            }
+////            if (!ClusterColumns) {
+////                gocluster();
+////            } else {
+////                mode = 3;
+////                calcdistNoThread(true); //recursive call for the top component..
+////            }
+//        }
+//        return dist;
+//
+//
+//    }
+//
+//    private double[][] makematrix(int lengde) {
+//        double[][] inmatrix = new double[lengde][];
+//        for (int i = 0; i < lengde; i++) {
+//            inmatrix[i] = new double[i];
+//        }
+//        return inmatrix;
+//    }
+//
+//    private void controlDistanceMatrix(double[][] dist) {
+//
+//        double max = 0;
+//        for (int i = 0; i < dist.length; i++) {
+//            for (int j = 0; j < dist[0].length; j++) {
+//                if (dist[i][j] > max) {
+//                    max = dist[i][j];
+//                }
 //            }
-        }
-        return dist;
-
-
-    }
-
-    private double[][] makematrix(int lengde) {
-        double[][] inmatrix = new double[lengde][];
-        for (int i = 0; i < lengde; i++) {
-            inmatrix[i] = new double[i];
-        }
-        return inmatrix;
-    }
-
-    private void controlDistanceMatrix(double[][] dist) {
-
-        double max = 0;
-        for (int i = 0; i < dist.length; i++) {
-            for (int j = 0; j < dist[0].length; j++) {
-                if (dist[i][j] > max) {
-                    max = dist[i][j];
-                }
-            }
-        }
-
-        for (int i = 0; i < dist.length; i++) {
-            for (int j = 0; j < dist[0].length; j++) {
-                if (Double.isNaN(dist[i][j])) {
-                    dist[i][j] = max;
-                }
-                if (Double.isInfinite(dist[i][j])) {
-                    dist[i][j] = max;
-                }
-            }
-        }
-
-    }
-
-    public Node clonetree(Node trunk) {
-
-        return (Node) trunk.clone();
-
-    }
+//        }
+//
+//        for (int i = 0; i < dist.length; i++) {
+//            for (int j = 0; j < dist[0].length; j++) {
+//                if (Double.isNaN(dist[i][j])) {
+//                    dist[i][j] = max;
+//                }
+//                if (Double.isInfinite(dist[i][j])) {
+//                    dist[i][j] = max;
+//                }
+//            }
+//        }
+//
+//    }
+//
+//    public Node clonetree(Node trunk) {
+//
+//        return (Node) trunk.clone();
+//
+//    }
 
     
 
-    public String getHeatMapString() {
-        return heatMapString;
+    public ImgResult getHeatMapResults() {
+        return results;
     }
 }
