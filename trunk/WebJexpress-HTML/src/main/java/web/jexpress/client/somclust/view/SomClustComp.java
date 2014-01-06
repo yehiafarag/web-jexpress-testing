@@ -4,6 +4,9 @@
  */
 package web.jexpress.client.somclust.view;
 
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import java.util.List;
@@ -74,10 +77,23 @@ public class SomClustComp extends HorizontalPanel {
         this.image = image;
         this.image.setWidth("140px");
         this.image.setHeight("600px");
+        final int col = 140/7;
+        final double row = 600/391;
+        this.image.addMouseOverHandler(new MouseOverHandler() {
+
+            @Override
+            public void onMouseOver(MouseOverEvent event) {
+                
+                    Window.alert("x: column :"+ event.getX()/col+" ,  y: "+((double)event.getY()/row));
+            }
+        });
         this.add(this.image);
     }
 
-   
+   private String getValue(int x,int y)
+   {
+       return " koko wawa";
+   }
     
     
     

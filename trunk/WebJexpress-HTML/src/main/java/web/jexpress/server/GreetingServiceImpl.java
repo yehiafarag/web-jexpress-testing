@@ -38,9 +38,8 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
             System.out.println(x+ " "+dataset.getGeneNamesArr()[Integer.valueOf(indexer.get(x))]);
         String pass = this.getServletContext().getRealPath("/");
         HMGen hmGenerator= new HMGen(pass+"/js",jDataset,indexer);
-        String imgString = hmGenerator.getHeatMapString();
-        ImgResult imge = new ImgResult();
-        imge.setImgString(imgString);
+        
+        ImgResult imge = hmGenerator.getHeatMapResults();
         return imge;
     }
 
