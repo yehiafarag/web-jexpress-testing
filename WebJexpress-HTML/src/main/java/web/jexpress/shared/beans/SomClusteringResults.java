@@ -17,9 +17,9 @@ public class SomClusteringResults implements IsSerializable{
     private int datasetId;
     private TreeMap<String,String>toolTips;
     private String[] geneNames;
-    private String[] colsNames;
-    
+    private String[] colsNames;    
     private Unit sideTree;
+    private String imgString;
 
     public Unit getSideTree() {
         return sideTree;
@@ -76,6 +76,13 @@ public class SomClusteringResults implements IsSerializable{
 
     public void setColsNames(String[] colsNames) {
         this.colsNames = colsNames;
+    }
+    public String getImgString() {
+        return imgString;
+    }
+
+    public void setImgString(String imgString) {
+        this.imgString = imgString;
     }
     
 }
