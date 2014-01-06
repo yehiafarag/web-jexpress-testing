@@ -6,6 +6,9 @@ package web.jexpress.client.somclust.view;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Widget;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import java.util.TreeMap;
 import org.thechiselgroup.choosel.protovis.client.PV;
@@ -32,15 +35,16 @@ import web.jexpress.shared.model.core.model.Selection;
  */
 public final class TreeGraph extends ProtovisWidget implements IsSerializable {
 
-    private Unit root;
-    private SelectionManager selectionManager;
-    private SomClusteringResults results;
-    private TreeMap<String, CustomNode> nodesMap;
-    // private List<Integer> indexers = new ArrayList<Integer>();
+    private final Unit root;
+    private final SelectionManager selectionManager;
+    private final SomClusteringResults results;
+    private final TreeMap<String, CustomNode> nodesMap;
+    private final List<String> indexers = new ArrayList<String>();
+    private boolean initIndexer=true; 
 
-//    public List<Integer> getIndexers() {
-//        return indexers;
-//    }
+    public List<String> getIndexers() {
+        return indexers;
+    }
     @Override
     public Widget asWidget() {
         return this;
@@ -52,14 +56,18 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
         this.nodesMap = root.getNodesMap();
         this.selectionManager = selectionManager;
         this.results = results;
+//        this.createVisualization(root);
+//        initIndexer = false;
     }
 
     @Override
     protected void onAttach() {
         super.onAttach();
+        
         initPVPanel();
         createVisualization(root);
         getPVPanel().render();
+        initIndexer = false;
     }
     PVEventHandler nodeMouseClickHandler = new PVEventHandler() {
         @Override
@@ -101,18 +109,18 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
 
     private void createVisualization(Unit root) {
 
-        vis = getPVPanel().width(400).height(500).left(160).right(10)
+        vis = getPVPanel().width(400).height(600).left(160).right(10)
                 .top(0).bottom(0);//.def("i", "-1").def("ii", "-1");
 
         PVClusterLayout layout = vis
                 .add(PV.Layout.Cluster())
                 .nodes(PVDom.create(root, new UnitDomAdapter())
-                //                .sort(new Comparator<PVDomNode>() {
-                //            @Override
-                //            public int compare(PVDomNode o1, PVDomNode o2) {
-                //                return o1.nodeName().compareTo(o2.nodeName());
-                //            }
-                //        })
+                                .sort(new Comparator<PVDomNode>() {
+                            @Override
+                            public int compare(PVDomNode o1, PVDomNode o2) {
+                                return o1.nodeName().compareTo(o2.nodeName());
+                            }
+                        })
                 .nodes()).group(false).orient("left");
 
 
@@ -121,6 +129,12 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
             @Override
             public double f(JsArgs args) {
                 PVDomNode n = args.getObject();
+               if(initIndexer)
+               {
+                   if(n.firstChild() == null)
+                       indexers.add(n.nodeName());
+               }
+                
                 if (n.nodeName().equalsIgnoreCase(overNode)) {//(cNode != null && cNode.getName().equalsIgnoreCase/*getChildernList().contains*/(n.nodeName())) {//vis.getObject("i").toString().equalsIgnoreCase(n.nodeName())) {
                     return 5.0;
                 }

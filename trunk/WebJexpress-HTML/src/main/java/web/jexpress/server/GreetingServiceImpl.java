@@ -8,9 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
-import no.uib.jexpress_modularized.core.dataset.DataSet;
+import no.uib.jexpress_modularized.core.dataset.Dataset;
 import no.uib.jexpress_modularized.core.model.Selection;
 import no.uib.jexpress_modularized.rank.computation.ComputeRank;
+import no.uib.jexpress_modularized.rank.computation.RPResult;
 import web.jexpress.server.model.HMGen;
 import web.jexpress.server.model.JexpressUtil;
 import web.jexpress.server.model.PCAUtil;
@@ -19,11 +20,11 @@ import web.jexpress.shared.beans.LineChartResults;
 import web.jexpress.shared.beans.PCAResults;
 import web.jexpress.shared.beans.RankResult;
 import web.jexpress.shared.beans.SomClusteringResults;
-import web.jexpress.shared.model.core.model.dataset.Dataset;
+//import web.jexpress.shared.model.core.model.dataset.Dataset;
 import web.jexpress.shared.model.core.model.dataset.DatasetInformation;
 import web.jexpress.shared.model.core.model.dataset.Group;
-import no.uib.jexpress_modularized.rank.computation.RPmodel;
 import web.jexpress.server.model.RankUtil;
+import web.jexpress.shared.beans.ImgResult;
 
 /**
  * The server side implementation of the RPC service.
@@ -31,9 +32,21 @@ import web.jexpress.server.model.RankUtil;
 @SuppressWarnings("serial")
 public class GreetingServiceImpl extends RemoteServiceServlet implements GreetingService {
 
+    @Override
+    public ImgResult computeHeatmap(int datasetId, List<String> indexer) {
+        for(int x=0;x<indexer.size();x++)
+            System.out.println(x+ " "+dataset.getGeneNamesArr()[Integer.valueOf(indexer.get(x))]);
+        String pass = this.getServletContext().getRealPath("/");
+        HMGen hmGenerator= new HMGen(pass+"/js",jDataset,indexer);
+        String imgString = hmGenerator.getHeatMapString();
+        ImgResult imge = new ImgResult();
+        imge.setImgString(imgString);
+        return imge;
+    }
+
     private JexpressUtil util = new JexpressUtil();
-    private DataSet jDataset;
-    private Dataset dataset;
+    private Dataset jDataset;
+    private web.jexpress.shared.model.core.model.dataset.Dataset dataset;
     private SOMClustUtil somClustUtil = new SOMClustUtil();
     private SomClusteringResults results;
     private PCAUtil pcaUtil = new PCAUtil();
@@ -45,21 +58,16 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         jDataset = util.initJexpressDataset();
         dataset = util.initWebDataset(jDataset, datasetId);
         datasetInfo = this.updateDatasetInfo(datasetId);
-
-
         return datasetInfo;
     }
     @Override
-    public DatasetInformation updateDatasetInfo(int datasetId)
-    {
-         
+    public DatasetInformation updateDatasetInfo(int datasetId){         
         String[] geneTableData[] = new String[dataset.getRowGroups().size() + 1][dataset.getRowIds().length];
         //init gene names with index
         String[] geneNamesArr = util.initGeneNamesArr(dataset.getGeneIndexNameMap());
         dataset.setGeneNamesArr(geneNamesArr);
         geneTableData[0] = geneNamesArr;
         dataset.setGeneColorArr(util.initColorArr(geneNamesArr, dataset.getRowGroups()));
-
         int index = 1;
         String[] rowGroupsNames = new String[jDataset.getRowGroups().size() - 1];
         for (Group g : dataset.getRowGroups()) {
@@ -70,7 +78,6 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
                     color = g.getColor();
                 }
                 col[x] = color;
-
             }
             geneTableData[index] = col;
             if (index > 1) {
@@ -87,33 +94,10 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         datasetInfo.setColGroupsNumb(dataset.getColumnGroups().size() - 1);
         datasetInfo.setDatasetInfo(dataset.getInfoHeaders()[0]);
         datasetInfo.setGeneTabelData(geneTableData);
-        datasetInfo.setRowGroupsNames(rowGroupsNames);
-        String pass = this.getServletContext().getRealPath("/");
-        HMGen HMG = new HMGen(pass+"/js",jDataset);
-        datasetInfo.setPass(HMG.getPass());
+        datasetInfo.setRowGroupsNames(rowGroupsNames);       
         return datasetInfo;   
     }
 
-//    @Override
-//    public LineChartResults computeLineChart(int datasetId) {
-//        LineChartResults lcResults = new LineChartResults();
-//        lcResults.setDatasetId(datasetId);
-//        String[] geneNames = dataset.getGeneNamesArr();
-//        String[] colours = dataset.getGeneColorArr();//new String[dataset.getRowIds().length];
-//
-//        Number[] pointsArr[] = new Number[dataset.getDataLength()][dataset.getDataWidth()];
-//        for (int x = 0; x < dataset.getMemberMaps().size(); x++) {
-//
-//            Number[] updatedRow = dataset.getMemberMaps().get(x);//new Number[rowData.length];
-//            pointsArr[x] = updatedRow;
-//
-//        }
-//        lcResults.setColours(colours);
-//        lcResults.setGeneNames(geneNames);
-//        lcResults.setLineChartPoints(pointsArr);
-//        return lcResults;
-//    }
-    
     @Override
     public LineChartResults computeLineChart(int datasetId) {
         LineChartResults lcResults = new LineChartResults();
@@ -151,38 +135,27 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
     @Override
     public SomClusteringResults computeSomClustering(int datasetId) throws IllegalArgumentException {
-
         results = somClustUtil.initHC(jDataset, 0, "UPGMA", true, dataset.getId());
         results = somClustUtil.initSelectedNodes(results);
         TreeMap<String, String> toolTipsMap = somClustUtil.initToolTips(results.getSideTree(), dataset.getGeneIndexNameMap());
         results.setToolTips(toolTipsMap);
         results.setColsNames(jDataset.getColumnIds());
         results.setGeneNames(jDataset.getRowIds());
+        
+//        String pass = this.getServletContext().getRealPath("/");
+//        HMGen hmGenerator= new HMGen(pass+"/js",jDataset);
+//        String imgString = hmGenerator.getHeatMapString();
+//        String imgString = somClustUtil.heatMapGenerator();
+//        results.setImgString(imgString);
         return results;
     }
 
-    //	/**
-    //	 * Escape an html string. Escaping data received from the client helps to
-    //	 * prevent cross-site script vulnerabilities.
-    //	 *
-    //	 * @param html the html string to escape
-    //	 * @return the escaped string
-    //	 */
-    //	private String escapeHtml(String html) {
-    //		if (html == null) {
-    //			return null;
-    //		}
-    //		return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-    //				.replaceAll(">", "&gt;");
-    //       
-    //
     @Override
     public PCAResults computePCA(int datasetId) {      
         PCAResults res = pcaUtil.getPCAResults(jDataset,dataset,0,1);
         res.setDatasetId(datasetId);
         return res;
-////        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+   }
     
     
         @Override
@@ -194,7 +167,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         int[] col2 = jDataset.getColumnGroups().get(2).getMembers();
         boolean log2 = true;
         ComputeRank cr = new ComputeRank(jDataset);
-        ArrayList<RPmodel> jResults= cr.createResult(type, perm, seed, col1, col2, log2);
+        ArrayList<RPResult> jResults= cr.createResult(type, perm, seed, col1, col2, log2);
         RankResult rankResults = rankUtil.handelRankTable(jResults);
         rankResults.setDatasetId(datasetId);
         System.out.println("Rank is handeled");
@@ -238,4 +211,41 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         Color randomColor = new Color(r, g, b);
         return randomColor;
      }
+     
+    //	/**
+    //	 * Escape an html string. Escaping data received from the client helps to
+    //	 * prevent cross-site script vulnerabilities.
+    //	 *
+    //	 * @param html the html string to escape
+    //	 * @return the escaped string
+    //	 */
+    //	private String escapeHtml(String html) {
+    //		if (html == null) {
+    //			return null;
+    //		}
+    //		return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
+    //				.replaceAll(">", "&gt;");
+    //       
+    //
+     
+//    @Override
+//    public LineChartResults computeLineChart(int datasetId) {
+//        LineChartResults lcResults = new LineChartResults();
+//        lcResults.setDatasetId(datasetId);
+//        String[] geneNames = dataset.getGeneNamesArr();
+//        String[] colours = dataset.getGeneColorArr();//new String[dataset.getRowIds().length];
+//
+//        Number[] pointsArr[] = new Number[dataset.getDataLength()][dataset.getDataWidth()];
+//        for (int x = 0; x < dataset.getMemberMaps().size(); x++) {
+//
+//            Number[] updatedRow = dataset.getMemberMaps().get(x);//new Number[rowData.length];
+//            pointsArr[x] = updatedRow;
+//
+//        }
+//        lcResults.setColours(colours);
+//        lcResults.setGeneNames(geneNames);
+//        lcResults.setLineChartPoints(pointsArr);
+//        return lcResults;
+//    }
+    
 }

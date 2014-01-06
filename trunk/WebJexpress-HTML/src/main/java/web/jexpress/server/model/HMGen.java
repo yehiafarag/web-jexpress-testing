@@ -4,50 +4,50 @@
  */
 package web.jexpress.server.model;
 
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.io.File;
+import java.io.FileInputStream;
+import java.util.List;
 import no.uib.jexpress_modularized.core.computation.JMath;
-import no.uib.jexpress_modularized.core.dataset.DataSet;
+import no.uib.jexpress_modularized.core.dataset.Dataset;
 import no.uib.jexpress_modularized.somclust.model.Node;
 import org.tc33.jheatchart.HeatChart;
 
 /**
  *
- * @author Y.M
+ * @author Yehia Farag
  */
 public class HMGen {
 
     private String pass;
-    private DataSet data;
-    private JMath jmath = new JMath();
+    private final Dataset dataset;
+    private final JMath jmath = new JMath();
     private int distance = 2;   //the distance measure used (see expresscomponents.JMath.java)
     private double[][] tmpDist;
     private boolean distanceClustering = false;
     private boolean distanceMatrixOnly = false;
-    int mode = 0;
+    private int mode = 0;
+    private String heatMapString;
+    private List<String> indexer;
 
-    public HMGen(String pass, DataSet dataset) {
-        this.data = dataset;
+    public HMGen(String pass, Dataset dataset,List<String> indexer) {
+        this.dataset = dataset;
         this.pass = pass;
-        generateImage();
+        this.indexer = indexer;
+        this.heatMapString = generateImage();
+        
 
     }
 
-    private void generateImage() {
+    private String generateImage() {
 
-        double[][] data = this.data.getData();// calcdistNoThread(false);
-        for (int x = 0; x < data.length; x++) {
-            System.out.println("row " + x);
-            System.out.println();
-            double[] d = data[x];
-            for (int y = 0; y < d.length; y++) {
-                System.out.print(d[y] + " , ");
-            }
-            System.out.println("--------------------");
-            if (x == 3) {
-                break;
-            }
+        double[][] data = this.dataset.getData();// calcdistNoThread(false);
+        System.out.println(data.length+" -- "+indexer.size());
+        double[][] sortedData = new double[data.length][];
+        for (int x = 0; x < data.length; x++) {            
+            double[] d = data[Integer.valueOf(indexer.get(x))]; 
+            sortedData[x] = d;
         }
         /*new double[][]{{3, 2, 3, 4, 5, 6},
          {2, 3, 4, 5, 6, 7},
@@ -55,7 +55,7 @@ public class HMGen {
          {4, 5, 6, 7, 6, 5}};*/
         System.out.println("start heat map processing ");
 // Step 1: Create our heat map chart using our data.
-        HeatChart map = new HeatChart(data){
+        HeatChart map = new HeatChart(sortedData){
 
             @Override
             public void setHighValueColour(Color color) {
@@ -74,40 +74,64 @@ public class HMGen {
         };
 
 // Step 2: Customise the chart.
-        Object[] lab = this.data.getRowIds();
-        Object[] col = this.data.getColumnIds();
+        Object[] lab = this.dataset.getRowIds();
+        Object[] col = this.dataset.getColumnIds();
         map.setYValues(lab);
-        map.setXValues(col);
-        int width = 10;//300/col.length;
-        int hight = 10;//600/lab.length;
-        map.setXValuesHorizontal(false);
-        map.setCellSize(new Dimension(width, hight));
+         Object[] sortedCol = new Object[col.length];
+         for(int x=0;x<col.length;x++)
+         {
+             sortedCol[col.length-1-x] = col[x];
+         }
+        map.setXValues(sortedCol);
+//        int width = 10;//300/col.length;
+//        int hight = 10;//600/lab.length;
+//        map.setXValuesHorizontal(false);
+//        map.setCellSize(new Dimension(width, hight));
 //        map.setAxisThickness(2);
 ////        map.setBackgroundColour(Color.BLACK);
 //       map.set
-        map.setShowYAxisValues(true);
+        map.setShowYAxisValues(false);
+        map.setShowXAxisValues(false);
 //     map.setColourScale(5000);
-        map.setHighValueColour(Color.GREEN);
-       map.setColourScale(0.1);
-        map.setLowValueColour(Color.BLUE);
-     
-        System.out.println("loma lomaa ---->>>>>>>>>>>>>>>>>>>>>> "+map.getColourScale());
+        map.setHighValueColour(new Color(255,154,154));
+        map.setColourScale(1.0);
+        map.setLowValueColour(new Color(44,162,95));
+        map.setBackgroundColour(Color.WHITE);
+        map.setAxisThickness(0);
+        map.setChartMargin(0);
+        System.out.println("scaleis -->> "+map.getColourScale()+"  cell width is-->> "+map.getCellSize().toString()+"  frequ "+map.getXAxisValuesFrequency());
+//     
+//        System.out.println("loma lomaa ---->>>>>>>>>>>>>>>>>>>>>> "+map.getColourScale());
 //        map.setTitle("This is my heat chart title");
 //        map.setXAxisLabel("X Axis");
 //        map.setYAxisLabel("Y Axis");
 
 // Step 3: Output the chart to a file.
-
+    
+        File img = new File(/*pass*/"D:\\files", "java-heat-chart.png");
+         String base64 ="";    
         try {
-            File f = new File(pass, "java-heat-chart.png");
-            f.createNewFile();
-            pass = "java-heat-chart.png";
-
-            map.saveToFile(f);
+           img.createNewFile();
+            map.saveToFile(img);
+             // Reading a Image file from file system
+            FileInputStream imageInFile = new FileInputStream(img);
+            byte imageData[] = new byte[(int) img.length()];
+            imageInFile.read(imageData);
+ 
+            // Converting Image byte array into Base64 String
+            //String imageDataString = encodeImage(imageData);
+ 
+            // Converting a Base64 String into Image byte array
+           // byte[] imageByteArray = decodeImage(imageDataString);
+            
+           base64 =  Base64.encode(imageData);//com.google.gwt.user.server.Base64Utils.toBase64(imageData); 
+           base64 = "data:image/png;base64,"+base64;
+            System.out.println("base64 "+base64);
             // System.out.println("the pass is ---->> .> .>>> "+f.getAbsolutePath()+"  "+f.getCanonicalPath()+" "+f.getPath());
         } catch (Exception exp) {
             exp.printStackTrace();
         }
+        return  base64 ;
     }
 
     public double[][] calcdistNoThread(final boolean transposed) {
@@ -118,14 +142,14 @@ public class HMGen {
 
         try {
             if (!transposed) {
-                dist = makematrix(data.getDataLength());
+                dist = makematrix(dataset.getDataLength());
             } else {
-                dist = makematrix(data.getDataWidth());
+                dist = makematrix(dataset.getDataWidth());
             }
 
             if (!transposed) { //This is not the transposed version. Proceed without transposing.
-                double[][] dst = data.getData();
-                boolean[][] nulls = data.getMissingMeasurements();
+                double[][] dst = dataset.getData();
+                boolean[][] nulls = dataset.getMissingMeasurements();
                 int n = dist.length;
 
                 if (nulls != null) {   // nulls present, use the getnulls matrix.
@@ -149,8 +173,8 @@ public class HMGen {
                 }
             } else { //This is the transposed version. Proceed without transposing.
 
-                double[][] trans = data.getData();
-                boolean[][] transnulls = data.getMissingMeasurements();
+                double[][] trans = dataset.getData();
+                boolean[][] transnulls = dataset.getMissingMeasurements();
 
                 double[][] dst = new double[trans[0].length][trans.length];
                 boolean[][] nulls = null;
@@ -260,7 +284,9 @@ public class HMGen {
 
     }
 
-    public String getPass() {
-        return pass;
+    
+
+    public String getHeatMapString() {
+        return heatMapString;
     }
 }

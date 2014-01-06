@@ -5,19 +5,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import no.uib.jexpress_modularized.core.dataset.DataSet;
+import no.uib.jexpress_modularized.core.dataset.Dataset;
 import utility.FilesReader;
-import web.jexpress.shared.model.core.model.dataset.Dataset;
 import web.jexpress.shared.model.core.model.dataset.Group;
 
 public class JexpressUtil {
 
     private File file;         // File to write to.
     private final FilesReader fr = new FilesReader();
-    private DataSet dataset;
+    private Dataset dataset;
 
-    public DataSet initJexpressDataset() {
-        file = new File("F:\\files\\diauxic shift.txt");
+    public Dataset initJexpressDataset() {
+        file = new File("D:\\files\\diauxic shift.txt");
          
          
 //        file = new File("/home/probe/diauxic_shift.txt");
@@ -28,7 +27,7 @@ public class JexpressUtil {
 
     }
 
-    public Map<Integer, String> initIndexNameGeneMap(Dataset dataset) {
+    public Map<Integer, String> initIndexNameGeneMap(web.jexpress.shared.model.core.model.dataset.Dataset dataset) {
         Map<Integer, String> geneMap = new HashMap<Integer, String>();
 
 
@@ -38,8 +37,8 @@ public class JexpressUtil {
         return geneMap;
     }
 
-    public Dataset initWebDataset(DataSet jexpressDataset, int datasetId) {
-        Dataset webDataset = new Dataset();
+    public web.jexpress.shared.model.core.model.dataset.Dataset initWebDataset(Dataset jexpressDataset, int datasetId) {
+        web.jexpress.shared.model.core.model.dataset.Dataset webDataset = new web.jexpress.shared.model.core.model.dataset.Dataset();
         webDataset.setId(datasetId);
         webDataset.setColumnIds(jexpressDataset.getColumnIds());
         webDataset.setInfoHeaders(jexpressDataset.getInfoHeaders());
@@ -103,7 +102,7 @@ public class JexpressUtil {
         return geneMap;
     }
 
-    public List<String> initGroupGeneList(Dataset dataset, int[] members) {
+    public List<String> initGroupGeneList(web.jexpress.shared.model.core.model.dataset.Dataset dataset, int[] members) {
         List<String> geneList = new ArrayList<String>();
         for (int x : members) {
             geneList.add(dataset.getGeneIndexNameMap().get(x));
@@ -115,7 +114,7 @@ public class JexpressUtil {
 
     }
 
-    public Map<Integer, Number[]> initIndexMembers(Dataset dataset) {
+    public Map<Integer, Number[]> initIndexMembers(web.jexpress.shared.model.core.model.dataset.Dataset dataset) {
         Map<Integer, Number[]> memberMaps = new HashMap<Integer, Number[]>();
         for (int x = 0; x < dataset.getDataLength(); x++) {
             double[] row = dataset.getMeasurements()[x];

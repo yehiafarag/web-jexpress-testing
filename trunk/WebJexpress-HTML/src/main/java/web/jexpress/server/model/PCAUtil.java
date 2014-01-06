@@ -5,11 +5,11 @@
 package web.jexpress.server.model;
 
 import java.util.TreeMap;
-import no.uib.jexpress_modularized.core.dataset.DataSet;
+import no.uib.jexpress_modularized.core.dataset.Dataset;
 import no.uib.jexpress_modularized.pca.computation.PcaCompute;
 import web.jexpress.shared.beans.PCAPoint;
 import web.jexpress.shared.beans.PCAResults;
-import web.jexpress.shared.model.core.model.dataset.Dataset;
+//import web.jexpress.shared.model.core.model.dataset.Dataset;
 import web.jexpress.shared.model.core.model.dataset.Group;
 
 /**
@@ -18,7 +18,7 @@ import web.jexpress.shared.model.core.model.dataset.Group;
  */
 public class PCAUtil {
     
-    public PCAResults getPCAResults(DataSet jDataset,Dataset dataset,int pcx,int pcy) {
+    public PCAResults getPCAResults(Dataset jDataset,web.jexpress.shared.model.core.model.dataset.Dataset dataset,int pcx,int pcy) {
         PcaCompute pcaCompute = new PcaCompute(jDataset);
         
         no.uib.jexpress_modularized.pca.computation.PcaResults jResults = pcaCompute.createPCA();  

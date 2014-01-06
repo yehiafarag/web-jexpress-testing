@@ -2,6 +2,8 @@ package web.jexpress.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import java.util.List;
+import web.jexpress.shared.beans.ImgResult;
 import web.jexpress.shared.beans.LineChartResults;
 import web.jexpress.shared.beans.PCAResults;
 import web.jexpress.shared.beans.RankResult;
@@ -20,6 +22,7 @@ public interface GreetingService extends RemoteService {
     LineChartResults computeLineChart(int datasetId);
 
     SomClusteringResults computeSomClustering(int datasetId) throws IllegalArgumentException;
+    ImgResult computeHeatmap(int datasetId,List<String>indexer);
     
     PCAResults computePCA(int datasetId);
     
@@ -28,4 +31,6 @@ public interface GreetingService extends RemoteService {
     Boolean createGroup(int datasetId,String name,String color,String type,int[] selection);
 
     DatasetInformation updateDatasetInfo(int datasetId);
+    
+    
 }

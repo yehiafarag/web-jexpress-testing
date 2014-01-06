@@ -5,7 +5,7 @@
 package web.jexpress.server.model;
 
 import java.util.ArrayList;
-import no.uib.jexpress_modularized.rank.computation.RPmodel;
+import no.uib.jexpress_modularized.rank.computation.RPResult;
 import web.jexpress.shared.beans.RankResult;
 
 /**
@@ -14,7 +14,7 @@ import web.jexpress.shared.beans.RankResult;
  */
 public class RankUtil {
     
-    public RankResult handelRankTable( ArrayList<RPmodel> jResults)
+    public RankResult handelRankTable( ArrayList<RPResult> jResults)
     {
 
         RankResult results = new RankResult();
@@ -23,7 +23,7 @@ public class RankUtil {
         return results;
     }
 
-    private RankResult initResults(RankResult res, RPmodel table, int postive) {
+    private RankResult initResults(RankResult res, RPResult table, int postive) {
         int[] rankToIndex = new int[table.getRowCount()];
         int[] indexToRank = new int[table.getRowCount()];
         String[] tableData[] = new String[table.getColumnCount()][table.getRowCount()];

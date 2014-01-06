@@ -6,19 +6,22 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
+import java.util.List;
 import web.jexpress.client.geneTable.view.GeneTable;
 import web.jexpress.client.linechart.view.LineChartComp;
 import web.jexpress.client.pca.view.PCAPlot;
 import web.jexpress.client.rank.view.RankTablesView;
 import web.jexpress.client.somclust.view.SomClustView;
+import web.jexpress.shared.beans.ImgResult;
 import web.jexpress.shared.model.core.model.SelectionManager;
-
 
 import web.jexpress.shared.beans.LineChartResults;
 import web.jexpress.shared.beans.PCAResults;
@@ -28,8 +31,7 @@ import web.jexpress.shared.model.core.model.Selection;
 import web.jexpress.shared.model.core.model.dataset.DatasetInformation;
 
 /**
- * Entry point classes define
- * <code>onModuleLoad()</code>.
+ * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class Test_GWT_2_1_0 implements EntryPoint {
 
@@ -50,8 +52,8 @@ public class Test_GWT_2_1_0 implements EntryPoint {
     final Label colGroup = new Label();
     private ListBox lb;
     private int datasetId;
-    
-    private int nameCounter=2;//remove in future
+
+    private int nameCounter = 2;//remove in future
     /**
      * Create a remote service proxy to talk to the server-side Greeting
      * service.
@@ -91,7 +93,6 @@ public class Test_GWT_2_1_0 implements EntryPoint {
         final Button somClustBtn = new Button("Hierarchical Clustering");
         somClustBtn.setEnabled(false);
         hp.add(somClustBtn);
-
 
         final Button lineChartBtn = new Button("Line Chart");
         lineChartBtn.setEnabled(false);
@@ -136,7 +137,6 @@ public class Test_GWT_2_1_0 implements EntryPoint {
                     };
                     lineChartBtn.addClickHandler(lineChartBtnHandler);
 
-
                     ClickHandler PCAChartBtnHandler = new ClickHandler() {
                         @Override
                         public void onClick(ClickEvent event) {
@@ -153,7 +153,6 @@ public class Test_GWT_2_1_0 implements EntryPoint {
                     };
                     rankBtn.addClickHandler(rankBtnHandler);
 
-
                     ClickHandler createGroupBtnHandler = new ClickHandler() {
                         @Override
                         public void onClick(ClickEvent event) {
@@ -162,7 +161,7 @@ public class Test_GWT_2_1_0 implements EntryPoint {
                                 int[] selectedRows = sel.getMembers();
 
                                 if (selectedRows != null) {
-                                    createRowGroup(datasetId, ""+nameCounter++, "red", selectedRows);
+                                    createRowGroup(datasetId, "" + nameCounter++, "red", selectedRows);
                                 }
                             }
 
@@ -174,52 +173,81 @@ public class Test_GWT_2_1_0 implements EntryPoint {
         });
     }
 
+    
+    private List<String>indexer;
+    private SomClustView hc ;
     private void runSomClustering(int datasetId) {
         RootPanel.get("loaderImage").setVisible(true);
         greetingService.computeSomClustering(datasetId,
                 new AsyncCallback<SomClusteringResults>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                errorLabel.setText(SERVER_ERROR);
-                RootPanel.get("loaderImage").setVisible(false);
-            }
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        errorLabel.setText(SERVER_ERROR);
+                        RootPanel.get("loaderImage").setVisible(false);
+                    }
 
-            @Override
-            public void onSuccess(SomClusteringResults result) {
-                errorLabel.setText("");
-                SomClustView hc = new SomClustView(pass, result, selectionManager);
-                RootPanel.get("SomClusteringResults").clear();
-                RootPanel.get("SomClusteringResults").add(hc.asWidget());
-                RootPanel.get("loaderImage").setVisible(false);
-            }
-        });
+                    @Override
+                    public void onSuccess(SomClusteringResults result) {
+                        errorLabel.setText("");
+                        hc = new SomClustView(pass, result, selectionManager);
+                        
+                        RootPanel.get("SomClusteringResults").clear();
+                        RootPanel.get("SomClusteringResults").add(hc.asWidget());
+                        //RootPanel.get("loaderImage").setVisible(false);
+                        indexer =hc.getIndexer();
+                        generateHeatMap(indexer);
+                    }
+                });
+        
+       
+        
+        
+    }
+    private void generateHeatMap(List<String> indexers)
+    {
+     greetingService.computeHeatmap(datasetId, indexers, 
+                new AsyncCallback<ImgResult>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        errorLabel.setText(SERVER_ERROR);
+                        RootPanel.get("loaderImage").setVisible(false);
+                    }
+
+                    @Override
+                    public void onSuccess(ImgResult result) {
+                        errorLabel.setText("");
+                         Image image = new Image(result.getImgString());  
+                         hc.setImge(image);
+                        RootPanel.get("loaderImage").setVisible(false);
+                    }
+                });
     }
 
     private void loadDataset(int datasetId) {
         RootPanel.get("loaderImage").setVisible(true);
         greetingService.loadDataset(datasetId,
                 new AsyncCallback<DatasetInformation>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                errorLabel.setText(SERVER_ERROR);
-                RootPanel.get("loaderImage").setVisible(false);
-            }
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        errorLabel.setText(SERVER_ERROR);
+                        RootPanel.get("loaderImage").setVisible(false);
+                    }
 
-            @Override
-            public void onSuccess(DatasetInformation datasetInfo) {
-                errorLabel.setText("");
-                pass = datasetInfo.getPass();
-                rowLab.setText("Rows : " + datasetInfo.getRowsNumb());
-                colLab.setText("Columns : " + datasetInfo.getColNumb());
-                rowGroup.setText("Row Groups : " + (datasetInfo.getRowGroupsNumb()));
-                colGroup.setText("Column Groups : " + (datasetInfo.getColGroupsNumb()));
-                GeneTable geneTable = new GeneTable(selectionManager, datasetInfo);
-                RootPanel.get("geneTable").clear();
-                RootPanel.get("geneTable").add(geneTable.getGwtTable());
-                datasetInfo = null;
-                RootPanel.get("loaderImage").setVisible(false);
-            }
-        });
+                    @Override
+                    public void onSuccess(DatasetInformation datasetInfo) {
+                        errorLabel.setText("");
+                        pass = datasetInfo.getPass();
+                        rowLab.setText("Rows : " + datasetInfo.getRowsNumb());
+                        colLab.setText("Columns : " + datasetInfo.getColNumb());
+                        rowGroup.setText("Row Groups : " + (datasetInfo.getRowGroupsNumb()));
+                        colGroup.setText("Column Groups : " + (datasetInfo.getColGroupsNumb()));
+                        GeneTable geneTable = new GeneTable(selectionManager, datasetInfo);
+                        RootPanel.get("geneTable").clear();
+                        RootPanel.get("geneTable").add(geneTable.getGwtTable());
+                        datasetInfo = null;
+                        RootPanel.get("loaderImage").setVisible(false);
+                    }
+                });
     }
     private String pass = "";
 
@@ -227,64 +255,64 @@ public class Test_GWT_2_1_0 implements EntryPoint {
         RootPanel.get("loaderImage").setVisible(true);
         greetingService.computeLineChart(datasetId,
                 new AsyncCallback<LineChartResults>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                errorLabel.setText(SERVER_ERROR);
-                RootPanel.get("loaderImage").setVisible(false);
-            }
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        errorLabel.setText(SERVER_ERROR);
+                        RootPanel.get("loaderImage").setVisible(false);
+                    }
 
-            @Override
-            public void onSuccess(LineChartResults result) {
-                errorLabel.setText("");
-                LineChartComp linechart = new LineChartComp(result, selectionManager);
-                RootPanel.get("LineChartResults").clear();
-                RootPanel.get("LineChartResults").add(linechart.getLayout());
-                result = null;
-                RootPanel.get("loaderImage").setVisible(false);
-            }
-        });
+                    @Override
+                    public void onSuccess(LineChartResults result) {
+                        errorLabel.setText("");
+                        LineChartComp linechart = new LineChartComp(result, selectionManager);
+                        RootPanel.get("LineChartResults").clear();
+                        RootPanel.get("LineChartResults").add(linechart.getLayout());
+                        result = null;
+                        RootPanel.get("loaderImage").setVisible(false);
+                    }
+                });
     }
 
     private void viewPCAChart(int datasetId) {
         RootPanel.get("loaderImage").setVisible(true);
         greetingService.computePCA(datasetId,
                 new AsyncCallback<PCAResults>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                errorLabel.setText(SERVER_ERROR);
-                RootPanel.get("loaderImage").setVisible(false);
-            }
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        errorLabel.setText(SERVER_ERROR);
+                        RootPanel.get("loaderImage").setVisible(false);
+                    }
 
-            @Override
-            public void onSuccess(PCAResults result) {
-                errorLabel.setText("");
-                PCAPlot pca = new PCAPlot(result, 1, 2, selectionManager);
-                RootPanel.get("PCAChartResults").clear();
-                RootPanel.get("PCAChartResults").add(pca.getScatterPlotLayout());
-                RootPanel.get("loaderImage").setVisible(false);
-            }
-        });
+                    @Override
+                    public void onSuccess(PCAResults result) {
+                        errorLabel.setText("");
+                        PCAPlot pca = new PCAPlot(result, 1, 2, selectionManager);
+                        RootPanel.get("PCAChartResults").clear();
+                        RootPanel.get("PCAChartResults").add(pca.getScatterPlotLayout());
+                        RootPanel.get("loaderImage").setVisible(false);
+                    }
+                });
     }
 
     private void viewRankTables(int datasetId) {
         RootPanel.get("loaderImage").setVisible(true);
         greetingService.computeRank(datasetId,
                 new AsyncCallback<RankResult>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                errorLabel.setText(SERVER_ERROR);
-                RootPanel.get("loaderImage").setVisible(false);
-            }
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        errorLabel.setText(SERVER_ERROR);
+                        RootPanel.get("loaderImage").setVisible(false);
+                    }
 
-            @Override
-            public void onSuccess(RankResult result) {
-                errorLabel.setText("");
-                RankTablesView rankTables = new RankTablesView(selectionManager, result);
-                RootPanel.get("RankTablesResults").clear();
-                RootPanel.get("RankTablesResults").add(rankTables);
-                RootPanel.get("loaderImage").setVisible(false);
-            }
-        });
+                    @Override
+                    public void onSuccess(RankResult result) {
+                        errorLabel.setText("");
+                        RankTablesView rankTables = new RankTablesView(selectionManager, result);
+                        RootPanel.get("RankTablesResults").clear();
+                        RootPanel.get("RankTablesResults").add(rankTables);
+                        RootPanel.get("loaderImage").setVisible(false);
+                    }
+                });
 
     }
 
@@ -292,56 +320,54 @@ public class Test_GWT_2_1_0 implements EntryPoint {
         RootPanel.get("loaderImage").setVisible(true);
         greetingService.createGroup(datasetId, name, color, "Row", selection,
                 new AsyncCallback<Boolean>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                errorLabel.setText(SERVER_ERROR);
-                RootPanel.get("loaderImage").setVisible(false);
-            }
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        errorLabel.setText(SERVER_ERROR);
+                        RootPanel.get("loaderImage").setVisible(false);
+                    }
 
-            @Override
-            public void onSuccess(Boolean result) {
-                errorLabel.setText("");
-                updateApp(datasetId);
-                //RootPanel.get("loaderImage").setVisible(false);
-            }
-        });
-
+                    @Override
+                    public void onSuccess(Boolean result) {
+                        errorLabel.setText("");
+                        updateApp(datasetId);
+                        //RootPanel.get("loaderImage").setVisible(false);
+                    }
+                });
 
     }
-    
-    private void updateApp(int datasetId)
-    {
+
+    private void updateApp(int datasetId) {
         RootPanel.get("loaderImage").setVisible(true);
         greetingService.updateDatasetInfo(datasetId,
                 new AsyncCallback<DatasetInformation>() {
-            @Override
-            public void onFailure(Throwable caught) { 
-                errorLabel.setText(SERVER_ERROR);
-                RootPanel.get("loaderImage").setVisible(false);
-            }
-            @Override
-            public void onSuccess(DatasetInformation datasetInfo) {
-                errorLabel.setText("");
-                pass = datasetInfo.getPass();
-                rowLab.setText("Rows : " + datasetInfo.getRowsNumb());
-                colLab.setText("Columns : " + datasetInfo.getColNumb());
-                rowGroup.setText("Row Groups : " + (datasetInfo.getRowGroupsNumb()));
-                colGroup.setText("Column Groups : " + (datasetInfo.getColGroupsNumb()));
-                GeneTable geneTable = new GeneTable(selectionManager, datasetInfo);
-                RootPanel.get("geneTable").clear();
-                RootPanel.get("geneTable").add(geneTable.getGwtTable());
-                datasetInfo = null;   
-                RootPanel.get("loaderImage").setVisible(false);
-            }
-        });
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        errorLabel.setText(SERVER_ERROR);
+                        RootPanel.get("loaderImage").setVisible(false);
+                    }
 
-    
-    
+                    @Override
+                    public void onSuccess(DatasetInformation datasetInfo) {
+                        errorLabel.setText("");
+                        pass = datasetInfo.getPass();
+                        rowLab.setText("Rows : " + datasetInfo.getRowsNumb());
+                        colLab.setText("Columns : " + datasetInfo.getColNumb());
+                        rowGroup.setText("Row Groups : " + (datasetInfo.getRowGroupsNumb()));
+                        colGroup.setText("Column Groups : " + (datasetInfo.getColGroupsNumb()));
+                        GeneTable geneTable = new GeneTable(selectionManager, datasetInfo);
+                        RootPanel.get("geneTable").clear();
+                        RootPanel.get("geneTable").add(geneTable.getGwtTable());
+                        datasetInfo = null;
+                        RootPanel.get("loaderImage").setVisible(false);
+                    }
+                });
+
     }
-     private String[] getDatasetsList() {
+
+    private String[] getDatasetsList() {
         String[] datasetList = new String[]{"diauxic shift"};
         return datasetList;
 
     }
-    
+
 }
