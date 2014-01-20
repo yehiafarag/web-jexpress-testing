@@ -2,6 +2,7 @@ package web.jexpress.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import java.util.List;
+import java.util.Map;
 import web.jexpress.shared.beans.ImgResult;
 import web.jexpress.shared.beans.LineChartResults;
 import web.jexpress.shared.beans.PCAResults;
@@ -17,6 +18,7 @@ import web.jexpress.shared.model.core.model.dataset.DatasetInformation;
  */
 public interface GreetingServiceAsync {
  
+    public void getAvailableDatasets(AsyncCallback<Map<Integer,String> >datasetResults);
     public void loadDataset(int datasetId,AsyncCallback<DatasetInformation> asyncCallback);
     public void computeLineChart(int datasetId,AsyncCallback<LineChartResults> asyncCallback);
     public void computeSomClustering(int datasetId,AsyncCallback<SomClusteringResults> asyncCallback);

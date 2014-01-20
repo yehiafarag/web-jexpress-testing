@@ -9,120 +9,192 @@
     <head>
           
         <meta http-equiv="X-UA-Compatible" content="IE=5,6,8,9,10" > 
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-        
-        <!--                                                               -->
-        <!-- Consider inlining CSS to reduce the number of requested files -->
-        <!--                                                               -->
-       <!-- <link type="text/css" rel="stylesheet" href="Test_GWT_2_1_0.css">-->
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">        
         <link href="css/style.css" rel="stylesheet" type="text/css">
 
-        <!--                                           -->
-        <!-- Any title is fine                         -->
-        <!--                                           -->
-        <title>Web-Jexpress</title>
+        <title>JiGENE</title>
 
-        <!--                                           -->
-        <!-- This script loads your compiled module.   -->
-        <!-- If you add any GWT meta tags, they must   -->
-        <!-- be added before this line.                -->
-        <!--                                           -->
         <script type="text/javascript" language="javascript" src="test_gwt_2_1_0/test_gwt_2_1_0.nocache.js"></script>
         <script type="text/javascript"  src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"> </script>
         <script type="text/javascript" language="javascript" src="com.smartgwt.sample.showcase.Showcase.nocache.js"></script>
         <script type="text/javascript" src="js/highcharts.js"></script>
-     </head>
+       
 
-    <!--                                           -->
-    <!-- The body can have arbitrary html, or      -->
-    <!-- you can leave the body empty if you want  -->
-    <!-- to create a completely dynamic UI.        -->
-    <!--                                           -->
-    <body style="width: 100%">
-        
-       <noscript>
+    </head>
+    <body style="margin-left: auto; margin-right: auto; vertical-align: 0px; position: fixed; max-width: none; right: 5%; left: 5%; width: 100%; height: auto;">
+        <div align="right" id="loaderImage" class="indicator" ></div>  
+
+        <noscript>
         <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
             Your web browser must have JavaScript enabled
             in order for this application to display correctly.
         </div>
         </noscript>
-        
-        
+
+
+
+        <div id="headera" style="border:medium black; width:60%;top: 10px; height:85px; background-color:white ; position:relative;left: 0%"> 
+            <h1 style="color: navy; font-family: inherit">J<font  style="color: red;"> i </font>GENE</h1>
+
+            <div id="menubuttons" style="margin-left:0px;margin-top: 5px; " class="topmenu" > </div>  
+
+        </div>
+        <div id="headerb" style="border:medium black;width:25%;height:100px; position:relative;background-color:white; left: 65%; top: -70px;">
+            <div id="datasetList"  align="left"  style="margin-left: 20px;height:20px"></div>
+            <table style=" color: #000000;list-style-type: none;margin-left: 20px;height:60px;width: 100%;">
+                <tr  ><td><strong id="row"></strong></td><td> <strong id="col"></strong></td></tr>
+                <tr  ><td><strong id="rowGroups"></strong></td><td> <strong id="colGroups"></strong></td></tr>               
+                <tr style="color:red;" ><td id="errorLabelContainer"></td><td></td></tr>                
+            </table>
+
+        </div>
+
+        <div id="leftmenu" style="border:medium black;width:15%; height:580px;background-color:#F2F2F2; position:relative; left:0%; top: -100px;">
+
+            <div id="geneTable"></div>
+        </div>
+        <div id="middletopleft"  style="width: 21%; position:relative; left: 16%; top: -680px; height: 300px;background-color:#F2F2F2">
+
+            <div style="max-height:300px;" id="LineChartResults"></div>
+
+        </div>
+        <div id="middletopright" style="border:medium black;width:21%;position:relative;height:300px; left: 38%; top: -980px; background-color:#F2F2F2">
+
+            <div style="max-height: 300px;" id="PCAChartResults"></div>   
+
+        </div>
+        <div id="rightmenu" style="border:medium black; width:30%; height:580px; position:relative; left: 60%; top: -1280px; background-color:#F2F2F2">
+            <div  id="SomClusteringResults"></div>                                        
+
+        </div>
+        <div id="middlefooter" style="border:medium black; position:relative; left: 172px; top: -1334px; width: 438px; height: 257px;background-color:blue"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!-- main div -->
+        <div>
+            <!-- header div -->
+            <div class ="content">
+                <!-- left header div-->
+                <div class="leftheader">  
+
+                </div>
+                <!-- right header dive-->
+                <div class="rightheader">
+
+                </div>                    
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <!-- template is places here -->
+
+
+
+
+
+
 
 
         <div class="main">
             <div class="page">
                 <div class="header" >
                     <h1>Web J-express</h1>
-                    <div align="center" id="loaderImage" class="indicator"></div>
                     <div class="header-img" id="datasetInfo" style="background-image: url(images/header.jpg); background-repeat: repeat-x;height:170px; width:100%">
-                        <div id="datasetList"  align="left"  style="margin-left: 20px;margin-top: 30px;height:30px"></div>
-                        <ul style=" color: white;list-style-type: none;margin-left: 20px;height:80px">
-                            <li id="row" ></li>
-                            <li id="col"></li>
-                            <li id="rowGroups"></li>
-                            <li id="colGroups"></li>
-                            <li style="color:red;" id="errorLabelContainer"></li>                
-                        </ul>
+                        <!--   <div id="datasetList"  align="left"  style="margin-left: 20px;margin-top: 30px;height:30px"></div>
+                           <ul style=" color: white;list-style-type: none;margin-left: 20px;height:80px">
+                               <li id="row" ></li>
+                               <li id="col"></li>
+                               <li id="rowGroups"></li>
+                               <li id="colGroups"></li>
+                               <li style="color:red;" id="errorLabelContainer"></li>                
+                           </ul>
+   
+                       </div>-->
+                        <!--<div id="menubuttons" class="topmenu" > </div>-->
+                    </div>
+                    <div class="content">
+                        <div class="leftpanel">
 
-                    </div>
-                    <div id="menubuttons" class="topmenu" > </div>
-                </div>
-                <div class="content">
-                    <div class="leftpanel">
-                        <h2>Genes Table</h2>
-                        <ul>
-                            <li id="geneTable"></li>
-                        </ul>
-                    </div>
-                    <div class="rightpanel">
-                        <div class="rightbody">
-                            <table style="width: 100%">
-                                <tr>
-                                    <td>
-                                        <h1 class="title" id="lineChartTitle"></h1>
-                                        <div style="max-height: 500px;" id="LineChartResults"></div>
-                                    </td>
-                                    <td>
-                                        <h1 class="title" id="pcaTitle"></h1>
-                                        <div style="max-height: 500px;" id="PCAChartResults"></div>   
-                                    </td>
-                                </tr>
+                        </div>
+                        <div class="rightpanel">
+                            <div class="rightbody">
+                                <table style="width: 100%">
+                                    <tr>
+                                        <td>
+                                            <h1 class="title" id="lineChartTitle"></h1>
+                                        </td>
+                                        <td>
+                                            <h1 class="title" id="pcaTitle"></h1>
+                                        </td>
+                                    </tr>
                                 </table> 
-                                                           
-                                        <h1 class="title" id="somClustTitle"></h1>
-                                        <div  id="SomClusteringResults"></div>
-                                        <p>&nbsp;</p>
-                                        
-                                        <h1 class="title" id="rankTitle"></h1>
-                                        <div  id="RankTablesResults"></div>
-                                        <p>&nbsp;</p>
-                             
-                        </div>
-                    </div> 
-                    <!--<div class="rightpanel">
-                        <div class="rightbody">
-                            <h1 class="title">Line Chart</h1>
-                            <p>&nbsp;</p>
-                            <h1 class="title">PCA </h1>   
-                            <p>&nbsp;</p>
-                            <h1 class="title">Clustering </h1>
-                            <p>&nbsp;</p>
-                             <h1 class="title">Differential Expressions</h1>
-                            <p>&nbsp;</p> 
-                        </div>
-                        </div> -->                      
+
+                                <h1 class="title" id="somClustTitle" draggable="true"></h1>
+                                <p>&nbsp;</p>
+
+                                <h1 class="title" id="rankTitle"></h1>
+                                <div  id="RankTablesResults"></div>
+                                <p>&nbsp;</p>
+
+                            </div>
+                        </div> 
+                        <!--<div class="rightpanel">
+                            <div class="rightbody">
+                                <h1 class="title">Line Chart</h1>
+                                <p>&nbsp;</p>
+                                <h1 class="title">PCA </h1>   
+                                <p>&nbsp;</p>
+                                <h1 class="title">Clustering </h1>
+                                <p>&nbsp;</p>
+                                 <h1 class="title">Differential Expressions</h1>
+                                <p>&nbsp;</p> 
+                            </div>-->
+                    </div>                    
                 </div>
             </div>
         </div>
-        
+
 
 
         <!-- template is end here -->
 
-        
-        
+
+
         <script type="text/javascript" src="js/canvas.js"></script>
         <script type="text/javascript">
                 var cSpeed=5;
@@ -140,24 +212,28 @@
                         g_GameObjectManager = null;
                         g_run=genImage;
 
-                        g_run.width=cTotalFrames*cFrameWidth;
-                        genImage.onload=function (){cImageTimeout=setTimeout(fun, 0)};
-                        initCanvas();
-                }
-	
-	
-                function imageLoader(s, fun)//Pre-loads the sprites image
-                {
-                        clearTimeout(cImageTimeout);
-                        cImageTimeout=0;
-                        genImage = new Image();
-                        genImage.onload=function (){cImageTimeout=setTimeout(fun, 0)};
-                        genImage.onerror=new Function('alert(\'Could not load the image\')');
-                        genImage.src=s;
-                }
-	
-                //The following code starts the animation
-                new imageLoader(cImageSrc, 'startAnimation()');
+                        g_run.width = cTotalFrames * cFrameWidth;
+                genImage.onload = function() {
+                    cImageTimeout = setTimeout(fun, 0)
+                };
+                initCanvas();
+            }
+
+
+            function imageLoader(s, fun)//Pre-loads the sprites image
+            {
+                clearTimeout(cImageTimeout);
+                cImageTimeout = 0;
+                genImage = new Image();
+                genImage.onload = function() {
+                    cImageTimeout = setTimeout(fun, 0)
+                };
+                genImage.onerror = new Function('alert(\'Could not load the image\')');
+                genImage.src = s;
+            }
+
+            //The following code starts the animation
+            new imageLoader(cImageSrc, 'startAnimation()');
         </script>
 
     </body>

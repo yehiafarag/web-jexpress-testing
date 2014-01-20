@@ -22,7 +22,7 @@ import org.thechiselgroup.choosel.protovis.client.ProtovisWidget;
 import org.thechiselgroup.choosel.protovis.client.jsutil.JsArgs;
 import org.thechiselgroup.choosel.protovis.client.jsutil.JsDoubleFunction;
 import org.thechiselgroup.choosel.protovis.client.jsutil.JsStringFunction;
-import web.jexpress.shared.model.core.model.SelectionManager;
+import web.jexpress.client.core.model.SelectionManager;
 import web.jexpress.shared.CustomNode;
 import web.jexpress.shared.Unit;
 import web.jexpress.shared.UnitDomAdapter;
@@ -40,30 +40,40 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
     private final SomClusteringResults results;
     private final TreeMap<String, CustomNode> nodesMap;
     private final List<String> indexers = new ArrayList<String>();
-    private boolean initIndexer=true; 
+    private boolean initIndexer = true;
+    private int height;
+    private int width;
+    
+    public void resize(double width,double height)
+    {
+        this.height =(int) height;
+        this.width =(int) width;
+        getPVPanel().render();   
+    
+    }
 
     public List<String> getIndexers() {
         return indexers;
     }
+
     @Override
     public Widget asWidget() {
         return this;
     }
 
-    public TreeGraph(SomClusteringResults results, String orintation, SelectionManager selectionManager) {
+    public TreeGraph(SomClusteringResults results, String orintation, SelectionManager selectionManager, int height, int width) {
 
         this.root = results.getSideTree();
         this.nodesMap = root.getNodesMap();
         this.selectionManager = selectionManager;
         this.results = results;
-//        this.createVisualization(root);
-//        initIndexer = false;
+        this.width = (width*2/3);
+        this.height = height;
     }
 
     @Override
     protected void onAttach() {
         super.onAttach();
-        
         initPVPanel();
         createVisualization(root);
         getPVPanel().render();
@@ -78,16 +88,7 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
                 clickNode = d.nodeName();
                 clickedNode = nodesMap.get(clickNode);
                 vis.render();
-//                 Timer timer = new Timer() {
-//                    @Override
-//                    public void run() {
-                        updateSelectedList(clickedNode.getSelectedNodes());                
-//                    }
-//                };
-//
-//                timer.schedule(1000);
-                
-
+                updateSelectedList(clickedNode.getSelectedNodes());
             }
         }
     };
@@ -108,57 +109,52 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
     private CustomNode clickedNode;
 
     private void createVisualization(Unit root) {
-
-        vis = getPVPanel().width(400).height(600).left(160).right(10)
+        vis = getPVPanel().width(width).height(height).left(0).right(5)
                 .top(0).bottom(0);//.def("i", "-1").def("ii", "-1");
-
         PVClusterLayout layout = vis
                 .add(PV.Layout.Cluster())
                 .nodes(PVDom.create(root, new UnitDomAdapter())
-                                .sort(new Comparator<PVDomNode>() {
+                        .sort(new Comparator<PVDomNode>() {
                             @Override
                             public int compare(PVDomNode o1, PVDomNode o2) {
                                 return o1.nodeName().compareTo(o2.nodeName());
                             }
                         })
-                .nodes()).group(false).orient("left");
-
-
-
+                        .nodes()).group(false).orient("left");
         layout.node().add(PV.Dot).radius(new JsDoubleFunction() {
             @Override
             public double f(JsArgs args) {
                 PVDomNode n = args.getObject();
-               if(initIndexer)
-               {
-                   if(n.firstChild() == null)
-                       indexers.add(n.nodeName());
-               }
-                
+                if (initIndexer) {
+                    if (n.firstChild() == null) {
+                        indexers.add(n.nodeName());
+                    }
+                }
+
                 if (n.nodeName().equalsIgnoreCase(overNode)) {//(cNode != null && cNode.getName().equalsIgnoreCase/*getChildernList().contains*/(n.nodeName())) {//vis.getObject("i").toString().equalsIgnoreCase(n.nodeName())) {
-                    return 5.0;
+                    return 2.0;
                 }
                 return 0.5;
             }
         }).shape("square")
                 .fillStyle(new JsStringFunction() {
-            public String f(JsArgs args) {
-                PVDomNode n = args.getObject();
-                if (n.nodeName().equalsIgnoreCase(overNode)) {// if (cNode != null && cNode.getChildernList().contains(n.nodeName())) {//  if (vis.getObject("i").toString().equalsIgnoreCase(n.nodeName())) {
-                    return "#FF4000";
-                }
-                return "#ccc";
-            }
-        })
+                    public String f(JsArgs args) {
+                        PVDomNode n = args.getObject();
+                        if (n.nodeName().equalsIgnoreCase(overNode)) {// if (cNode != null && cNode.getChildernList().contains(n.nodeName())) {//  if (vis.getObject("i").toString().equalsIgnoreCase(n.nodeName())) {
+                            return "#FF4000";
+                        }
+                        return "#ccc";
+                    }
+                })
                 .title(
-                new JsStringFunction() {
-            @Override
-            public String f(JsArgs args) {
-                PVDomNode n = args.getObject();
-                // CustomNode cNode = util.getCustomNode(n.nodeName());
-                return results.getToolTips().get(n.nodeName());//"kokowawaw";//n.firstChild() != null ? "Merged at "+cNode.getValue()+" Nodes : "+(cNode.getSelectedNodes().length) :"  ";
-            }
-        })
+                        new JsStringFunction() {
+                            @Override
+                            public String f(JsArgs args) {
+                                PVDomNode n = args.getObject();
+                                // CustomNode cNode = util.getCustomNode(n.nodeName());
+                                return results.getToolTips().get(n.nodeName());//"kokowawaw";//n.firstChild() != null ? "Merged at "+cNode.getValue()+" Nodes : "+(cNode.getSelectedNodes().length) :"  ";
+                            }
+                        })
                 .events("all")
                 .event(PV.Event.CLICK, nodeMouseClickHandler)
                 .event(PV.Event.MOUSEOVER, nodeMouseOverHandler);
@@ -175,7 +171,6 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
                 return "#ccc";
             }
         });
-
 
     }
 

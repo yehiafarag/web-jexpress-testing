@@ -14,9 +14,10 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.SelectionChangedHandler;
 import com.smartgwt.client.widgets.grid.events.SelectionEvent;
+import web.jexpress.client.core.model.SelectionManager;
 import web.jexpress.shared.model.core.model.ModularizedListener;
 import web.jexpress.shared.model.core.model.Selection;
-import web.jexpress.shared.model.core.model.SelectionManager;
+//import web.jexpress.shared.model.core.model.SelectionManager;
 
 /**
  *

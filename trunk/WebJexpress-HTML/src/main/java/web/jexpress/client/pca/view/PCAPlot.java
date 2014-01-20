@@ -10,15 +10,12 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 import org.moxieapps.gwt.highcharts.client.Chart;
-import org.moxieapps.gwt.highcharts.client.ChartTitle;
 import org.moxieapps.gwt.highcharts.client.Legend;
 import org.moxieapps.gwt.highcharts.client.Series;
 import org.moxieapps.gwt.highcharts.client.ToolTip;
@@ -28,11 +25,12 @@ import org.moxieapps.gwt.highcharts.client.events.ChartSelectionEvent;
 import org.moxieapps.gwt.highcharts.client.events.ChartSelectionEventHandler;
 import org.moxieapps.gwt.highcharts.client.plotOptions.Marker;
 import org.moxieapps.gwt.highcharts.client.plotOptions.ScatterPlotOptions;
+import web.jexpress.client.core.model.SelectionManager;
 import web.jexpress.shared.beans.PCAPoint;
 import web.jexpress.shared.beans.PCAResults;
 import web.jexpress.shared.model.core.model.ModularizedListener;
 import web.jexpress.shared.model.core.model.Selection;
-import web.jexpress.shared.model.core.model.SelectionManager;
+//import web.jexpress.shared.model.core.model.SelectionManager;
 
 /**
  *
@@ -75,16 +73,16 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
 
 
             layout = new VerticalPanel();
-            layout.setHeight("350px");
-            layout.setWidth("350px");
+            layout.setHeight("300px");
+            layout.setWidth(""+RootPanel.get("PCAChartResults").getOffsetWidth()+"px");
             
             
             buttonsLayout = new VerticalPanel();
-            buttonsLayout.setWidth("100%");
+            buttonsLayout.setWidth(""+RootPanel.get("PCAChartResults").getOffsetWidth()+"px");
             buttonsLayout.setHeight("50px");
             
 
-            chart = new Chart().setHeight(300).setWidth(300)
+            chart = new Chart().setHeight(250).setWidth(RootPanel.get("PCAChartResults").getOffsetWidth())
                     .setType(Series.Type.SCATTER).setZoomType(Chart.ZoomType.X_AND_Y).setReflow(false)
                     .setLegend(new Legend().setLayout(Legend.Layout.VERTICAL)
                     .setAlign(Legend.Align.LEFT).setVerticalAlign(Legend.VerticalAlign.TOP)
@@ -129,7 +127,7 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
                 selectAll(true);
                 selectAll = true;
             }
-            chart.setChartTitleText("PCA-Chart");
+            chart.setChartTitleText(" ");
 
             // Make a new check box, and select it by default.
             layout.add(chart);
