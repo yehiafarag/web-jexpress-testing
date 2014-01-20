@@ -14,9 +14,9 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.SelectionChangedHandler;
 import com.smartgwt.client.widgets.grid.events.SelectionEvent;
+import web.jexpress.client.core.model.SelectionManager;
 import web.jexpress.shared.model.core.model.ModularizedListener;
 import web.jexpress.shared.model.core.model.Selection;
-import web.jexpress.shared.model.core.model.SelectionManager;
 import web.jexpress.shared.model.core.model.dataset.DatasetInformation;
 
 /**
@@ -46,13 +46,14 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
         geneTable.setShowRecordComponents(true);
         geneTable.setShowRecordComponentsByCell(true);
         geneTable.setCanRemoveRecords(false);
-        geneTable.setHeight("700px");
+        geneTable.setHeight("580px");
+        geneTable.setWidth("15%");
 
         geneTable.setShowAllRecords(true);
         ListGridField[] fields = new ListGridField[(3 + datasetInfo.getRowGroupsNumb())];
         ListGridField nameField = new ListGridField("gene", info);
         nameField.setWidth("50%");
-        fields[0] = new ListGridField("index", "index");
+        fields[0] = new ListGridField("index", " ");
         fields[1] = (nameField);
         fields[2] = new ListGridField("all", "ALL");
         for (int z = 0; z < datasetInfo.getRowGroupsNumb(); z++) {

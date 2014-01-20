@@ -8,8 +8,9 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
+import web.jexpress.client.core.model.SelectionManager;
 import web.jexpress.shared.beans.RankResult;
-import web.jexpress.shared.model.core.model.SelectionManager;
+//import web.jexpress.shared.model.core.model.SelectionManager;
 
 /**
  *

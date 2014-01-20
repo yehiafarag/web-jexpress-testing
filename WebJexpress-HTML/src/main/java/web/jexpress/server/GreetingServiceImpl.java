@@ -4,6 +4,7 @@ import web.jexpress.client.GreetingService;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -32,6 +33,15 @@ import web.jexpress.shared.beans.ImgResult;
 @SuppressWarnings("serial")
 public class GreetingServiceImpl extends RemoteServiceServlet implements GreetingService {
 
+    @Override
+    public Map<Integer,String> getAvailableDatasets() {
+        Map<Integer,String> datasetsMap = new TreeMap<Integer,String>();
+        datasetsMap.put(1,"diauxic shift");
+        datasetsMap.put(2,"dataset-2");
+        return datasetsMap;
+    }
+
+    
     @Override
     public ImgResult computeHeatmap(int datasetId, List<String> indexer) {
         for(int x=0;x<indexer.size();x++)
@@ -92,18 +102,28 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         datasetInfo.setRowGroupsNumb(dataset.getRowGroups().size() - 1);
         datasetInfo.setColGroupsNumb(dataset.getColumnGroups().size() - 1);
         datasetInfo.setDatasetInfo(dataset.getInfoHeaders()[0]);
+        LinkedHashMap<String,String> rowGroupsNamesMap = new LinkedHashMap<String, String>();
+        LinkedHashMap<String,String> colGroupsNamesMap = new LinkedHashMap<String, String>();
+        for(int x=0;x<dataset.getRowGroups().size();x++){
+            rowGroupsNamesMap.put(dataset.getRowGroups().get(x).getId(), dataset.getRowGroups().get(x).getId());
+        }
+         for(int x=0;x<dataset.getColumnGroups().size();x++){
+            colGroupsNamesMap.put(dataset.getColumnGroups().get(x).getId(), dataset.getColumnGroups().get(x).getId());
+        }
+        datasetInfo.setColGroupsNamesMap(colGroupsNamesMap);
+        datasetInfo.setRowGroupsNamesMap(rowGroupsNamesMap);
         datasetInfo.setGeneTabelData(geneTableData);
         datasetInfo.setRowGroupsNames(rowGroupsNames);       
         return datasetInfo;   
     }
 
-    @Override
-    public LineChartResults computeLineChart(int datasetId) {
-        LineChartResults lcResults = new LineChartResults();
-        lcResults.setDatasetId(datasetId);
+//    @Override
+//    public LineChartResults computeLineChart(int datasetId) {
+//        LineChartResults lcResults = new LineChartResults();
+//        lcResults.setDatasetId(datasetId);
 //        String[] geneNames = dataset.getGeneNamesArr();
 //        String[] colours = dataset.getGeneColorArr();//new String[dataset.getRowIds().length];
-
+//
 //        Number[] pointsArr[] = new Number[dataset.getDataLength()][dataset.getDataWidth()];
 //        for (int x = 0; x < dataset.getMemberMaps().size(); x++) {
 //
@@ -111,26 +131,26 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 //            pointsArr[x] = updatedRow;
 //
 //        }
-        Map<String,Number[][]> indicesGroup = new TreeMap<String,Number[][]>();
-        List<Group> gList = dataset.getRowGroups();
-        
-        for(Group gr : gList)
-        {
-           Number[][] pointAr =  new Number[gr.getIndices().size()][dataset.getDataWidth()];
-           int x = 0;
-           for(int index:gr.getIndices()){            
-                Number[] updatedRow = dataset.getMemberMaps().get(index);//new Number[rowData.length];
-                pointAr[x] = updatedRow;
-                x++;
-            }
-           indicesGroup.put(gr.getColor(),pointAr);
-        }
-        lcResults.setIndicesGroup(indicesGroup);
+////        Map<String,Number[][]> indicesGroup = new TreeMap<String,Number[][]>();
+////        List<Group> gList = dataset.getRowGroups();
+////        
+////        for(Group gr : gList)
+////        {
+////           Number[][] pointAr =  new Number[gr.getIndices().size()][dataset.getDataWidth()];
+////           int x = 0;
+////           for(int index:gr.getIndices()){            
+////                Number[] updatedRow = dataset.getMemberMaps().get(index);//new Number[rowData.length];
+////                pointAr[x] = updatedRow;
+////                x++;
+////            }
+////           indicesGroup.put(gr.getColor(),pointAr);
+////        }
+////        lcResults.setIndicesGroup(indicesGroup);
 //        lcResults.setColours(colours);
 //        lcResults.setGeneNames(geneNames);
 //        lcResults.setLineChartPoints(pointsArr);
-        return lcResults;
-    }
+//        return lcResults;
+//    }
 
     @Override
     public SomClusteringResults computeSomClustering(int datasetId) throws IllegalArgumentException {
@@ -227,24 +247,24 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     //       
     //
      
-//    @Override
-//    public LineChartResults computeLineChart(int datasetId) {
-//        LineChartResults lcResults = new LineChartResults();
-//        lcResults.setDatasetId(datasetId);
-//        String[] geneNames = dataset.getGeneNamesArr();
-//        String[] colours = dataset.getGeneColorArr();//new String[dataset.getRowIds().length];
-//
-//        Number[] pointsArr[] = new Number[dataset.getDataLength()][dataset.getDataWidth()];
-//        for (int x = 0; x < dataset.getMemberMaps().size(); x++) {
-//
-//            Number[] updatedRow = dataset.getMemberMaps().get(x);//new Number[rowData.length];
-//            pointsArr[x] = updatedRow;
-//
-//        }
-//        lcResults.setColours(colours);
-//        lcResults.setGeneNames(geneNames);
-//        lcResults.setLineChartPoints(pointsArr);
-//        return lcResults;
-//    }
+    @Override
+    public LineChartResults computeLineChart(int datasetId) {
+        LineChartResults lcResults = new LineChartResults();
+        lcResults.setDatasetId(datasetId);
+        String[] geneNames = dataset.getGeneNamesArr();
+        String[] colours = dataset.getGeneColorArr();//new String[dataset.getRowIds().length];
+
+        Number[] pointsArr[] = new Number[dataset.getDataLength()][dataset.getDataWidth()];
+        for (int x = 0; x < dataset.getMemberMaps().size(); x++) {
+
+            Number[] updatedRow = dataset.getMemberMaps().get(x);//new Number[rowData.length];
+            pointsArr[x] = updatedRow;
+
+        }
+        lcResults.setColours(colours);
+        lcResults.setGeneNames(geneNames);
+        lcResults.setLineChartPoints(pointsArr);
+        return lcResults;
+    }
     
 }

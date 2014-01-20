@@ -4,24 +4,35 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
+//import com.google.gwt.user.client.Window;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.MultipleAppearance;
+import com.smartgwt.client.types.VerticalAlignment;
+import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.Window;
+import com.smartgwt.client.widgets.events.CloseClickEvent;
+import com.smartgwt.client.widgets.events.CloseClickHandler;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.SelectItem;
+import com.smartgwt.client.widgets.layout.VLayout;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import web.jexpress.client.core.model.SelectionManager;
 import web.jexpress.client.geneTable.view.GeneTable;
 import web.jexpress.client.linechart.view.LineChartComp;
 import web.jexpress.client.pca.view.PCAPlot;
 import web.jexpress.client.rank.view.RankTablesView;
 import web.jexpress.client.somclust.view.SomClustView;
 import web.jexpress.shared.beans.ImgResult;
-import web.jexpress.shared.model.core.model.SelectionManager;
+//import web.jexpress.shared.model.core.model.SelectionManager;
 
 import web.jexpress.shared.beans.LineChartResults;
 import web.jexpress.shared.beans.PCAResults;
@@ -52,6 +63,8 @@ public class Test_GWT_2_1_0 implements EntryPoint {
     final Label colGroup = new Label();
     private ListBox lb;
     private int datasetId;
+    private DatasetInformation datasetInfo;
+    private Map<String,Integer> datasetsNames = new TreeMap<String, Integer>();
 
     private int nameCounter = 2;//remove in future
     /**
@@ -60,7 +73,6 @@ public class Test_GWT_2_1_0 implements EntryPoint {
      */
     private final GreetingServiceAsync greetingService = GWT
             .create(GreetingService.class);
-
     /**
      * This is the entry point method.
      */
@@ -77,57 +89,149 @@ public class Test_GWT_2_1_0 implements EntryPoint {
         lb.setWidth("200px");
         lb.addItem("Select Dataset");
         //get available dataset names
-        for (int x = 0; x < getDatasetsList().length; x++) {
-            lb.addItem(getDatasetsList()[x]);
-        }
-
+        getDatasetsList();        
         RootPanel.get("datasetList").add(lb);
         RootPanel.get("row").add(rowLab);
         RootPanel.get("col").add(colLab);
         RootPanel.get("rowGroups").add(rowGroup);
         RootPanel.get("colGroups").add(colGroup);
         HorizontalPanel hp = new HorizontalPanel();
-        hp.setSpacing(10);
+        hp.setSpacing(5);
         RootPanel.get("menubuttons").add(hp);//menubuttons
-
-        final Button somClustBtn = new Button("Hierarchical Clustering");
-        somClustBtn.setEnabled(false);
-        hp.add(somClustBtn);
-
-        final Button lineChartBtn = new Button("Line Chart");
-        lineChartBtn.setEnabled(false);
-        hp.add(lineChartBtn);
-
-        final Button pcaBtn = new Button("PCA");
-        pcaBtn.setEnabled(false);
+        
+        final IButton somClustBtn = new IButton("Hierarchical Clustering");
+        somClustBtn.setWidth(150);
+        somClustBtn.setShowRollOver(true);
+        somClustBtn.setShowDisabled(true);
+        somClustBtn.setShowDown(true);
+        somClustBtn.setTitleStyle("stretchTitle");
+        somClustBtn.disable();
+        hp.add(somClustBtn);        
+        
+        final IButton lineChartBtn = new IButton("Line Chart");
+        lineChartBtn.setWidth(100);
+        lineChartBtn.setShowRollOver(true);
+        lineChartBtn.setShowDisabled(true);
+        lineChartBtn.setShowDown(true);
+        lineChartBtn.setTitleStyle("stretchTitle");
+        lineChartBtn.disable();
+        hp.add(lineChartBtn);        
+        
+        final IButton pcaBtn = new IButton("PCA");
+        pcaBtn.setWidth(50);
+        pcaBtn.setShowRollOver(true);
+        pcaBtn.setShowDisabled(true);
+        pcaBtn.setShowDown(true);
+        pcaBtn.setTitleStyle("stretchTitle");
+        pcaBtn.disable();
         hp.add(pcaBtn);
-
-        final Button rankBtn = new Button("Rank Product");
-        rankBtn.setEnabled(false);
+        
+        final IButton rankBtn = new IButton("Rank Product");
+        rankBtn.setWidth(100);
+        rankBtn.setShowRollOver(true);
+        rankBtn.setShowDisabled(true);
+        rankBtn.setShowDown(true);
+        rankBtn.setTitleStyle("stretchTitle");
+        rankBtn.disable();
         hp.add(rankBtn);
-
-        final Button createGroupBtn = new Button("Create Row Group");
-        createGroupBtn.setEnabled(false);
+        
+        final IButton createGroupBtn = new IButton("Create Row Group");
+        createGroupBtn.setWidth(150);
+        createGroupBtn.setShowRollOver(true);
+        createGroupBtn.setShowDisabled(true);
+        createGroupBtn.setShowDown(true);
+        createGroupBtn.setTitleStyle("stretchTitle");
+        createGroupBtn.disable();
         hp.add(createGroupBtn);
+        
+        final IButton actGroupBtn = new IButton("Activate/Deactivate Groups");        
+        actGroupBtn.setWidth(150);
+        actGroupBtn.setShowRollOver(true);
+        actGroupBtn.setShowDisabled(true);
+        actGroupBtn.setShowDown(true);
+        actGroupBtn.setTitleStyle("stretchTitle");
+        actGroupBtn.disable();
+        hp.add(actGroupBtn);
+        actGroupBtn.addClickHandler(new ClickHandler() {            
+            @Override
+            public void onClick(ClickEvent event) {                
+                final Window winModal = new Window();                
+                winModal.setWidth(360);                
+                winModal.setHeight(115);                
+                winModal.setTitle("SELECT ACTIVE GROUPS");                
+                winModal.setShowMinimizeButton(false);                
+                winModal.setIsModal(false);                
+//                winModal.setShowModalMask(true);                
+                winModal.centerInPage();                
+                winModal.addCloseClickHandler(new CloseClickHandler() {
+                    @Override
+                    public void onCloseClick(CloseClickEvent event) { 
+                       
+                        winModal.hide();
+                        winModal.redraw();
+                        winModal.destroy();                        
+                    }                    
+                });                
+                DynamicForm form = new DynamicForm();                
+                form.setHeight100();                
+                form.setWidth100();                
+                form.setPadding(5);                
+                form.setLayoutAlign(VerticalAlignment.BOTTOM);                
+                
+                final SelectItem selectItemMultipleGrid = new SelectItem();
+                selectItemMultipleGrid.setTitle("MAX 2 GROUPS");
+                selectItemMultipleGrid.setMultiple(true);
+                selectItemMultipleGrid.setMultipleAppearance(MultipleAppearance.GRID); 
+        
+        if(datasetInfo != null)
+            selectItemMultipleGrid.setValueMap(datasetInfo.getRowGroupsNamesMap());
+        else
+            selectItemMultipleGrid.setValueMap("vovo","vhhtg","popo");  
+  
+                IButton okBtn = new IButton("OK");
+                okBtn.setWidth(30);
+                okBtn.setShowRollOver(true);
+                okBtn.setShowDown(true);
+                okBtn.setTitleStyle("stretchTitle");               
+                form.setFields(selectItemMultipleGrid);
+                form.redraw();                
+                winModal.addItem(form);                
+                winModal.addItem(okBtn);
+                winModal.setAlign(Alignment.CENTER);
+                winModal.show();               
+                okBtn.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                       String[] values = selectItemMultipleGrid.getValues();
+                       
+                       winModal.hide();
+                       winModal.redraw();
+                       winModal.destroy();
+                      
+                    }
+                });
+            }            
+        });
+        
 
         lb.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
                 if (lb.getSelectedIndex() > 0) {
-                    datasetId = 1;
+                    datasetId = datasetsNames.get(lb.getItemText(lb.getSelectedIndex()));
                     loadDataset(datasetId);
-                    somClustBtn.setEnabled(true);
-                    lineChartBtn.setEnabled(true);
-                    pcaBtn.setEnabled(true);
-                    rankBtn.setEnabled(true);
-                    createGroupBtn.setEnabled(true);
-                    ClickHandler somClustBtnHandler = new ClickHandler() {
+                    somClustBtn.enable();
+                    lineChartBtn.enable();
+                    pcaBtn.enable();
+                    rankBtn.enable();
+                    createGroupBtn.enable();//  
+                    actGroupBtn.enable();
+                    somClustBtn.addClickHandler(new ClickHandler() {
                         @Override
                         public void onClick(ClickEvent event) {
-                            runSomClustering(datasetId);
+                           runSomClustering(datasetId);
                         }
-                    };
-                    somClustBtn.addClickHandler(somClustBtnHandler);
+                    });
 
                     ClickHandler lineChartBtnHandler = new ClickHandler() {
                         @Override
@@ -173,9 +277,9 @@ public class Test_GWT_2_1_0 implements EntryPoint {
         });
     }
 
-    
-    private List<String>indexer;
-    private SomClustView hc ;
+    private List<String> indexer;
+    private SomClustView hc;
+
     private void runSomClustering(int datasetId) {
         RootPanel.get("loaderImage").setVisible(true);
         greetingService.computeSomClustering(datasetId,
@@ -190,22 +294,18 @@ public class Test_GWT_2_1_0 implements EntryPoint {
                     public void onSuccess(SomClusteringResults result) {
                         errorLabel.setText("");
                         hc = new SomClustView(pass, result, selectionManager);
-                        
                         RootPanel.get("SomClusteringResults").clear();
                         RootPanel.get("SomClusteringResults").add(hc.asWidget());
                         //RootPanel.get("loaderImage").setVisible(false);
-                        indexer =hc.getIndexer();
+                        indexer = hc.getIndexer();
                         generateHeatMap(indexer);
                     }
                 });
-        
-       
-        
-        
+
     }
-    private void generateHeatMap(List<String> indexers)
-    {
-     greetingService.computeHeatmap(datasetId, indexers, 
+
+    private void generateHeatMap(List<String> indexers) {
+        greetingService.computeHeatmap(datasetId, indexers,
                 new AsyncCallback<ImgResult>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -216,13 +316,14 @@ public class Test_GWT_2_1_0 implements EntryPoint {
                     @Override
                     public void onSuccess(ImgResult result) {
                         errorLabel.setText("");
-                         Image image = new Image(result.getImgString());  
-                         hc.setImge(image);
+                        //Image image = new Image(result.getImgString());
+                        hc.setImge(result);
                         RootPanel.get("loaderImage").setVisible(false);
                     }
                 });
     }
 
+    
     private void loadDataset(int datasetId) {
         RootPanel.get("loaderImage").setVisible(true);
         greetingService.loadDataset(datasetId,
@@ -234,7 +335,8 @@ public class Test_GWT_2_1_0 implements EntryPoint {
                     }
 
                     @Override
-                    public void onSuccess(DatasetInformation datasetInfo) {
+                    public void onSuccess(DatasetInformation datasetInfos) {
+                        datasetInfo = datasetInfos;
                         errorLabel.setText("");
                         pass = datasetInfo.getPass();
                         rowLab.setText("Rows : " + datasetInfo.getRowsNumb());
@@ -244,7 +346,6 @@ public class Test_GWT_2_1_0 implements EntryPoint {
                         GeneTable geneTable = new GeneTable(selectionManager, datasetInfo);
                         RootPanel.get("geneTable").clear();
                         RootPanel.get("geneTable").add(geneTable.getGwtTable());
-                        datasetInfo = null;
                         RootPanel.get("loaderImage").setVisible(false);
                     }
                 });
@@ -267,7 +368,6 @@ public class Test_GWT_2_1_0 implements EntryPoint {
                         LineChartComp linechart = new LineChartComp(result, selectionManager);
                         RootPanel.get("LineChartResults").clear();
                         RootPanel.get("LineChartResults").add(linechart.getLayout());
-                        result = null;
                         RootPanel.get("loaderImage").setVisible(false);
                     }
                 });
@@ -347,26 +447,43 @@ public class Test_GWT_2_1_0 implements EntryPoint {
                     }
 
                     @Override
-                    public void onSuccess(DatasetInformation datasetInfo) {
+                    public void onSuccess(DatasetInformation datasetInfos) {
+                        datasetInfo = datasetInfos;
                         errorLabel.setText("");
-                        pass = datasetInfo.getPass();
-                        rowLab.setText("Rows : " + datasetInfo.getRowsNumb());
-                        colLab.setText("Columns : " + datasetInfo.getColNumb());
-                        rowGroup.setText("Row Groups : " + (datasetInfo.getRowGroupsNumb()));
-                        colGroup.setText("Column Groups : " + (datasetInfo.getColGroupsNumb()));
+                        pass = datasetInfos.getPass();
+                        rowLab.setText("Rows : " + datasetInfos.getRowsNumb());
+                        colLab.setText("Columns : " + datasetInfos.getColNumb());
+                        rowGroup.setText("Row Groups : " + (datasetInfos.getRowGroupsNumb()));
+                        colGroup.setText("Column Groups : " + (datasetInfos.getColGroupsNumb()));
                         GeneTable geneTable = new GeneTable(selectionManager, datasetInfo);
                         RootPanel.get("geneTable").clear();
-                        RootPanel.get("geneTable").add(geneTable.getGwtTable());
-                        datasetInfo = null;
+                        RootPanel.get("geneTable").add(geneTable.getGwtTable());                        
                         RootPanel.get("loaderImage").setVisible(false);
                     }
                 });
 
     }
 
-    private String[] getDatasetsList() {
-        String[] datasetList = new String[]{"diauxic shift"};
-        return datasetList;
+    private void getDatasetsList() {
+         RootPanel.get("loaderImage").setVisible(true);
+        greetingService.getAvailableDatasets(new AsyncCallback<Map<Integer,String>>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        errorLabel.setText(SERVER_ERROR);
+                        RootPanel.get("loaderImage").setVisible(false);
+                    }
+
+                    @Override
+                    public void onSuccess(Map<Integer,String> results) {
+                        errorLabel.setText("");     
+                        for(int key:results.keySet()){
+                             lb.addItem(results.get(key));
+                             datasetsNames.put(results.get(key),key);
+                        }
+                        RootPanel.get("loaderImage").setVisible(false);
+                    }
+        
+        });
 
     }
 

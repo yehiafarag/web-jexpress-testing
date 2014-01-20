@@ -4,6 +4,7 @@
 package web.jexpress.shared.model.core.model.dataset;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import java.util.LinkedHashMap;
 
 /**
  *
@@ -18,6 +19,25 @@ public class DatasetInformation implements IsSerializable{
     private String datasetInfo;
     private String[] rowGroupsNames;
     private String[][] geneTabelData;
+    private LinkedHashMap<String,String> rowGroupsNamesMap;
+
+    public LinkedHashMap<String, String> getRowGroupsNamesMap() {
+        return rowGroupsNamesMap;
+    }
+
+    public void setRowGroupsNamesMap(LinkedHashMap<String, String> rowGroupsNamesMap) {
+        this.rowGroupsNamesMap = rowGroupsNamesMap;
+    }
+
+    public LinkedHashMap<String, String> getColGroupsNamesMap() {
+        return colGroupsNamesMap;
+    }
+
+    public void setColGroupsNamesMap(LinkedHashMap<String, String> colGroupsNamesMap) {
+        this.colGroupsNamesMap = colGroupsNamesMap;
+    }
+    private LinkedHashMap<String,String> colGroupsNamesMap;
+    
     
     private String pass;
 

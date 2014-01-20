@@ -8,7 +8,6 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.List;
 import no.uib.jexpress_modularized.core.computation.JMath;
 import no.uib.jexpress_modularized.core.dataset.Dataset;
@@ -47,9 +46,13 @@ public class HMGen {
 
         double[][] data = this.dataset.getData();// calcdistNoThread(false);
         double[][] sortedData = new double[data.length][];
+        int [] reIndex = new int[indexer.size()];
+        String[] geneNames = new String[indexer.size()];
         for (int x = 0; x < data.length; x++) {            
             double[] d = data[Integer.valueOf(indexer.get(x))]; 
             sortedData[x] = d;
+            reIndex[x] = Integer.valueOf(indexer.get(x));
+            geneNames[x] = this.dataset.getRowIds()[Integer.valueOf(indexer.get(x))];
         }
         
 //        System.out.println("start heat map processing ");
@@ -75,6 +78,7 @@ public class HMGen {
 // Step 2: Customise the chart.
         Object[] lab = this.dataset.getRowIds();
         Object[] col = this.dataset.getColumnIds();
+        
         map.setYValues(lab);
          Object[] sortedCol = new Object[col.length];
          for(int x=0;x<col.length;x++)
@@ -92,12 +96,15 @@ public class HMGen {
         map.setAxisThickness(0);
         map.setChartMargin(0);
        // Step 3: Output the chart to a file.
-            results.setColNum(dataset.getDataWidth());
+        results.setColNum(dataset.getDataWidth());
         results.setMaxColour("#FF9A9A");
         results.setMinColour("#2CA25F");
         results.setMaxValue(map.getHighValue());
         results.setMinValue(map.getLowValue());
         results.setRowNum(data.length);
+        results.setGeneReindex(reIndex);
+        results.setGeneName(geneNames);
+        results.setColNames(dataset.getColumnIds());
         File img = new File(/*pass*/"D:\\files", "java-heat-chart.png");
         String base64 = "";        
         try {

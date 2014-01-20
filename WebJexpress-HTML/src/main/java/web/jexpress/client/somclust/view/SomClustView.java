@@ -6,9 +6,9 @@ package web.jexpress.client.somclust.view;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import java.util.List;
-import web.jexpress.shared.model.core.model.SelectionManager;
+import web.jexpress.client.core.model.SelectionManager;
+import web.jexpress.shared.beans.ImgResult;
 import web.jexpress.shared.beans.SomClusteringResults;
 import web.jexpress.shared.model.core.model.ModularizedListener;
 import web.jexpress.shared.model.core.model.Selection;
@@ -21,12 +21,10 @@ public class SomClustView extends ModularizedListener implements IsSerializable 
 
     private final SelectionManager selectionManager;
     private final SomClustComp somClustCom;
-    private final List<String> indexer; 
-    private Image imge;
+    private final List<String> indexer;
 
-    public void setImge(Image imge) {
-        this.imge = imge;
-        somClustCom.setImage(imge);
+    public void setImge(ImgResult imgeResut) {
+        somClustCom.setImage(imgeResut);
     }
 
     public SomClustView(String pass, SomClusteringResults somClusteringResults, SelectionManager selectionManager) {
