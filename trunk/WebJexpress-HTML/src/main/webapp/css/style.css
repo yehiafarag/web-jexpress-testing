@@ -179,10 +179,10 @@ h1, h2, h3, h4, h5, h6, p, ul, ol, li, form, input, textarea {
 	text-decoration:none; 
 }
 .indicator {  
-   width: 10%;  
-   height: 10%;  
+   width: 30px;  
+   height: 30px;  
    margin: 0;  
-   background-position: 80%;  
+/*   background-position: 1%;  */
   
    background-color: lightgrey;  
    background-repeat: no-repeat;  

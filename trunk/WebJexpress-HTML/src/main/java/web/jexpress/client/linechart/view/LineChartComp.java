@@ -68,7 +68,7 @@ public class LineChartComp extends ModularizedListener {
                     .setType(Series.Type.LINE)
                     .setChartTitleText(" ")
                     .setMarginRight(5);            
-            chart.setHeight(250);
+            chart.setHeight(300);
             chart.setWidth(RootPanel.get("LineChartResults").getOffsetWidth());
             
             chart.setAnimation(false);
@@ -99,7 +99,7 @@ public class LineChartComp extends ModularizedListener {
             Series series = chart.createSeries().setPoints(points);
             series.setPlotOptions(new LinePlotOptions()
                     .setLineWidth(1)
-                    .setMarker(new Marker().setSymbol(Marker.Symbol.CIRCLE)
+                    .setMarker(new Marker().setSymbol(Marker.Symbol.CIRCLE).setFillColor("#FAFAFA")
                     .setEnabled(false).setRadius(0.001)).setColor(results.getColours()[x]));
 //            series.setName(""+x);
             chart.addSeries(series);

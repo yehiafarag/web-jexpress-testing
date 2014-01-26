@@ -20,6 +20,7 @@ public class DatasetInformation implements IsSerializable{
     private String[] rowGroupsNames;
     private String[][] geneTabelData;
     private LinkedHashMap<String,String> rowGroupsNamesMap;
+    private String[] colsNames;
 
     public LinkedHashMap<String, String> getRowGroupsNamesMap() {
         return rowGroupsNamesMap;
@@ -111,5 +112,14 @@ public class DatasetInformation implements IsSerializable{
 
     public void setRowGroupsNames(String[] rowGroupsNames) {
         this.rowGroupsNames = rowGroupsNames;
+    }
+
+  
+    public String[] getColsNames() {
+        return colsNames;
+    }
+
+    public void setColsNames(String[] colsNames) {
+        this.colsNames = colsNames;
     }
 }

@@ -5,7 +5,6 @@
 package web.jexpress.shared.model.core.model.dataset;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,6 +16,7 @@ public class Group implements IsSerializable{
     private String color;
     private List<Integer> indices; 
     private List<String> geneList;
+    private boolean active;
 
     public List<String> getGeneList() {
         return geneList;
@@ -58,6 +58,14 @@ public class Group implements IsSerializable{
 
     public void setIndices(List<Integer> indices) {        
         this.indices =indices;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
     
     

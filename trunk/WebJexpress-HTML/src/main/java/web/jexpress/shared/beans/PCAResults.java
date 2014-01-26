@@ -17,6 +17,8 @@ public class PCAResults implements IsSerializable{
     private int datasetId;
     private int dataSize;
     private String header;
+    private int pcai;
+    private int pcaii;
 
     public String getHeader() {
         return header;
@@ -52,6 +54,22 @@ public class PCAResults implements IsSerializable{
 
     public void setPoints(TreeMap<String, PCAPoint> points) {
         this.points = points;
+    }
+
+    public int getPcai() {
+        return pcai;
+    }
+
+    public void setPcai(int pcai) {
+        this.pcai = pcai;
+    }
+
+    public int getPcaii() {
+        return pcaii;
+    }
+
+    public void setPcaii(int pcaii) {
+        this.pcaii = pcaii;
     }
 
     

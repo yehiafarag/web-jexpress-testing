@@ -5,6 +5,7 @@
 package web.jexpress.client.rank.view;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
@@ -14,7 +15,7 @@ import web.jexpress.shared.beans.RankResult;
 
 /**
  *
- * @author Y.M
+ * @author Yehia Farag
  */
 public class RankTablesView extends HorizontalPanel {
     
@@ -22,14 +23,15 @@ public class RankTablesView extends HorizontalPanel {
     public RankTablesView(SelectionManager selectionManager,RankResult results)
     {
 
-        this.setWidth("100%");
-        this.setHeight("300px");
+        this.setWidth(""+RootPanel.get("RankTablesResults").getOffsetWidth()+"px");
+        this.setHeight("270px");
         //this.setAlign(Alignment.CENTER);
        
         SectionStack secStackI = new SectionStack();
         secStackI.setVisibilityMode(VisibilityMode.MULTIPLE);  
-        secStackI.setWidth(400);  
-        secStackI.setHeight(200);  
+        secStackI.setWidth((RootPanel.get("RankTablesResults").getOffsetWidth()/2));  
+        secStackI.setHeight(270);  
+        
         RankTable posRankTable = new RankTable(selectionManager, results.getDatasetId(),results.getPosTableHeader(), results.getPosTableData(),results.getPosRankToIndex(),results.getPosIndexToRank());
         
         SectionStackSection section1 = new SectionStackSection("Positive Score");  
@@ -41,8 +43,8 @@ public class RankTablesView extends HorizontalPanel {
         
         SectionStack secStackII = new SectionStack();
         secStackII.setVisibilityMode(VisibilityMode.MULTIPLE);  
-        secStackII.setWidth(400);  
-        secStackII.setHeight(200);  
+        secStackII.setWidth((RootPanel.get("RankTablesResults").getOffsetWidth()/2));  
+        secStackII.setHeight(270);  
         RankTable negRankTable = new RankTable(selectionManager, results.getDatasetId(),results.getNegTableHeader(), results.getNegTableData(),results.getNegRankToIndex(),results.getNegIndexToRank());
         
         SectionStackSection section11 = new SectionStackSection("Negative Score");  

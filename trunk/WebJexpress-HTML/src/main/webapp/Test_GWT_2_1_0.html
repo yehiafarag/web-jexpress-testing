@@ -22,7 +22,8 @@
 
     </head>
     <body style="margin-left: auto; margin-right: auto; vertical-align: 0px; position: fixed; max-width: none; right: 5%; left: 5%; width: 100%; height: auto;">
-        <div align="right" id="loaderImage" class="indicator" ></div>  
+        <div align="left" id="loaderImage" class="indicator" style="left: 90%;top: 0.5%"></div>  
+        <div align="left" id="tooltip" style="left: 80.5%;top:1.5%; height:50px;  margin: 0;  position: absolute; z-index:1;"></div>  
 
         <noscript>
         <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
@@ -67,7 +68,9 @@
             <div  id="SomClusteringResults"></div>                                        
 
         </div>
-        <div id="middlefooter" style="border:medium black; position:relative; left: 172px; top: -1334px; width: 438px; height: 257px;background-color:blue"></div>
+        <div id="middlefooter" style="border:medium black; position:relative; left: 16%; top: -1550px; width: 43%; height: 270px;background-color:#F2F2F2">
+            <div  id="RankTablesResults"></div>
+        </div>
 
 
 
@@ -168,7 +171,7 @@
                                 <p>&nbsp;</p>
 
                                 <h1 class="title" id="rankTitle"></h1>
-                                <div  id="RankTablesResults"></div>
+                                
                                 <p>&nbsp;</p>
 
                             </div>
@@ -199,7 +202,7 @@
         <script type="text/javascript">
                 var cSpeed=5;
                 var cTotalFrames=8;
-                var cFrameWidth=128;
+                var cFrameWidth=64;
                 var cImageSrc='images/sprites.png';	
                 var cImageTimeout=false;	
                 function startAnimation(){
