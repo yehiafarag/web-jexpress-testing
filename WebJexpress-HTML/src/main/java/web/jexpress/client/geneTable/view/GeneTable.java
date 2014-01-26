@@ -28,6 +28,11 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
     private ListGridRecord[] records;
     private String info;
     private SelectionManager selectionManager;
+    private ListGrid selectionTable;
+
+    public void setSelectionTable(ListGrid selectionTable) {
+        this.selectionTable = selectionTable;
+    }
 
     public GeneTable(SelectionManager selectionManager, DatasetInformation datasetInfo) {
         this.datasetId = datasetInfo.getId();
@@ -46,8 +51,8 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
         geneTable.setShowRecordComponents(true);
         geneTable.setShowRecordComponentsByCell(true);
         geneTable.setCanRemoveRecords(false);
-        geneTable.setHeight("580px");
-        geneTable.setWidth("15%");
+        geneTable.setHeight("560px");
+        geneTable.setWidth("100%");
 
         geneTable.setShowAllRecords(true);
         ListGridField[] fields = new ListGridField[(3 + datasetInfo.getRowGroupsNumb())];
@@ -71,6 +76,10 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
             @Override
             public void onClick(ClickEvent event) {
                 ListGridRecord[] selectionRecord = geneTable.getSelectedRecords();
+                if(selectionTable != null){
+                    selectionTable.setRecords(selectionRecord);
+                    selectionTable.redraw();
+                }
                 updateTableSelection(selectionRecord);
             }
         });
@@ -92,6 +101,10 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
             @Override
             public void onDragStop(DragStopEvent event) {
                  ListGridRecord[] selectionRecord = geneTable.getSelectedRecords();
+                 if(selectionTable != null){
+                    selectionTable.setRecords(selectionRecord);
+                    selectionTable.redraw();
+                }
                 updateTableSelection(selectionRecord);
             }
         });
@@ -193,6 +206,10 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
 //                    hr.removeHandler();
                     if (geneTable.getSort().length == 0) {
                         geneTable.selectRecords(selectedRows);
+                        if(selectionTable != null){
+                    selectionTable.setRecords(geneTable.getSelectedRecords());
+                    selectionTable.redraw();
+                }
                     } else {
                         //update sorted rows
                     }

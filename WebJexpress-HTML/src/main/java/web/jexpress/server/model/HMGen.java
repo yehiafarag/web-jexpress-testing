@@ -91,14 +91,14 @@ public class HMGen {
         
         map.setHighValueColour(new Color(255,154,154));
         map.setColourScale(1.0);
-        map.setLowValueColour(new Color(44,162,95));
+        map.setLowValueColour(new Color(56,73,187));
         map.setBackgroundColour(Color.WHITE);
         map.setAxisThickness(0);
         map.setChartMargin(0);
        // Step 3: Output the chart to a file.
         results.setColNum(dataset.getDataWidth());
         results.setMaxColour("#FF9A9A");
-        results.setMinColour("#2CA25F");
+        results.setMinColour("#3849BB");
         results.setMaxValue(map.getHighValue());
         results.setMinValue(map.getLowValue());
         results.setRowNum(data.length);

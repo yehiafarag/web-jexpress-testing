@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import no.uib.jexpress_modularized.core.dataset.Dataset;
+
 import utility.FilesReader;
 import web.jexpress.shared.model.core.model.dataset.Group;
 
@@ -15,21 +16,45 @@ public class JexpressUtil {
     private final FilesReader fr = new FilesReader();
     private Dataset dataset;
 
-    public Dataset initJexpressDataset() {
+    public Dataset initJexpressDataset(int datasetId) {
         file = new File("D:\\files\\diauxic shift.txt");
-         
-         
-//        file = new File("/home/probe/diauxic_shift.txt");
+//        file = new File("C:\\diauxic shift.txt");
 
-       
+//        file = new File("/home/probe/diauxic_shift.txt");
         this.dataset = fr.readDataset(file);
+        
+        
+                List<no.uib.jexpress_modularized.core.dataset.Group> updatedActiveGroupList = new ArrayList<no.uib.jexpress_modularized.core.dataset.Group>();
+                for(no.uib.jexpress_modularized.core.dataset.Group g:dataset.getRowGroups())
+                {
+                    if(g.getName().equalsIgnoreCase("ALL"))
+                        g.setActive(true);
+                    else
+                        g.setActive(false);
+                    updatedActiveGroupList.add(g);
+                }
+                dataset.getRowGroups().clear();
+                dataset.getRowGroups().addAll(updatedActiveGroupList);
+                
+                
+                 List<no.uib.jexpress_modularized.core.dataset.Group> updatedColActiveGroupList = new ArrayList<no.uib.jexpress_modularized.core.dataset.Group>();
+                for(no.uib.jexpress_modularized.core.dataset.Group g:dataset.getColumnGroups())
+                {
+                    if(g.getName().equalsIgnoreCase("ALL"))
+                        g.setActive(true);
+                    else
+                        g.setActive(false);
+                    updatedColActiveGroupList.add(g);
+                }
+                dataset.getColumnGroups().clear();
+                dataset.getColumnGroups().addAll(updatedColActiveGroupList);
+        
         return this.dataset;
 
     }
 
     public Map<Integer, String> initIndexNameGeneMap(web.jexpress.shared.model.core.model.dataset.Dataset dataset) {
         Map<Integer, String> geneMap = new HashMap<Integer, String>();
-
 
         for (int index = 0; index < dataset.getDataLength(); index++) {
             geneMap.put(index, dataset.getRowIds()[index]);
@@ -61,6 +86,8 @@ public class JexpressUtil {
                 g.setIndices(ind);
                 g.setGeneList(initGroupGeneList(webDataset, jG.getMembers()));
                 g.setId(jG.getName());
+                g.setActive(jG.isActive());
+               
                 webDataset.addColumnGroup(g);
             }
         }
@@ -79,17 +106,12 @@ public class JexpressUtil {
 
                 g.setGeneList(initGroupGeneList(webDataset, jG.getMembers()));
                 g.setId(jG.getName());
+                g.setActive(jG.isActive());
                 webDataset.addRowGroup(g);
             }
 
-
         }
         webDataset.setMemberMaps(initIndexMembers(webDataset));
-
-
-     
-
-
 
         return webDataset;
     }
@@ -108,9 +130,7 @@ public class JexpressUtil {
             geneList.add(dataset.getGeneIndexNameMap().get(x));
         }
 
-
         return geneList;
-
 
     }
 
@@ -129,35 +149,30 @@ public class JexpressUtil {
 
         return memberMaps;
     }
-    
-    
-    public String[] initGeneNamesArr(Map<Integer,String> geneIndexName)
-    {
+
+    public String[] initGeneNamesArr(Map<Integer, String> geneIndexName) {
         String[] geneNameArr = new String[geneIndexName.size()];
-        for(int key:geneIndexName.keySet()){
+        for (int key : geneIndexName.keySet()) {
             geneNameArr[key] = geneIndexName.get(key);
         }
-        return geneNameArr;    
+        return geneNameArr;
     }
-    
-    public String[] initColorArr(String[]geneNameArr,List<Group> groupList )
-    {
+
+    public String[] initColorArr(String[] geneNameArr, List<Group> groupList) {
         String[] colorArr = new String[geneNameArr.length];
-        for(int x=0;x<geneNameArr.length;x++)
-        {
-            String color ="#000000";
-            for(Group g:groupList)
-            {
-                if(g.getId().equalsIgnoreCase("all"))
+        for (int x = 0; x < geneNameArr.length; x++) {
+            String color ="#FBFBEF";// 
+            for (Group g : groupList) {
+                if (g.getId().equalsIgnoreCase("all") && g.isActive()) {
+                    color="#000000";
                     continue;
-                else if(g.getGeneList().contains(geneNameArr[x]))
-                {
+                } else if (g.getGeneList().contains(geneNameArr[x]) && g.isActive()) {
                     color = g.getColor();
                 }
-                colorArr[x] = color;                
-            }        
-        }        
+                colorArr[x] = color;
+            }
+        }
         return colorArr;
-    
+
     }
 }

@@ -10,6 +10,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import java.util.ArrayList;
@@ -56,18 +57,20 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
         }
     }
     private VerticalPanel layout;
-    private VerticalPanel buttonsLayout;
+    private HorizontalPanel buttonsLayout;
     private Chart chart;
     private CustomPoint[] points;
     private PCAResults results;
 
-    public PCAPlot(final PCAResults results, int pcx, int pcy, SelectionManager selectionManager) {
+    public PCAPlot(final PCAResults results, SelectionManager selectionManager) {
         try {
             this.classtype = 3;
             this.datasetId = results.getDatasetId();
             this.components.add(PCAPlot.this);
             this.selectionManager = selectionManager;
             this.results = results;
+            int pcx = results.getPcai();
+            int pcy = results.getPcaii();
             this.selectionManager.addSelectionChangeListener(results.getDatasetId(), PCAPlot.this);
             points = this.initPoints(results.getPoints());
 
@@ -77,12 +80,12 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
             layout.setWidth(""+RootPanel.get("PCAChartResults").getOffsetWidth()+"px");
             
             
-            buttonsLayout = new VerticalPanel();
+            buttonsLayout = new HorizontalPanel();
             buttonsLayout.setWidth(""+RootPanel.get("PCAChartResults").getOffsetWidth()+"px");
-            buttonsLayout.setHeight("50px");
+            buttonsLayout.setHeight("25px");
             
 
-            chart = new Chart().setHeight(250).setWidth(RootPanel.get("PCAChartResults").getOffsetWidth())
+            chart = new Chart().setHeight(275).setWidth(RootPanel.get("PCAChartResults").getOffsetWidth())
                     .setType(Series.Type.SCATTER).setZoomType(Chart.ZoomType.X_AND_Y).setReflow(false)
                     .setLegend(new Legend().setLayout(Legend.Layout.VERTICAL)
                     .setAlign(Legend.Align.LEFT).setVerticalAlign(Legend.VerticalAlign.TOP)
@@ -243,6 +246,7 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
             point.setColor(pcaP.getColor());
             point.setMarker(new Marker().setSelectState(new Marker().setFillColor(pcaP.getColor())).setFillColor("#D8D8D8").setHoverState(new Marker().setFillColor(pcaP.getColor())));
             point.setSelected(false);
+           
             point.setGeneIndex(pcaP.getGeneIndex());
             point.setGeneName(pcaP.getGeneName());
             tempPoints[point.getGeneIndex()] = point;

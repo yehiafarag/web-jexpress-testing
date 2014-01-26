@@ -23,24 +23,40 @@ public class PCAUtil {
         
         no.uib.jexpress_modularized.pca.computation.PcaResults jResults = pcaCompute.createPCA();  
        TreeMap<String,PCAPoint> pointList = new TreeMap<String,PCAPoint>();
-        for(Group g:dataset.getRowGroups())
-        {
-            for (int i = 0; i < g.getIndices().size(); i++) {
+        for(Group g : dataset.getRowGroups()) {
+            if (g.getId().equalsIgnoreCase("ALL")) {
+
+                for (int i = 0; i < g.getIndices().size(); i++) {
+                    PCAPoint point = new PCAPoint();
+                    point.setX(jResults.ElementAt(g.getIndices().get(i), pcx));
+                    point.setY(jResults.ElementAt(g.getIndices().get(i), pcy));
+                    point.setGeneIndex(g.getIndices().get(i));
+                    point.setGeneName(g.getGeneList().get(i));
+                    point.setColor(g.getColor());
+                    pointList.put(point.getGeneName(), point);
+                }
+                continue;
+
+            }
+            for (int i = 0; i < g.getIndices().size() && g.isActive(); i++) {
                 PCAPoint point = new PCAPoint();
                point.setX(jResults.ElementAt(g.getIndices().get(i), pcx));
                point.setY(jResults.ElementAt(g.getIndices().get(i), pcy));
                point.setGeneIndex(g.getIndices().get(i));
                point.setGeneName(g.getGeneList().get(i));
                point.setColor(g.getColor());
-               if(pointList.containsKey(point.getGeneName()) && point.getColor().equalsIgnoreCase("#000000"))
-                   ;
-               else
-                   pointList.put(point.getGeneName(),point);
+               if(! (pointList.containsKey(point.getGeneName()) && point.getColor().equalsIgnoreCase("#000000")))
+               {
+                   pointList.remove(point.getGeneName());
+                   pointList.put(point.getGeneName(), point);
+               }
             }
 
         }
         PCAResults res = new PCAResults();
         res.setPoints(pointList);
+        res.setPcai(pcx);
+        res.setPcaii(pcy);
         res.setHeader(dataset.getInfoHeaders()[0]);
         return res;
     }
