@@ -24,17 +24,22 @@ public interface GreetingService extends RemoteService {
     LineChartResults computeLineChart(int datasetId);
 
     SomClusteringResults computeSomClustering(int datasetId,int linkage,int distanceMeasure) throws IllegalArgumentException;
-    ImgResult computeHeatmap(int datasetId,List<String>indexer);
+    ImgResult computeHeatmap(int datasetId,List<String>indexer,List<String>colIndexer);
     
     PCAResults computePCA(int datasetId,int comI,int comII);
     
     RankResult computeRank(int datasetId,String perm,String seed,String[] colGropNames,String log2);
     
-    Boolean createGroup(int datasetId,String name,String color,String type,int[] selection);
+    Boolean createRowGroup(int datasetId,String name,String color,String type,int[] selection);
+    Boolean createColGroup(int datasetId,String name,String color,String type,String[] selection);
 
+    Integer createSubDataset(String name,int[] selection);
+    
     DatasetInformation updateDatasetInfo(int datasetId);
     
     DatasetInformation activateGroups(int datasetId,String[] rowGroups,String[] colGroups);
+    
+    Integer saveDataset(int datasetId, String newName);
     
     
 }

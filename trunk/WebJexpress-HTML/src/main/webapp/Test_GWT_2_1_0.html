@@ -12,7 +12,7 @@
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">        
         <link href="css/style.css" rel="stylesheet" type="text/css">
 
-        <title>JiGENE</title>
+        <title>DIVA</title>
 
         <script type="text/javascript" language="javascript" src="test_gwt_2_1_0/test_gwt_2_1_0.nocache.js"></script>
         <script type="text/javascript"  src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"> </script>
@@ -23,7 +23,7 @@
     </head>
     <body style="margin-left: auto; margin-right: auto; vertical-align: 0px; position: fixed; max-width: none; right: 5%; left: 5%; width: 100%; height: auto;">
         <div align="left" id="loaderImage" class="indicator" style="left: 90%;top: 0.5%"></div>  
-        <div align="left" id="tooltip" style="left: 80.5%;top:1.5%; height:50px;  margin: 0;  position: absolute; z-index:1;"></div>  
+        <div align="left" id="tooltip" style="left: 60%;top:3.6%; height:50px;  margin: 0;  position: absolute; z-index:1;"></div>  
 
         <noscript>
         <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
@@ -35,17 +35,18 @@
 
 
         <div id="headera" style="border:medium black; width:60%;top: 10px; height:85px; background-color:white ; position:relative;left: 0%"> 
-            <h1 style="color: navy; font-family: inherit">J<font  style="color: red;"> i </font>GENE</h1>
-
+            <!--<h1 style="color: navy; font-family: inherit">D<font  style="color: red;"> I </font>VA</h1>-->
+            <div id="headerLogo" style="background-color:white;margin-left:0px;margin-top: 5px;height: 26px"></div>
             <div id="menubuttons" style="margin-left:0px;margin-top: 5px; " class="topmenu" > </div>  
 
         </div>
-        <div id="headerb" style="border:medium black;width:25%;height:100px; position:relative;background-color:white; left: 65%; top: -70px;">
-            <div id="datasetList"  align="left"  style="margin-left: 20px;height:20px"></div>
-            <table style=" color: #000000;list-style-type: none;margin-left: 20px;height:60px;width: 100%;">
+        <div id="headerb" style="border:medium black;width:25%;height:90px; position:relative;background-color:white; left: 65%; top: -85px;">
+            <div style="color:red;" id="errorLabelContainer"></div>
+            <table id="datasetInformation" style="background-color:white;list-style-type: none;margin-left: 65px;height:60px;width: 80%;">
+                
                 <tr  ><td><strong id="row"></strong></td><td> <strong id="col"></strong></td></tr>
                 <tr  ><td><strong id="rowGroups"></strong></td><td> <strong id="colGroups"></strong></td></tr>               
-                <tr style="color:red;" ><td id="errorLabelContainer"></td><td></td></tr>                
+                               
             </table>
 
         </div>
@@ -65,11 +66,11 @@
 
         </div>
         <div id="rightmenu" style="border:medium black; width:30%; height:580px; position:relative; left: 60%; top: -1280px; background-color:#F2F2F2">
-            <div  id="SomClusteringResults"></div>                                        
+            <div  id="SomClusteringResults" style="overflow-y:scroll;height:580px;"></div>                                        
 
         </div>
         <div id="middlefooter" style="border:medium black; position:relative; left: 16%; top: -1550px; width: 43%; height: 270px;background-color:#F2F2F2">
-            <div  id="RankTablesResults"></div>
+            <div  id="RankTablesResults" ></div>
         </div>
 
 
@@ -94,22 +95,7 @@
 
 
         <!-- main div -->
-        <div>
-            <!-- header div -->
-            <div class ="content">
-                <!-- left header div-->
-                <div class="leftheader">  
-
-                </div>
-                <!-- right header dive-->
-                <div class="rightheader">
-
-                </div>                    
-            </div>
-
-
-        </div>
-
+      
 
 
 
@@ -133,64 +119,7 @@
 
 
 
-        <div class="main">
-            <div class="page">
-                <div class="header" >
-                    <h1>Web J-express</h1>
-                    <div class="header-img" id="datasetInfo" style="background-image: url(images/header.jpg); background-repeat: repeat-x;height:170px; width:100%">
-                        <!--   <div id="datasetList"  align="left"  style="margin-left: 20px;margin-top: 30px;height:30px"></div>
-                           <ul style=" color: white;list-style-type: none;margin-left: 20px;height:80px">
-                               <li id="row" ></li>
-                               <li id="col"></li>
-                               <li id="rowGroups"></li>
-                               <li id="colGroups"></li>
-                               <li style="color:red;" id="errorLabelContainer"></li>                
-                           </ul>
-   
-                       </div>-->
-                        <!--<div id="menubuttons" class="topmenu" > </div>-->
-                    </div>
-                    <div class="content">
-                        <div class="leftpanel">
-
-                        </div>
-                        <div class="rightpanel">
-                            <div class="rightbody">
-                                <table style="width: 100%">
-                                    <tr>
-                                        <td>
-                                            <h1 class="title" id="lineChartTitle"></h1>
-                                        </td>
-                                        <td>
-                                            <h1 class="title" id="pcaTitle"></h1>
-                                        </td>
-                                    </tr>
-                                </table> 
-
-                                <h1 class="title" id="somClustTitle" draggable="true"></h1>
-                                <p>&nbsp;</p>
-
-                                <h1 class="title" id="rankTitle"></h1>
-                                
-                                <p>&nbsp;</p>
-
-                            </div>
-                        </div> 
-                        <!--<div class="rightpanel">
-                            <div class="rightbody">
-                                <h1 class="title">Line Chart</h1>
-                                <p>&nbsp;</p>
-                                <h1 class="title">PCA </h1>   
-                                <p>&nbsp;</p>
-                                <h1 class="title">Clustering </h1>
-                                <p>&nbsp;</p>
-                                 <h1 class="title">Differential Expressions</h1>
-                                <p>&nbsp;</p> 
-                            </div>-->
-                    </div>                    
-                </div>
-            </div>
-        </div>
+      
 
 
 

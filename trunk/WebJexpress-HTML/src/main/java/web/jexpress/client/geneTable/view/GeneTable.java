@@ -26,9 +26,11 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
 
     private ListGrid geneTable;
     private ListGridRecord[] records;
+    private ListGridRecord[] colRecords;
     private String info;
     private SelectionManager selectionManager;
     private ListGrid selectionTable;
+//    private ListGrid colSelectionTable;
 
     public void setSelectionTable(ListGrid selectionTable) {
         this.selectionTable = selectionTable;
@@ -37,9 +39,9 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
     public GeneTable(SelectionManager selectionManager, DatasetInformation datasetInfo) {
         this.datasetId = datasetInfo.getId();
         this.records = getRecodList(datasetInfo);
+        this.colRecords = getColRecodList(datasetInfo);
         this.info = datasetInfo.getDatasetInfo();
         this.geneTable = new ListGrid();
-//        this.dataset = dataset;
         this.selectionManager = selectionManager;
         initGrid(datasetInfo);
         this.classtype = 1;
@@ -51,14 +53,16 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
         geneTable.setShowRecordComponents(true);
         geneTable.setShowRecordComponentsByCell(true);
         geneTable.setCanRemoveRecords(false);
-        geneTable.setHeight("560px");
+        geneTable.setHeight("550px");
         geneTable.setWidth("100%");
 
         geneTable.setShowAllRecords(true);
         ListGridField[] fields = new ListGridField[(3 + datasetInfo.getRowGroupsNumb())];
         ListGridField nameField = new ListGridField("gene", info);
         nameField.setWidth("50%");
-        fields[0] = new ListGridField("index", " ");
+        ListGridField indexField =new ListGridField("index", " ");
+        indexField.setWidth("10%");
+        fields[0] =indexField;
         fields[1] = (nameField);
         fields[2] = new ListGridField("all", "ALL");
         for (int z = 0; z < datasetInfo.getRowGroupsNumb(); z++) {
@@ -76,7 +80,7 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
             @Override
             public void onClick(ClickEvent event) {
                 ListGridRecord[] selectionRecord = geneTable.getSelectedRecords();
-                if(selectionTable != null){
+                if (selectionTable != null) {
                     selectionTable.setRecords(selectionRecord);
                     selectionTable.redraw();
                 }
@@ -100,17 +104,14 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
         geneTable.addDragStopHandler(new DragStopHandler() {
             @Override
             public void onDragStop(DragStopEvent event) {
-                 ListGridRecord[] selectionRecord = geneTable.getSelectedRecords();
-                 if(selectionTable != null){
+                ListGridRecord[] selectionRecord = geneTable.getSelectedRecords();
+                if (selectionTable != null) {
                     selectionTable.setRecords(selectionRecord);
                     selectionTable.redraw();
                 }
                 updateTableSelection(selectionRecord);
             }
         });
-
-
-
 
     }
 
@@ -127,14 +128,13 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
 
     private ListGridRecord[] getRecodList(DatasetInformation datasetInfo) {
 
-
         ListGridRecord[] recordsInit = new ListGridRecord[datasetInfo.getGeneTabelData()[0].length];
         for (int x = 0; x < recordsInit.length; x++) {
             ListGridRecord record = new ListGridRecord();
             record.setAttribute("gene", datasetInfo.getGeneTabelData()[0][x]);
             record.setAttribute("all", "<font color = " + "#000000" + " >" + "&diams;" + "</font>");
-            for(int c=0;c<datasetInfo.getRowGroupsNames().length;c++){
-                        record.setAttribute(datasetInfo.getRowGroupsNames()[c], "<font color = " + datasetInfo.getGeneTabelData()[c+2][x] + " >" + "&diams;" + "</font>");
+            for (int c = 0; c < datasetInfo.getRowGroupsNames().length; c++) {
+                record.setAttribute(datasetInfo.getRowGroupsNames()[c], "<font color = " + datasetInfo.getGeneTabelData()[c + 2][x] + " >" + "&diams;" + "</font>");
 
             }
 //            record.setAttribute(datasetInfo.getRowGroupsNames()[0], "<font color = " + datasetInfo.getGeneTabelData()[2][x] + " >" + "&diams;" + "</font>");
@@ -146,49 +146,39 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
         return recordsInit;
     }
 
+    private ListGridRecord[] getColRecodList(DatasetInformation datasetInfo) {
+        ListGridRecord[] colRecordsInit = new ListGridRecord[datasetInfo.getColsNames().length];
+        for (int x = 0; x < colRecordsInit.length; x++) {
+            ListGridRecord record = new ListGridRecord();
+            record.setAttribute("col", datasetInfo.getColsNames()[x]);
+            colRecordsInit[x] = record;
+        }
+        return colRecordsInit;
+    }
+
     @Override
     public void onSelectionChanged(SelectionEvent event) {
-
         ListGridRecord[] selectionRecord = event.getSelection();
-
-        //manualSelection = true;
         if (selectionRecord.length > 0) {
-
             int[] selectedIndices = new int[selectionRecord.length];
-//            String str = "";
             for (int index = 0; index < selectionRecord.length; index++) {
                 ListGridRecord rec = selectionRecord[index];
                 selectedIndices[index] = Integer.valueOf(rec.getAttributeAsInt("index"));
-//                str+= selectedIndices[index]+" , "+rec.getAttribute("gene");
-                //selectedIndices[index] = Integer.valueOf(dataset.getGeneNameIndexMap().get(selectionRecord[index].getAttribute("gene")));
             }
-                updateSelectionManager(selectedIndices);
-
-//            RootPanel.get().add(new Label("after updated >> "+str));
-
+            updateSelectionManager(selectedIndices);
         }
     }
-    
-    private void updateTableSelection( ListGridRecord[] selectionRecord)
-    {
-                if (selectionRecord.length > 0) {
 
+    private void updateTableSelection(ListGridRecord[] selectionRecord) {
+        if (selectionRecord.length > 0) {
             int[] selectedIndices = new int[selectionRecord.length];
-//            String str = "";
             for (int index = 0; index < selectionRecord.length; index++) {
                 ListGridRecord rec = selectionRecord[index];
                 selectedIndices[index] = Integer.valueOf(rec.getAttributeAsInt("index"));
-//                str+= selectedIndices[index]+" , "+rec.getAttribute("gene");
-                //selectedIndices[index] = Integer.valueOf(dataset.getGeneNameIndexMap().get(selectionRecord[index].getAttribute("gene")));
             }
-                updateSelectionManager(selectedIndices);
-
-//            RootPanel.get().add(new Label("after updated >> "+str));
-
+            updateSelectionManager(selectedIndices);
         }
-    
-    
-    
+
     }
 
     @Override
@@ -196,29 +186,44 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
         if (type == Selection.TYPE.OF_ROWS) {
             Selection sel = selectionManager.getSelectedRows(datasetId);
             if (sel != null) {
-                //  RootPanel.get().add(new Label("selection values are( local central manager is working )"));
                 int[] selectedRows = sel.getMembers();
-
                 //update table selection             
-
                 if (selectedRows != null && selectedRows.length != 0) {
                     geneTable.deselectAllRecords();
-//                    hr.removeHandler();
                     if (geneTable.getSort().length == 0) {
                         geneTable.selectRecords(selectedRows);
-                        if(selectionTable != null){
-                    selectionTable.setRecords(geneTable.getSelectedRecords());
-                    selectionTable.redraw();
-                }
+                        if (selectionTable != null) {
+                            selectionTable.setRecords(geneTable.getSelectedRecords());
+                            selectionTable.redraw();
+                        }
                     } else {
                         //update sorted rows
                     }
                     geneTable.updateHover();
                     geneTable.scrollToRow(selectedRows[0]);
-//                    geneTable.addSelectionChangedHandler(this);
-
                 }
             }
-        }
+        } 
+//        else{
+//            Selection sel = selectionManager.getSelectedColumns(datasetId);
+//            if (sel != null) {
+//                int[] selectedColumn = sel.getMembers();
+//                //update table selection             
+//                if (selectedColumn != null && selectedColumn.length != 0) {
+//                    ListGridRecord[] selectedRec = new ListGridRecord[selectedColumn.length];
+//                    for (int x = 0; x < selectedColumn.length; x++) {
+//                        selectedRec[x] = colRecords[selectedColumn[x]];
+//                    }
+//                    if (colSelectionTable != null && selectedRec != null && selectedRec.length != 0) {
+//                        colSelectionTable.setRecords(selectedRec);
+//                        colSelectionTable.redraw();
+//                    }
+//                }
+//            }
+//        }
     }
+
+//    public void setColSelectionTable(ListGrid colSelectionTable) {
+//        this.colSelectionTable = colSelectionTable;
+//    }
 }

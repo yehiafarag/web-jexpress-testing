@@ -4,7 +4,13 @@
     "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
-  
+    <context-param>
+        <param-name>fileFolder</param-name>
+        <param-value>C:\divaFiles</param-value>
+    </context-param>
+    <listener>
+        <listener-class>web.jexpress.server.listeners.ContexListener</listener-class>        
+    </listener>
   <!-- Servlets -->
   <servlet>
     <servlet-name>greetServlet</servlet-name>

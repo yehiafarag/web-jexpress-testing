@@ -109,8 +109,8 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
     private CustomNode clickedNode;
 
     private void createVisualization(Unit root) {
-        vis = getPVPanel().width(width).height(height).left(0).right(5)
-                .top(0).bottom(0);//.def("i", "-1").def("ii", "-1");
+        vis = getPVPanel().width(width).height(height).left(10).right(5)
+                .top(65).bottom(0);//.def("i", "-1").def("ii", "-1");
         PVClusterLayout layout = vis
                 .add(PV.Layout.Cluster())
                 .nodes(PVDom.create(root, new UnitDomAdapter())

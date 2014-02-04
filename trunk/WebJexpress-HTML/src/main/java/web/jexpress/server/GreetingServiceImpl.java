@@ -3,7 +3,10 @@ package web.jexpress.server;
 import web.jexpress.client.GreetingService;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import java.awt.Color;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +16,7 @@ import no.uib.jexpress_modularized.core.dataset.Dataset;
 import no.uib.jexpress_modularized.core.model.Selection;
 import no.uib.jexpress_modularized.rank.computation.ComputeRank;
 import no.uib.jexpress_modularized.rank.computation.RPResult;
+import web.jexpress.server.dal.DB;
 import web.jexpress.server.model.HMGen;
 import web.jexpress.server.model.JexpressUtil;
 import web.jexpress.server.model.PCAUtil;
@@ -35,26 +39,30 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
    
 
-    private JexpressUtil util = new JexpressUtil();
+    private final JexpressUtil util = new JexpressUtil();
     private Dataset jDataset;
     private web.jexpress.shared.model.core.model.dataset.Dataset dataset;
-    private SOMClustUtil somClustUtil = new SOMClustUtil();
+    private final SOMClustUtil somClustUtil = new SOMClustUtil();
     private SomClusteringResults results;
-    private PCAUtil pcaUtil = new PCAUtil();
-    private RankUtil rankUtil = new RankUtil();
+    private final PCAUtil pcaUtil = new PCAUtil();
+    private final RankUtil rankUtil = new RankUtil();
     private DatasetInformation datasetInfo;
+    
+   
+    private final DB database = new DB();
 
     @Override
     public Map<Integer, String> getAvailableDatasets() {
-        Map<Integer, String> datasetsMap = new TreeMap<Integer, String>();
-        datasetsMap.put(1, "diauxic shift");
-        datasetsMap.put(2, "dataset-2");
+        TreeMap<Integer, String> datasetsMap = database.getAvailableDatasets();
         return datasetsMap;
     }
 
     @Override
     public DatasetInformation loadDataset(int datasetId) {
-        jDataset = util.initJexpressDataset(datasetId);
+        System.out.println(datasetId);
+        try{
+        jDataset = database.getDataset(datasetId);
+        }catch(Exception e){e.printStackTrace();}
         dataset = util.initWebDataset(jDataset, datasetId);
         datasetInfo = this.updateDatasetInfo(datasetId);        
         return datasetInfo;
@@ -88,7 +96,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
         }
         datasetInfo = new DatasetInformation();
-        datasetInfo.setId(dataset.getId());
+        datasetInfo.setId(datasetId);
         datasetInfo.setRowsNumb(dataset.getDataLength());
         datasetInfo.setColNumb(dataset.getDataWidth());
         datasetInfo.setRowGroupsNumb(dataset.getRowGroups().size() - 1);
@@ -96,12 +104,17 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         datasetInfo.setDatasetInfo(dataset.getInfoHeaders()[0]);
         LinkedHashMap<String,String> rowGroupsNamesMap = new LinkedHashMap<String, String>();
         LinkedHashMap<String,String> colGroupsNamesMap = new LinkedHashMap<String, String>();
+        LinkedHashMap<String,String> colNamesMap = new LinkedHashMap<String, String>();
         for(int x=0;x<dataset.getRowGroups().size();x++){
             rowGroupsNamesMap.put(dataset.getRowGroups().get(x).isActive()+","+dataset.getRowGroups().get(x).getId(), dataset.getRowGroups().get(x).getId());
         }
          for(int x=0;x<dataset.getColumnGroups().size();x++){
             colGroupsNamesMap.put(dataset.getColumnGroups().get(x).isActive()+","+dataset.getColumnGroups().get(x).getId(), dataset.getColumnGroups().get(x).getId());
         }
+          for(int x=0;x<dataset.getColumnIds().length;x++){
+            colNamesMap.put(""+x, dataset.getColumnIds()[x]);
+        }
+         
          String[] pcaColNames = new String[dataset.getColumnIds().length];
          for(int x=0;x<pcaColNames.length;x++)
              pcaColNames[x] = "Principal Component nr "+x;
@@ -109,7 +122,8 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         datasetInfo.setColGroupsNamesMap(colGroupsNamesMap);
         datasetInfo.setRowGroupsNamesMap(rowGroupsNamesMap);
         datasetInfo.setGeneTabelData(geneTableData);
-        datasetInfo.setRowGroupsNames(rowGroupsNames);       
+        datasetInfo.setRowGroupsNames(rowGroupsNames);   
+        datasetInfo.setColNamesMap(colNamesMap);
         return datasetInfo;   
     }
      @Override
@@ -221,16 +235,19 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         results = somClustUtil.initHC(jDataset, distanceMeasure, linkageStr, true, dataset.getId());
         results = somClustUtil.initSelectedNodes(results);
         TreeMap<String, String> toolTipsMap = somClustUtil.initToolTips(results.getSideTree(), dataset.getGeneIndexNameMap());
+        TreeMap<String, String> topToolTipsMap = somClustUtil.initTopToolTips(results.getTopTree());
+       
         results.setToolTips(toolTipsMap);
+        results.setTopToolTips(topToolTipsMap);
         results.setColsNames(jDataset.getColumnIds());
         results.setGeneNames(jDataset.getRowIds());
  
         return results;
     }
     @Override
-    public ImgResult computeHeatmap(int datasetId, List<String> indexer) {
-       String pass = this.getServletContext().getRealPath("/");
-        HMGen hmGenerator= new HMGen(pass+"/js",jDataset,indexer);        
+    public ImgResult computeHeatmap(int datasetId, List<String> indexer,List<String>colIndexer) {
+       String path = this.getServletContext().getInitParameter("fileFolder");
+        HMGen hmGenerator= new HMGen(path,jDataset,indexer,colIndexer);        
         ImgResult imge = hmGenerator.getHeatMapResults();
         return imge;
     }
@@ -279,8 +296,24 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     }
         
         @Override
-        public Boolean createGroup(int datasetId,String name,String color,String type,int[] selection)
+        public Boolean createRowGroup(int datasetId,String name,String color,String type,int[] selection)
         {
+             List<no.uib.jexpress_modularized.core.dataset.Group> updatedActiveGroupList = new ArrayList<no.uib.jexpress_modularized.core.dataset.Group>();
+            for (no.uib.jexpress_modularized.core.dataset.Group g : jDataset.getRowGroups()) {
+                g.setActive(false);
+                updatedActiveGroupList.add(g);
+            }
+            jDataset.getRowGroups().clear();
+            jDataset.getRowGroups().addAll(updatedActiveGroupList);
+            
+             List<Group> updatedDevaActiveGroupList = new ArrayList<Group>();
+            for (Group g : dataset.getRowGroups()) {
+                g.setActive(false);
+                updatedDevaActiveGroupList.add(g);
+            }
+            dataset.getRowGroups().clear();
+            dataset.getRowGroups().addAll(updatedDevaActiveGroupList);
+            
            String gColor = "";
            Color c = null;
            if(color == null || color.equals("")){
@@ -293,14 +326,10 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
            }
                 Selection.TYPE s = null;
                 String gType = "";
-           if(type.equals("ROW GROUPS")){
+         
                 s =  Selection.TYPE.OF_ROWS;
                 gType = "Row";
-           }
-           else{
-               s =  Selection.TYPE.OF_COLUMNS;
-               gType = "Column";
-           }
+          
             no.uib.jexpress_modularized.core.dataset.Group jG = new no.uib.jexpress_modularized.core.dataset.Group(name, c, new Selection(s, selection));
             jG.setActive(true);
             jDataset.addRowGroup(jG);
@@ -313,7 +342,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
                     ind.add(x);
                 }
                 g.setIndices(ind);
-
+                g.setActive(true);
                 g.setGeneList(util.initGroupGeneList(dataset, jG.getMembers()));
                 g.setId(jG.getName());
                 dataset.addRowGroup(g);
@@ -323,6 +352,75 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         
         }
           
+         @Override
+        public Boolean createColGroup(int datasetId,String name,String color,String type,String[] strSelection)
+        {
+            if(strSelection == null || strSelection.length == 0)
+                return false;
+            int[] selection = new int[strSelection.length];
+            for(int x = 0;x<strSelection.length;x++)
+                selection[x] = Integer.valueOf(strSelection[x]);
+           String gColor = "";
+           Color c = null;
+           if(color == null || color.equals("")){
+                c = generatRandColor();
+                gColor  = "#" + Integer.toHexString(c.getRGB()).substring(2);
+           }else
+           {
+               c = Color.getColor(color);
+               gColor = color;
+           }
+                Selection.TYPE s = null;
+                String gType = "";
+           
+               s =  Selection.TYPE.OF_COLUMNS;
+               gType = "Column";
+           
+            no.uib.jexpress_modularized.core.dataset.Group jG = new no.uib.jexpress_modularized.core.dataset.Group(name, c, new Selection(s, selection));
+            jG.setActive(true);
+            jDataset.addColumnGroup(jG);
+             //String hex = "#" + Integer.toHexString(jG.getColor().getRGB()).substring(2);
+                Group g = new Group();
+                g.setType(gType);
+                g.setColor(gColor);
+                List<Integer> ind = new ArrayList<Integer>();
+                for (int x : jG.getMembers()) {
+                    ind.add(x);
+                }
+                g.setIndices(ind);
+
+                //g.setGeneList(util.initGroupGeneList(dataset, jG.getMembers()));
+                g.setId(jG.getName());
+                dataset.addColumnGroup(g);
+                return true;       
+        }
+
+    @Override
+    public Integer createSubDataset(String name, int[] selection) {
+        TreeMap<Integer, String> datasetsMap = database.getAvailableDatasets();
+        int id = datasetsMap.lastKey()+1;   
+        double[][] newdata = new double[selection.length][];
+        String[] newRowIds = new String[selection.length];
+        boolean[][] newMissingMeasurments = new boolean[selection.length][];
+        for(int x = 0;x<selection.length;x++){
+            double[] row = jDataset.getData()[selection[x]];
+            newdata[x] = row;     
+            newRowIds[x] = jDataset.getRowIds()[selection[x]];
+             boolean[] mm = jDataset.getMissingMeasurements()[selection[x]];
+            newMissingMeasurments[x] = mm;     
+        }
+      
+        Dataset newDS = new Dataset(newdata,newRowIds,jDataset.getColumnIds());
+        newDS.setColumnIds(jDataset.getColumnIds());
+        newDS.setMissingMeasurements(newMissingMeasurments);
+        newDS.addRowAnnotationNameInUse(jDataset.getInfoHeaders()[0]);        
+        newDS.setName(name+" - "+dateFormat.format(cal.getTime()));
+        database.setDataset(newDS, id);
+        return id;
+        
+    }
+        
+        
      private Random rand = new Random();
      private Color generatRandColor()
      {
@@ -340,7 +438,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         lcResults.setDatasetId(datasetId);
         String[] geneNames = dataset.getGeneNamesArr();
         String[] colours = dataset.getGeneColorArr();//new String[dataset.getRowIds().length];
-
+        for(String color:colours){System.out.println(color);}
         Number[] pointsArr[] = new Number[dataset.getDataLength()][dataset.getDataWidth()];
         for (int x = 0; x < dataset.getMemberMaps().size(); x++) {
 
@@ -353,5 +451,18 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         lcResults.setLineChartPoints(pointsArr);
         return lcResults;
     }
+
+    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    Calendar cal = Calendar.getInstance();
+    @Override
+    public Integer saveDataset(int datasetId, String newName) {
+        TreeMap<Integer, String> datasetsMap = database.getAvailableDatasets();
+        int id = datasetsMap.lastKey()+1;         
+        jDataset.setName(newName+" - "+dateFormat.format(cal.getTime()));
+        database.setDataset(jDataset, id);
+        return id;
+    }
+    
+    
     
 }
