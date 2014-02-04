@@ -20,6 +20,15 @@ public class SomClusteringResults implements IsSerializable{
     private String[] colsNames;    
     private Unit sideTree;
     private String imgString;
+    private TreeMap<String,String>topToolTips;
+
+    public TreeMap<String, String> getTopToolTips() {
+        return topToolTips;
+    }
+
+    public void setTopToolTips(TreeMap<String, String> topToolTips) {
+        this.topToolTips = topToolTips;
+    }
 
     public Unit getSideTree() {
         return sideTree;

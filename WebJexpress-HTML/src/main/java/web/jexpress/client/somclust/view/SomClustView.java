@@ -6,6 +6,7 @@ package web.jexpress.client.somclust.view;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.smartgwt.client.widgets.layout.HLayout;
 import java.util.List;
 import web.jexpress.client.core.model.SelectionManager;
 import web.jexpress.shared.beans.ImgResult;
@@ -22,6 +23,11 @@ public class SomClustView extends ModularizedListener implements IsSerializable 
     private final SelectionManager selectionManager;
     private final SomClustComp somClustCom;
     private final List<String> indexer;
+    private final List<String> colIndexer;
+
+    public List<String> getColIndexer() {
+        return colIndexer;
+    }
 
     public void setImge(ImgResult imgeResut) {
         somClustCom.setImage(imgeResut);
@@ -35,13 +41,14 @@ public class SomClustView extends ModularizedListener implements IsSerializable 
         this.selectionManager = selectionManager;
         this.selectionManager.addSelectionChangeListener(datasetId, SomClustView.this);
         this.indexer = somClustCom.getIndexer();
+        this.colIndexer =somClustCom.getColIndexer();
     }
 
     public List<String> getIndexer() {
         return indexer;
     }
 
-    public HorizontalPanel asWidget() {
+    public HLayout asWidget() {
         return somClustCom;
     }
 

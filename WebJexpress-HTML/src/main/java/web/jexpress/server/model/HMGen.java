@@ -20,7 +20,7 @@ import web.jexpress.shared.beans.ImgResult;
  */
 public class HMGen {
 
-    private String pass;
+    private String path;
     private final Dataset dataset;
     private final JMath jmath = new JMath();
     private int distance = 2;   //the distance measure used (see expresscomponents.JMath.java)
@@ -31,11 +31,13 @@ public class HMGen {
     private String heatMapString;
     private List<String> indexer;
     private ImgResult results;
+    private List<String>colIndexer;
 
-    public HMGen(String pass, Dataset dataset,List<String> indexer) {
+    public HMGen(String path, Dataset dataset,List<String> indexer,List<String>colIndexer) {
         this.dataset = dataset;
-        this.pass = pass;
+        this.path = path;
         this.indexer = indexer;
+        this.colIndexer = colIndexer;
         this.results = new ImgResult();
         this.heatMapString = generateImage();
         
@@ -45,19 +47,38 @@ public class HMGen {
     private String generateImage() {
 
         double[][] data = this.dataset.getData();// calcdistNoThread(false);
-        double[][] sortedData = new double[data.length][];
+        double[][] sortedRowData = new double[data.length][];
         int [] reIndex = new int[indexer.size()];
         String[] geneNames = new String[indexer.size()];
         for (int x = 0; x < data.length; x++) {            
             double[] d = data[Integer.valueOf(indexer.get(x))]; 
-            sortedData[x] = d;
+            sortedRowData[x] = d;
             reIndex[x] = Integer.valueOf(indexer.get(x));
             geneNames[x] = this.dataset.getRowIds()[Integer.valueOf(indexer.get(x))];
         }
         
+        double[][] sortedRowColData = new double[data.length][];
+         int [] colReIndex = new int[colIndexer.size()];
+        String[] colNames = new String[colIndexer.size()];
+       
+        for (int x = 0; x < data.length; x++) {            
+            double[] d = sortedRowData[x]; 
+            double[] sortedD = new double[d.length];
+            for(int z=0;z<d.length;z++){
+                sortedD[z] = d[Integer.valueOf(colIndexer.get(z))];
+            }
+            sortedRowColData[x] = sortedD;
+            //colReIndex[x] = Integer.valueOf(colIndexer.get(x));
+            //colNames[x] = this.dataset.getColumnIds()[Integer.valueOf(colIndexer.get(x))];
+        }
+         for(int x=0;x<colIndexer.size();x++){
+            colReIndex[x] = Integer.valueOf(colIndexer.get(x));
+            colNames[x] = this.dataset.getColumnIds()[Integer.valueOf(colIndexer.get(x))];
+            }
+        
 //        System.out.println("start heat map processing ");
 // Step 1: Create our heat map chart using our data.
-        HeatChart map = new HeatChart(sortedData){
+        HeatChart map = new HeatChart(sortedRowColData){
 
             @Override
             public void setHighValueColour(Color color) {
@@ -83,7 +104,8 @@ public class HMGen {
          Object[] sortedCol = new Object[col.length];
          for(int x=0;x<col.length;x++)
          {
-             sortedCol[col.length-1-x] = col[x];
+            // sortedCol[col.length-1-x] = col[x];
+             sortedCol[x] = colNames[x];
          }
         map.setXValues(sortedCol);
         map.setShowYAxisValues(false);
@@ -104,8 +126,9 @@ public class HMGen {
         results.setRowNum(data.length);
         results.setGeneReindex(reIndex);
         results.setGeneName(geneNames);
-        results.setColNames(dataset.getColumnIds());
-        File img = new File(/*pass*/"D:\\files", "java-heat-chart.png");
+        results.setColNames(colNames);
+        results.setColReindex(colReIndex);
+        File img = new File(path, "java-heat-chart.png");
         String base64 = "";        
         try {
             img.createNewFile();

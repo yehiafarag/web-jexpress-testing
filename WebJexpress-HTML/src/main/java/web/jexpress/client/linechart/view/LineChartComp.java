@@ -76,6 +76,7 @@ public class LineChartComp extends ModularizedListener {
             chart.setSeriesPlotOptions(new SeriesPlotOptions().setShowInLegend(false));
             chart.setLinePlotOptions(new LinePlotOptions()
                     .setLineWidth(1)
+                    .setShadow(false)
                     .setAnimation(false)
                     .setMarker(new Marker().setSymbol(Marker.Symbol.CIRCLE)
                             .setEnabled(false).setRadius(0.001)));
@@ -98,8 +99,8 @@ public class LineChartComp extends ModularizedListener {
             Number[] points = results.getLineChartPoints()[x];
             Series series = chart.createSeries().setPoints(points);
             series.setPlotOptions(new LinePlotOptions()
-                    .setLineWidth(1)
-                    .setMarker(new Marker().setSymbol(Marker.Symbol.CIRCLE).setFillColor("#FAFAFA")
+                    .setLineWidth(1).setShadow(false)
+                    .setMarker(new Marker().setSymbol(Marker.Symbol.CIRCLE).setFillColor("#BDBDBD")
                     .setEnabled(false).setRadius(0.001)).setColor(results.getColours()[x]));
 //            series.setName(""+x);
             chart.addSeries(series);
@@ -160,7 +161,7 @@ public class LineChartComp extends ModularizedListener {
             for (int x = 0; x < selection.length; x++) {
                 Number[] points = results.getLineChartPoints()[selection[x]];
                 Series series = chart.createSeries().setPoints(points);
-                series.setPlotOptions(new LinePlotOptions()
+                series.setPlotOptions(new LinePlotOptions().setShadow(false)
                         //                        .setLineWidth(1)
                         //                        .setMarker(new Marker().setSymbol(Marker.Symbol.CIRCLE)
                         //                        .setEnabled(false).setRadius(0.001))

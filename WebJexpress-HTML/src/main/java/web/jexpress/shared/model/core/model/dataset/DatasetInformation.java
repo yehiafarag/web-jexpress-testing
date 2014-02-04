@@ -38,16 +38,17 @@ public class DatasetInformation implements IsSerializable{
         this.colGroupsNamesMap = colGroupsNamesMap;
     }
     private LinkedHashMap<String,String> colGroupsNamesMap;
+    private LinkedHashMap<String,String> colNamesMap;
     
     
-    private String pass;
+    private String path;
 
-    public String getPass() {
-        return pass;
+    public String getPath() {
+        return path;
     }
 
-    public void setPass(String pass) {
-        this.pass = pass;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String[][] getGeneTabelData() {
@@ -121,5 +122,13 @@ public class DatasetInformation implements IsSerializable{
 
     public void setColsNames(String[] colsNames) {
         this.colsNames = colsNames;
+    }
+
+    public LinkedHashMap<String,String> getColNamesMap() {
+        return colNamesMap;
+    }
+
+    public void setColNamesMap(LinkedHashMap<String,String> colNamesMap) {
+        this.colNamesMap = colNamesMap;
     }
 }

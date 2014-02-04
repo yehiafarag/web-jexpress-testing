@@ -98,9 +98,9 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
                     return results.getHeader() + " : " + toolTipData.getPointName();
                 }
             }))
-                    .setScatterPlotOptions(new ScatterPlotOptions()
+                    .setScatterPlotOptions(new ScatterPlotOptions().setShadow(false)
                     .setAllowPointSelect(false)
-                    .setShowInLegend(false)
+                    .setShowInLegend(false).setMarker(new Marker().setFillColor("FFFFFF").setRadius(2).setSymbol(Marker.Symbol.CIRCLE) )
                     .setEnableMouseTracking(true));
             chart.getXAxis()
                     .setAxisTitleText("Principal Component " + (pcx + 1))
