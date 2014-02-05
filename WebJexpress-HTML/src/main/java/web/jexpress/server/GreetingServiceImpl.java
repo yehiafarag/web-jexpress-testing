@@ -178,8 +178,6 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
             for (String str : colGroups) {
                 String gName = str.split(",")[1];
-                System.out.println("gName is " + gName);
-
                 if (gName.equalsIgnoreCase("ALL")) {
                     updatedActiveGroupList.clear();
                     for (no.uib.jexpress_modularized.core.dataset.Group g : jDataset.getColumnGroups()) {
@@ -297,7 +295,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         
         @Override
         public Boolean createRowGroup(int datasetId,String name,String color,String type,int[] selection)
-        {
+         {
              List<no.uib.jexpress_modularized.core.dataset.Group> updatedActiveGroupList = new ArrayList<no.uib.jexpress_modularized.core.dataset.Group>();
             for (no.uib.jexpress_modularized.core.dataset.Group g : jDataset.getRowGroups()) {
                 g.setActive(false);
@@ -414,7 +412,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         newDS.setColumnIds(jDataset.getColumnIds());
         newDS.setMissingMeasurements(newMissingMeasurments);
         newDS.addRowAnnotationNameInUse(jDataset.getInfoHeaders()[0]);        
-        newDS.setName(name+" - "+dateFormat.format(cal.getTime()));
+        newDS.setName("SUB - "+jDataset.getName()+" - "+ name+" - "+dateFormat.format(cal.getTime()));
         database.setDataset(newDS, id);
         return id;
         
@@ -458,7 +456,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     public Integer saveDataset(int datasetId, String newName) {
         TreeMap<Integer, String> datasetsMap = database.getAvailableDatasets();
         int id = datasetsMap.lastKey()+1;         
-        jDataset.setName(newName+" - "+dateFormat.format(cal.getTime()));
+        jDataset.setName(jDataset.getName()+" - "+newName+" - "+dateFormat.format(cal.getTime()));
         database.setDataset(jDataset, id);
         return id;
     }

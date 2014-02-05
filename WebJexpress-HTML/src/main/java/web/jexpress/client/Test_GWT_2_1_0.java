@@ -36,12 +36,14 @@ import web.jexpress.shared.beans.RankResult;
 import web.jexpress.shared.beans.SomClusteringResults;
 import web.jexpress.shared.model.core.model.Selection;
 import web.jexpress.shared.model.core.model.dataset.DatasetInformation;
+import com.google.gwt.storage.client.Storage;
+  
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class Test_GWT_2_1_0 implements EntryPoint {
-    
+    private Storage stockStore = null;
     private final SelectionManager selectionManager = new SelectionManager();
     private static final String SERVER_ERROR = "An error occurred while attempting to contact the server";
     private final Label errorLabel = new Label();
@@ -61,9 +63,13 @@ public class Test_GWT_2_1_0 implements EntryPoint {
     private SomClustView hc;
     private String path = "";
     private HorizontalPanel headerpanel ;
+    private  Image lCImg;
+    private  Image pcaImg;
     
     @Override
     public void onModuleLoad() {
+        stockStore = Storage.getLocalStorageIfSupported();
+        if(stockStore!=null){}
         this.initLayout();
     }
     
@@ -73,6 +79,19 @@ public class Test_GWT_2_1_0 implements EntryPoint {
         Image image = new Image("js/diva-logo.png");
         image.setWidth("361px");
         image.setHeight("26px");        
+        
+         lCImg = new Image("images/clear.jpg");
+         lCImg.setHeight("300px");
+         lCImg.setWidth("" + RootPanel.get("LineChartResults").getOffsetWidth() + "px");
+          RootPanel.get("LineChartResults").add(lCImg);
+          
+          
+          pcaImg = new Image("images/clear.jpg");
+          pcaImg.setHeight("300px");
+         pcaImg.setWidth("" + RootPanel.get("LineChartResults").getOffsetWidth() + "px");
+         RootPanel.get("PCAChartResults").add(pcaImg);
+          
+          
         headerpanel = new HorizontalPanel();        
         headerpanel.setWidth(RootPanel.get("headerLogo").getOffsetWidth()+"px");
         headerpanel.setHeight("26px");
@@ -672,7 +691,7 @@ public class Test_GWT_2_1_0 implements EntryPoint {
 //                        resetLayout();
 //                        lb.clear();
 //                        getDatasetsList();                        
-//                        loadDataset(datasetId);                       
+//                        loadDataset(datasetId);    
                         RootPanel.get("loaderImage").setVisible(false);
                     }
                 });
@@ -737,10 +756,13 @@ public class Test_GWT_2_1_0 implements EntryPoint {
     }
     
     private void resetLayout(){
-         RootPanel.get("LineChartResults").clear();                        
+         RootPanel.get("LineChartResults").clear();     
+         RootPanel.get("LineChartResults").add(lCImg);
          RootPanel.get("PCAChartResults").clear();
+         RootPanel.get("PCAChartResults").add(pcaImg);
          RootPanel.get("RankTablesResults").clear();
          RootPanel.get("SomClusteringResults").clear();
+         
     
     }
 
