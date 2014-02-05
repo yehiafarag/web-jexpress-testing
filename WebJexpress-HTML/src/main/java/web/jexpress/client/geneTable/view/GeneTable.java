@@ -9,6 +9,7 @@ import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.DragStopEvent;
 import com.smartgwt.client.widgets.events.DragStopHandler;
+import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -30,7 +31,7 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
     private String info;
     private SelectionManager selectionManager;
     private ListGrid selectionTable;
-    private ListGrid colSelectionTable;
+    private SelectItem colSelectionTable;
 
     public void setSelectionTable(ListGrid selectionTable) {
         this.selectionTable = selectionTable;
@@ -209,21 +210,19 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
             if (sel != null) {
                 int[] selectedColumn = sel.getMembers();
                 //update table selection             
-                if (selectedColumn != null && selectedColumn.length != 0) {
-                    ListGridRecord[] selectedRec = new ListGridRecord[selectedColumn.length];
-                    for (int x = 0; x < selectedColumn.length; x++) {
-                        selectedRec[x] = colRecords[selectedColumn[x]];
-                    }
-                    if (colSelectionTable != null && selectedRec != null && selectedRec.length != 0) {
-                        colSelectionTable.setRecords(selectedRec);
-                        colSelectionTable.redraw();
-                    }
+                if (selectedColumn != null && selectedColumn.length != 0 && colSelectionTable != null) {                    
+                   String[] values = new String[selectedColumn.length];
+            for (int x = 0; x < selectedColumn.length; x++) {
+                values[x] = "" + selectedColumn[x];
+            }
+            colSelectionTable.setValues(values);
+            colSelectionTable.redraw();
                 }
             }
         }
     }
 
-    public void setColSelectionTable(ListGrid colSelectionTable) {
+    public void setColSelectionTable(SelectItem colSelectionTable) {
         this.colSelectionTable = colSelectionTable;
     }
 }
