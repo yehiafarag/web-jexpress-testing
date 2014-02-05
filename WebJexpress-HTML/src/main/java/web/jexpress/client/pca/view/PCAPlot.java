@@ -40,7 +40,7 @@ import web.jexpress.shared.model.core.model.Selection;
 public class PCAPlot extends ModularizedListener implements IsSerializable {
 
     private SelectionManager selectionManager;
-    private boolean zoom = true;
+    private boolean zoom = false;
     private boolean selectAll = false;
     private int[] prevSelection;
 
@@ -100,7 +100,7 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
             }))
                     .setScatterPlotOptions(new ScatterPlotOptions().setShadow(false)
                     .setAllowPointSelect(false)
-                    .setShowInLegend(false).setMarker(new Marker().setFillColor("FFFFFF").setRadius(2).setSymbol(Marker.Symbol.CIRCLE) )
+                    .setShowInLegend(false).setMarker(new Marker().setFillColor("#FFFFFF").setRadius(2).setSymbol(Marker.Symbol.CIRCLE) )
                     .setEnableMouseTracking(true));
             chart.getXAxis()
                     .setAxisTitleText("Principal Component " + (pcx + 1))
@@ -127,15 +127,15 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
                     updateChartSelection(selectedRows);
                 }
             } else {
-                selectAll(true);
-                selectAll = true;
+                selectAll(false);
+//                selectAll = true;
             }
             chart.setChartTitleText(" ");
 
             // Make a new check box, and select it by default.
             layout.add(chart);
             CheckBox cb = new CheckBox("Enable Zoom");
-            cb.setChecked(true);    // Hook up a handler to find out when it's clicked.
+            cb.setChecked(false);    // Hook up a handler to find out when it's clicked.
             cb.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
@@ -209,7 +209,7 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
 
         }
         chart.removeAllSeries();
-        chart.addSeries(chart.createSeries().setName("1").setPlotOptions(new ScatterPlotOptions().setMarker(new Marker().setSymbol(Marker.Symbol.CIRCLE))).setPoints(points));
+        chart.addSeries(chart.createSeries().setName("1").setPlotOptions(new ScatterPlotOptions().setMarker(new Marker()./*setFillColor("#FFFFFF").*/setRadius(2).setSymbol(Marker.Symbol.CIRCLE).setSelectState(new Marker().setRadius(3)))).setPoints(points));
 
     }
 
@@ -231,7 +231,7 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
             }
 
             chart.removeAllSeries();
-            chart.addSeries(chart.createSeries().setName("1").setPlotOptions(new ScatterPlotOptions().setMarker(new Marker().setSymbol(Marker.Symbol.CIRCLE))).setPoints(points));
+            chart.addSeries(chart.createSeries().setName("1").setPlotOptions(new ScatterPlotOptions().setMarker(new Marker()./*setFillColor("#FFFFFF").setRadius(2).*/setSymbol(Marker.Symbol.CIRCLE).setSelectState(new Marker().setRadius(3)))).setPoints(points));
 
         }
 

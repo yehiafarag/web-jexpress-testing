@@ -5,7 +5,6 @@
 package web.jexpress.client.somclust.view;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.smartgwt.client.widgets.layout.HLayout;
 import java.util.List;
 import web.jexpress.client.core.model.SelectionManager;

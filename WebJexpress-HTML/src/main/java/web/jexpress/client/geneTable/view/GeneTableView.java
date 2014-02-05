@@ -23,7 +23,7 @@ import web.jexpress.shared.model.core.model.dataset.DatasetInformation;
 public class GeneTableView extends SectionStack {
 
     private  final ListGrid selectionTable;
-//    private   final ListGrid colSelectionTable;
+    private   final ListGrid colSelectionTable;
     public GeneTableView(SelectionManager selectionManager, DatasetInformation datasetInfo) {
         this.setVisibilityMode(VisibilityMode.MUTEX);        
         this.setWidth((RootPanel.get("geneTable").getOffsetWidth()));
@@ -46,15 +46,15 @@ public class GeneTableView extends SectionStack {
        
       
         
-//        SectionStackSection section3 = new SectionStackSection("Column Selections");
-//        section3.setExpanded(false);
-//        colSelectionTable = initColSelectionTable(datasetInfo);
-//        section3.addItem(colSelectionTable); 
-//        geneTable.setColSelectionTable(colSelectionTable);
-//        
-//        this.setSections(section3);
+        SectionStackSection section3 = new SectionStackSection("Column Selections");
+        section3.setExpanded(false);
+        colSelectionTable = initColSelectionTable();
+        section3.addItem(colSelectionTable); 
+        geneTable.setColSelectionTable(colSelectionTable);
         
-//        this.addSection(section3); 
+        this.setSections(section3);
+        
+        this.addSection(section3); 
         this.addSection(section2);  
         this.addSection(section1);
         
@@ -88,6 +88,29 @@ public class GeneTableView extends SectionStack {
         geneTable.draw();
         return geneTable;
     }
+    
+    private ListGrid initColSelectionTable(){
+    ListGrid colTable = new ListGrid();
+    colTable.setShowRecordComponents(true);
+        colTable.setShowRecordComponentsByCell(true);
+        colTable.setCanRemoveRecords(false);
+        colTable.setHeight("200px");
+        colTable.setWidth(this.getWidth());
+        colTable.setShowAllRecords(true);
+        ListGridField nameField = new ListGridField("col", "Selected Columns");
+        nameField.setWidth("100%");
+         ListGridField[] fields = new ListGridField[1];
+        fields[1] = (nameField);
+        
+        colTable.setFields(fields);
+        colTable.setCanResizeFields(true);
+         colTable.setSelectionType(SelectionStyle.NONE);
+        colTable.setLeaveScrollbarGap(false);
+        colTable.setCanDragSelect(false);
+        colTable.draw();
+        return colTable;
+    }
+    
     
 
     public ListGrid getSelectionTable() {

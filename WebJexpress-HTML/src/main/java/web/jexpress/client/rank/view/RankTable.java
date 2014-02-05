@@ -92,10 +92,14 @@ public class RankTable extends ModularizedListener implements SelectionChangedHa
         //fields[1] = (nameField);
         //fields[2] = new ListGridField("all", "ALL");
         for (int z = 0; z < headers.length; z++) {
-            fields[z] = (ListGridField) new ListGridField(headers[z],headers[z].toUpperCase());
-        }
+          ListGridField l = (ListGridField) new ListGridField(headers[z],headers[z].toUpperCase());
+          if(z==1)
+              l.setWidth("35%");
+         fields[z] = l; 
+                 }
         table.setFields(fields);
         table.setCanResizeFields(true);
+        
         table.setData(records);
         table.setSelectionType(SelectionStyle.MULTIPLE);
         table.setLeaveScrollbarGap(false);
