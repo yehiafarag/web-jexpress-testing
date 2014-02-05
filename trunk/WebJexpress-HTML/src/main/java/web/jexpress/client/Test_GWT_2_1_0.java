@@ -65,6 +65,8 @@ public class Test_GWT_2_1_0 implements EntryPoint {
     private HorizontalPanel headerpanel ;
     private  Image lCImg;
     private  Image pcaImg;
+     private  Image gtImg;
+      private  Image rtImg;
     
     @Override
     public void onModuleLoad() {
@@ -90,6 +92,16 @@ public class Test_GWT_2_1_0 implements EntryPoint {
           pcaImg.setHeight("300px");
          pcaImg.setWidth("" + RootPanel.get("LineChartResults").getOffsetWidth() + "px");
          RootPanel.get("PCAChartResults").add(pcaImg);
+         
+          gtImg = new Image("images/gt.png");
+          gtImg.setHeight("580px");
+         gtImg.setWidth("" + RootPanel.get("geneTable").getOffsetWidth() + "px");
+         RootPanel.get("geneTable").add(gtImg);
+         
+           rtImg = new Image("images/rt.png");
+          rtImg.setHeight("270px");
+         rtImg.setWidth(""+RootPanel.get("RankTablesResults").getOffsetWidth()+"px");
+         RootPanel.get("RankTablesResults").add(rtImg);
           
           
         headerpanel = new HorizontalPanel();        
@@ -761,6 +773,7 @@ public class Test_GWT_2_1_0 implements EntryPoint {
          RootPanel.get("PCAChartResults").clear();
          RootPanel.get("PCAChartResults").add(pcaImg);
          RootPanel.get("RankTablesResults").clear();
+           RootPanel.get("RankTablesResults").add(rtImg);
          RootPanel.get("SomClusteringResults").clear();
          
     

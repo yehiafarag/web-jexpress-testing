@@ -52,8 +52,8 @@ public class SomClustComp extends HLayout {
 //        this.setBorderWidth(0);
 //        this.setSpacing(0);
         this.setHeight(height);
-        width =(RootPanel.get("SomClusteringResults").getOffsetWidth());
-        this.setWidth(width-20);
+        width =(RootPanel.get("SomClusteringResults").getOffsetWidth()-50);
+        this.setWidth(width);
        
         sideTree = new TreeGraph(results, "left", selectionManager, height, (width));
         this.addMember(sideTree.asWidget());

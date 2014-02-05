@@ -30,7 +30,7 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
     private String info;
     private SelectionManager selectionManager;
     private ListGrid selectionTable;
-//    private ListGrid colSelectionTable;
+    private ListGrid colSelectionTable;
 
     public void setSelectionTable(ListGrid selectionTable) {
         this.selectionTable = selectionTable;
@@ -204,26 +204,26 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
                 }
             }
         } 
-//        else{
-//            Selection sel = selectionManager.getSelectedColumns(datasetId);
-//            if (sel != null) {
-//                int[] selectedColumn = sel.getMembers();
-//                //update table selection             
-//                if (selectedColumn != null && selectedColumn.length != 0) {
-//                    ListGridRecord[] selectedRec = new ListGridRecord[selectedColumn.length];
-//                    for (int x = 0; x < selectedColumn.length; x++) {
-//                        selectedRec[x] = colRecords[selectedColumn[x]];
-//                    }
-//                    if (colSelectionTable != null && selectedRec != null && selectedRec.length != 0) {
-//                        colSelectionTable.setRecords(selectedRec);
-//                        colSelectionTable.redraw();
-//                    }
-//                }
-//            }
-//        }
+        else if(type == Selection.TYPE.OF_COLUMNS){
+            Selection sel = selectionManager.getSelectedColumns(datasetId);
+            if (sel != null) {
+                int[] selectedColumn = sel.getMembers();
+                //update table selection             
+                if (selectedColumn != null && selectedColumn.length != 0) {
+                    ListGridRecord[] selectedRec = new ListGridRecord[selectedColumn.length];
+                    for (int x = 0; x < selectedColumn.length; x++) {
+                        selectedRec[x] = colRecords[selectedColumn[x]];
+                    }
+                    if (colSelectionTable != null && selectedRec != null && selectedRec.length != 0) {
+                        colSelectionTable.setRecords(selectedRec);
+                        colSelectionTable.redraw();
+                    }
+                }
+            }
+        }
     }
 
-//    public void setColSelectionTable(ListGrid colSelectionTable) {
-//        this.colSelectionTable = colSelectionTable;
-//    }
+    public void setColSelectionTable(ListGrid colSelectionTable) {
+        this.colSelectionTable = colSelectionTable;
+    }
 }
