@@ -52,7 +52,7 @@ public class GeneTableView extends SectionStack {
         
         SectionStackSection section3 = new SectionStackSection("Column Selections");
         section3.setExpanded(false);
-        colSelectionTable = initColSelectionTable();
+        colSelectionTable = initColSelectionTable(datasetInfo);
         DynamicForm form = new DynamicForm();
         form.setItems(colSelectionTable);
         form.setWidth((RootPanel.get("geneTable").getOffsetWidth()));
@@ -60,7 +60,6 @@ public class GeneTableView extends SectionStack {
         section3.addItem(form); 
         geneTable.setColSelectionTable(colSelectionTable);
         
-        this.setSections(section3);
         
         this.addSection(section3); 
         this.addSection(section2);  
@@ -97,17 +96,19 @@ public class GeneTableView extends SectionStack {
         return geneTable;
     }
     
-    private SelectItem initColSelectionTable(){
+    private SelectItem initColSelectionTable(DatasetInformation datasetInfo){
      SelectItem selectCols = new SelectItem();
-        selectCols.setRequired(true);
-        selectCols.setTitle("SELECT COLUMNS TO GROUP");
+        selectCols.disable();
         selectCols.setTextAlign(Alignment.CENTER);
         selectCols.setTitleAlign(Alignment.CENTER);
         selectCols.setMultiple(true);
+        selectCols.setWidth("100%");
+        selectCols.setHeight("100%");
+        selectCols.setTitle("Selected Columns");
         selectCols.setMultipleAppearance(MultipleAppearance.GRID);
-//        if (datasetInfo != null) {
-//            selectCols.setValueMap(datasetInfo.getColNamesMap());
-//        }
+        if (datasetInfo != null) {
+            selectCols.setValueMap(datasetInfo.getColNamesMap());
+        }
         return selectCols;
     }
     
