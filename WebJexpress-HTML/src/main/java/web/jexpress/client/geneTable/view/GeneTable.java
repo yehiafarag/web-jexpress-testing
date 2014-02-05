@@ -213,7 +213,7 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
                 if (selectedColumn != null && selectedColumn.length != 0 && colSelectionTable != null) {                    
                    String[] values = new String[selectedColumn.length];
             for (int x = 0; x < selectedColumn.length; x++) {
-                values[x] = "" + selectedColumn[x];
+                values[x] = "" + selectedColumn[x];                
             }
             colSelectionTable.setValues(values);
             colSelectionTable.redraw();
