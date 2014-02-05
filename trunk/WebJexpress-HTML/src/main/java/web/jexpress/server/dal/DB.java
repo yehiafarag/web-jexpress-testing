@@ -84,7 +84,8 @@ public class DB {
         newDS.addRowAnnotationNameInUse(jDataset.getInfoHeaders()[0]);
         newDS.getColumnGroups().addAll(jDataset.getColumnGroups());
         newDS.getRowGroups().clear();
-        newDS.getRowGroups().addAll(jDataset.getRowGroups());        
+        newDS.getRowGroups().addAll(jDataset.getRowGroups());  
+        newDS.setName(jDataset.getName());
         return newDS;
     }
     public void setDataset(Dataset ds,int id){

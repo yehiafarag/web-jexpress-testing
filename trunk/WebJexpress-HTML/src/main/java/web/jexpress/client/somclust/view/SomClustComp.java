@@ -52,16 +52,17 @@ public class SomClustComp extends HLayout {
 //        this.setBorderWidth(0);
 //        this.setSpacing(0);
         this.setHeight(height);
-        width = RootPanel.get("SomClusteringResults").getOffsetWidth();
-        this.setWidth(width);
-        sideTree = new TreeGraph(results, "left", selectionManager, height, width);
+        width =(RootPanel.get("SomClusteringResults").getOffsetWidth());
+        this.setWidth(width-20);
+       
+        sideTree = new TreeGraph(results, "left", selectionManager, height, (width));
         this.addMember(sideTree.asWidget());
         this.indexer = sideTree.getIndexers();
         vp = new VerticalPanel();
         vp.setHeight((height+50)+"px");
         this.addMember(vp);
        
-        TopTreeGraph topTree = new TopTreeGraph(results, "top", selectionManager, (height+50), width);
+        TopTreeGraph topTree = new TopTreeGraph(results, "top", selectionManager, (height+50),(width));
         vp.add(topTree.asWidget());
         vp.setSpacing(0);
         this.colIndexer = topTree.getIndexers();
@@ -69,7 +70,7 @@ public class SomClustComp extends HLayout {
     }
 
     public void setImage(final ImgResult imageResult) {
-        HeatMapGraph hmg = new HeatMapGraph(imageResult,width, height);
+        HeatMapGraph hmg = new HeatMapGraph(imageResult,(width), height);
         vp.add(hmg);
         
     }

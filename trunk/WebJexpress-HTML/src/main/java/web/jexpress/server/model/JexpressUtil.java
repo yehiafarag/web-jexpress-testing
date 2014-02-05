@@ -121,7 +121,7 @@ public class JexpressUtil {
     public String[] initColorArr(String[] geneNameArr, List<Group> groupList) {
         String[] colorArr = new String[geneNameArr.length];
         for (int x = 0; x < geneNameArr.length; x++) {
-            String color ="#FBFBEF";// 
+            String color ="#BDBDBD";// 
             for (Group g : groupList) {
                 if (g.getId().equalsIgnoreCase("all") && g.isActive()) {
                     color="#000000";
