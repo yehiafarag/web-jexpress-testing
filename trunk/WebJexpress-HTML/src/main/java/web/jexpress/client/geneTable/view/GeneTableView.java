@@ -7,8 +7,12 @@
 package web.jexpress.client.geneTable.view;
 
 import com.google.gwt.user.client.ui.RootPanel;
+import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.MultipleAppearance;
 import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.types.VisibilityMode;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.layout.SectionStack;
@@ -23,7 +27,7 @@ import web.jexpress.shared.model.core.model.dataset.DatasetInformation;
 public class GeneTableView extends SectionStack {
 
     private  final ListGrid selectionTable;
-    private   final ListGrid colSelectionTable;
+    private   final SelectItem  colSelectionTable;
     public GeneTableView(SelectionManager selectionManager, DatasetInformation datasetInfo) {
         this.setVisibilityMode(VisibilityMode.MUTEX);        
         this.setWidth((RootPanel.get("geneTable").getOffsetWidth()));
@@ -49,7 +53,11 @@ public class GeneTableView extends SectionStack {
         SectionStackSection section3 = new SectionStackSection("Column Selections");
         section3.setExpanded(false);
         colSelectionTable = initColSelectionTable();
-        section3.addItem(colSelectionTable); 
+        DynamicForm form = new DynamicForm();
+        form.setItems(colSelectionTable);
+        form.setWidth((RootPanel.get("geneTable").getOffsetWidth()));
+        form.setHeight(200);
+        section3.addItem(form); 
         geneTable.setColSelectionTable(colSelectionTable);
         
         this.setSections(section3);
@@ -89,26 +97,18 @@ public class GeneTableView extends SectionStack {
         return geneTable;
     }
     
-    private ListGrid initColSelectionTable(){
-    ListGrid colTable = new ListGrid();
-    colTable.setShowRecordComponents(true);
-        colTable.setShowRecordComponentsByCell(true);
-        colTable.setCanRemoveRecords(false);
-        colTable.setHeight("200px");
-        colTable.setWidth(this.getWidth());
-        colTable.setShowAllRecords(true);
-        ListGridField nameField = new ListGridField("col", "Selected Columns");
-        nameField.setWidth("100%");
-         ListGridField[] fields = new ListGridField[1];
-        fields[1] = (nameField);
-        
-        colTable.setFields(fields);
-        colTable.setCanResizeFields(true);
-         colTable.setSelectionType(SelectionStyle.NONE);
-        colTable.setLeaveScrollbarGap(false);
-        colTable.setCanDragSelect(false);
-        colTable.draw();
-        return colTable;
+    private SelectItem initColSelectionTable(){
+     SelectItem selectCols = new SelectItem();
+        selectCols.setRequired(true);
+        selectCols.setTitle("SELECT COLUMNS TO GROUP");
+        selectCols.setTextAlign(Alignment.CENTER);
+        selectCols.setTitleAlign(Alignment.CENTER);
+        selectCols.setMultiple(true);
+        selectCols.setMultipleAppearance(MultipleAppearance.GRID);
+//        if (datasetInfo != null) {
+//            selectCols.setValueMap(datasetInfo.getColNamesMap());
+//        }
+        return selectCols;
     }
     
     
