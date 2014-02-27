@@ -1,0 +1,67 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package web.diva.client.somclust.view;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
+import com.smartgwt.client.widgets.layout.HLayout;
+import java.util.List;
+import web.diva.client.core.model.ModularizedListener;
+import web.diva.client.core.model.Selection;
+import web.diva.client.core.model.SelectionManager;
+import web.diva.shared.beans.ImgResult;
+import web.diva.shared.beans.SomClusteringResults;
+
+/**
+ *
+ * @author Yehia Farag
+ */
+public class SomClustView extends ModularizedListener implements IsSerializable {
+
+    private final SelectionManager selectionManager;
+    private final SomClustComp somClustCom;
+    private final List<String> indexer;
+    private final List<String> colIndexer;
+
+    public List<String> getColIndexer() {
+        return colIndexer;
+    }
+
+    public void setImge(ImgResult imgeResut) {
+        somClustCom.setImage(imgeResut);
+    }
+
+    public SomClustView(SomClusteringResults somClusteringResults, SelectionManager selectionManager) {
+        somClustCom = new SomClustComp(somClusteringResults, selectionManager);
+        this.classtype = 2;
+        this.datasetId = somClusteringResults.getDatasetId();
+        this.components.add(SomClustView.this);
+        this.selectionManager = selectionManager;
+        this.selectionManager.addSelectionChangeListener(datasetId, SomClustView.this);
+        this.indexer = somClustCom.getIndexer();
+        this.colIndexer =somClustCom.getColIndexer();
+    }
+
+    public List<String> getIndexer() {
+        return indexer;
+    }
+
+    public HLayout asWidget() {
+        return somClustCom;
+    }
+
+    @Override
+    public void selectionChanged(Selection.TYPE type) {
+        if (type == Selection.TYPE.OF_ROWS) {
+            Selection sel = selectionManager.getSelectedRows(datasetId);
+            if (sel != null) {
+                int[] selectedRows = sel.getMembers();
+                if (selectedRows != null) {
+                    somClustCom.clear();
+                }
+            }
+        }
+    }
+
+}
