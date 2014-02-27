@@ -1,0 +1,171 @@
+<!doctype html>
+<!-- The DOCTYPE declaration above will set the    -->
+<!-- browser's rendering engine into               -->
+<!-- "Standards Mode". Replacing this declaration  -->
+<!-- with a "Quirks Mode" doctype may lead to some -->
+<!-- differences in layout.                        -->
+
+<html>
+    <head>
+          
+        <meta http-equiv="X-UA-Compatible" content="IE=5,6,8,9,10" > 
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">        
+        <link href="css/style.css" rel="stylesheet" type="text/css">
+
+        <title>DIVA</title>
+
+        <script type="text/javascript" language="javascript" src="diva/diva.nocache.js"></script>
+        <script type="text/javascript"  src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"> </script>
+        <script type="text/javascript" language="javascript" src="com.smartgwt.sample.showcase.Showcase.nocache.js"></script>
+        <script type="text/javascript" src="js/highcharts.js"></script>
+       
+
+    </head>
+    <body style="margin-left: auto; margin-right: auto; vertical-align: 0px; position: relative; max-width: 2210px;max-height:700px;  right: 5%; left: 5%; width: 100%; height: auto;overflow-y:scroll;overflow-x: hidden">
+        <div align="left" id="loaderImage" class="indicator" style="left: 90%;top: 0.5%"></div>  
+        <div align="left" id="tooltip" style="left: 60%;top:10%; height:50px;  margin: 0;  position: absolute; z-index:1;"></div>  
+
+        <noscript>
+        <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+            Your web browser must have JavaScript enabled
+            in order for this application to display correctly.
+        </div>
+        </noscript>
+
+
+
+        <div id="headera" style="border:medium black; width:60%;top: 10px; height:85px; background-color:white ; position:relative;left: 0%"> 
+            <!--<h1 style="color: navy; font-family: inherit">D<font  style="color: red;"> I </font>VA</h1>-->
+            <div id="headerLogo" style="background-color:white;margin-left:0px;margin-top: 5px;height: 26px"></div>
+            <div id="menubuttons" style="margin-left:0px;margin-top: 5px; " class="topmenu" > </div>  
+
+        </div>
+        <div id="headerb" style="border:medium black;width:25%;height:90px; position:relative;background-color:white; left: 65%; top: -85px;">
+            <div style="color:red;" id="errorLabelContainer"></div>
+            <table id="datasetInformation" style="background-color:white;list-style-type: none;margin-left: 65px;height:60px;width: 80%;">
+                
+                <tr  ><td><strong id="row"></strong></td><td> <strong id="col"></strong></td></tr>
+                <tr  ><td><strong id="rowGroups"></strong></td><td> <strong id="colGroups"></strong></td></tr>               
+                               
+            </table>
+
+        </div>
+
+        <div id="leftmenu" style="border:medium black;width:15%; height:580px;background-color:white; position:relative; left:0%; top: -100px;">
+
+            <div id="geneTable"></div>
+        </div>
+        <div id="middletopleft"  style="width: 21%; position:relative; left: 16%; top: -680px; height: 300px;background-color:white">
+            <div style="max-height:300px;" id="LineChartResults"></div>
+
+        </div>
+        <div id="middletopright" style="border:medium black;width:21%;position:relative;height:300px; left: 38%; top: -980px; background-color:white">
+
+            <div style="max-height: 300px;" id="PCAChartResults"></div>   
+
+        </div>
+        <div id="rightmenu" style="border:medium black; width:30%; height:580px; position:relative; left: 60%; top: -1280px; background-color:white">
+            <div  id="SomClusteringResults" style="overflow-y:scroll;height:580px;"></div>                                        
+
+        </div>
+        <div id="middlefooter" style="border:medium black; position:relative; left: 16%; top: -1550px; width: 43%; height: 270px;background-color:white">
+            <div  id="RankTablesResults" ></div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!-- main div -->
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!-- template is places here -->
+
+
+
+
+
+
+
+
+      
+
+
+
+        <!-- template is end here -->
+
+
+
+        <script type="text/javascript" src="js/canvas.js"></script>
+        <script type="text/javascript">
+                var cSpeed=5;
+                var cTotalFrames=8;
+                var cFrameWidth=64;
+                var cImageSrc='images/sprites.png';	
+                var cImageTimeout=false;	
+                function startAnimation(){
+		
+                        document.getElementById('loaderImage').innerHTML='<canvas id="canvas"><p>Your browser does not support the canvas element.</p></canvas>';
+		
+                        //FPS = Math.round(100/(maxSpeed+2-speed));
+                        FPS = Math.round(100/cSpeed);
+                        SECONDS_BETWEEN_FRAMES = 1 / FPS;
+                        g_GameObjectManager = null;
+                        g_run=genImage;
+
+                        g_run.width = cTotalFrames * cFrameWidth;
+                genImage.onload = function() {
+                    cImageTimeout = setTimeout(fun, 0)
+                };
+                initCanvas();
+            }
+
+
+            function imageLoader(s, fun)//Pre-loads the sprites image
+            {
+                clearTimeout(cImageTimeout);
+                cImageTimeout = 0;
+                genImage = new Image();
+                genImage.onload = function() {
+                    cImageTimeout = setTimeout(fun, 0)
+                };
+                genImage.onerror = new Function('alert(\'Could not load the image\')');
+                genImage.src = s;
+            }
+
+            //The following code starts the animation
+            new imageLoader(cImageSrc, 'startAnimation()');
+        </script>
+
+    </body>
+</html>
