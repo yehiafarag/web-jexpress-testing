@@ -176,10 +176,10 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
     }
 
     private void updateSelectedList(int[] selIndex) {
-        try{
+       
         Selection selection = new Selection(Selection.TYPE.OF_ROWS, selIndex);
         selectionManager.setSelectedRows(results.getDatasetId(), selection,2);
-        }catch(Exception e){Window.alert(e.getMessage());}
+       
 
     }
     public void clearIndexer()

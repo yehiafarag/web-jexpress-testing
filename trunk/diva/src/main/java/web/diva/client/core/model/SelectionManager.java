@@ -111,7 +111,7 @@ public class SelectionManager implements IsSerializable {
             switch(compType){
                 case 1: //geneTable no updates needed
                     break;
-                case 2://SomClust 
+                case 5://SomClust 
                     break;
                 case 10:
                     break;
