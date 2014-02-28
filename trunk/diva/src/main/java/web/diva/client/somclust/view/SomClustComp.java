@@ -29,11 +29,11 @@ public class SomClustComp extends HLayout {
         return width;
     }
 
-    public int getCurrentHeight() {
+    public double getCurrentHeight() {
         return height;
     }
 
-    private int height = 550;
+    private double height = 550,sideTreeHeight;
 
     public List<String> getIndexer() {
         return indexer;
@@ -42,15 +42,16 @@ public class SomClustComp extends HLayout {
     public SomClustComp(SomClusteringResults results, SelectionManager selectionManager) {
         width =(RootPanel.get("SomClusteringResults").getOffsetWidth()-50);
         this.setWidth(width);
-       
-        sideTree = new TreeGraph(results, "left", selectionManager, height, (width));
+        double topTreeHeight = Double.valueOf(results.getColsNames().length) * 4.0;
+        sideTreeHeight = (Double.valueOf(results.getGeneNames().length) *2);
+        sideTree = new TreeGraph(results, "left", selectionManager, sideTreeHeight, (width),(topTreeHeight+15.0));
         this.addMember(sideTree.asWidget());
         this.indexer = sideTree.getIndexers();
         vp = new VerticalPanel();
-        vp.setHeight((height+50)+"px");
+        vp.setHeight((sideTreeHeight+topTreeHeight+30.0+10.0)+"px");
         this.addMember(vp);
        
-        topTree = new TopTreeGraph(results, "top", selectionManager, (height+50),(width));
+        topTree = new TopTreeGraph(results, "top", selectionManager, topTreeHeight,(width));
         vp.add(topTree.asWidget());
         vp.setSpacing(0);
         this.colIndexer = topTree.getIndexers();
@@ -58,7 +59,7 @@ public class SomClustComp extends HLayout {
     }
 
     public void setImage(final ImgResult imageResult) {
-        HeatMapGraph hmg = new HeatMapGraph(imageResult,(width), height);
+        HeatMapGraph hmg = new HeatMapGraph(imageResult,(width), sideTreeHeight);
         vp.add(hmg);
         colIndexer = null;
         indexer = null;
