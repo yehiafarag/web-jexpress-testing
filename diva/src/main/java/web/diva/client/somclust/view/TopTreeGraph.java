@@ -43,8 +43,8 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
     private final TreeMap<String, CustomNode> nodesMap;
     private  List<String> indexers = new ArrayList<String>();
     private boolean initIndexer = true;
-    private int height;
-    private int width;
+    private double height;
+    private double width;
     
     public void resize(double width,double height)
     {
@@ -63,14 +63,14 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
         return this;
     }
 
-    public TopTreeGraph(SomClusteringResults results, String orintation, SelectionManager selectionManager, int height, int width) {
+    public TopTreeGraph(SomClusteringResults results, String orintation, SelectionManager selectionManager, double height, double width) {
 
         this.root = results.getTopTree();
         this.nodesMap = root.getNodesMap();
         this.selectionManager = selectionManager;
         this.results = results;
-        this.width = (width/3);
-        this.height = 50;
+        this.width = (width/3.0);
+        this.height = height;
     }
 
     @Override

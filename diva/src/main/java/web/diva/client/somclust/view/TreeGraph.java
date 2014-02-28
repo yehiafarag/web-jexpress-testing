@@ -42,13 +42,14 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
     private final TreeMap<String, CustomNode> nodesMap;
     private List<String> indexers = new ArrayList<String>();
     private boolean initIndexer = true;
-    private int height;
-    private int width;
+    private double height;
+    private double width;
+    private double top;
     
     public void resize(double width,double height)
     {
-        this.height =(int) height;
-        this.width =(int) width;
+        this.height = height;
+        this.width = width;
         getPVPanel().render();   
     
     }
@@ -62,14 +63,15 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
         return this;
     }
 
-    public TreeGraph(SomClusteringResults results, String orintation, SelectionManager selectionManager, int height, int width) {
+    public TreeGraph(SomClusteringResults results, String orintation, SelectionManager selectionManager, double height, double width,double top ) {
 
         this.root = results.getSideTree();
         this.nodesMap = root.getNodesMap();
         this.selectionManager = selectionManager;
         this.results = results;
-        this.width = (width*2/3);
+        this.width = (width*2.0/3.0);
         this.height = height;
+        this.top = top;
     }
 
     @Override
@@ -111,7 +113,7 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
 
     private void createVisualization(Unit root) {
         vis = getPVPanel().width(width).height(height).left(10).right(5)
-                .top(65).bottom(0);//.def("i", "-1").def("ii", "-1");
+                .top(top).bottom(0);//.def("i", "-1").def("ii", "-1");
         PVClusterLayout layout = vis
                 .add(PV.Layout.Cluster())
                 .nodes(PVDom.create(root, new UnitDomAdapter())

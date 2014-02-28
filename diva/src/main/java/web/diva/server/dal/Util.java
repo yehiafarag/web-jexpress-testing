@@ -21,7 +21,7 @@ public class Util {
     {
         Map<Integer,Dataset> datasetsMap = new HashMap<Integer,Dataset>();
         File appFolder = new File(path);
-        System.out.println(appFolder.isDirectory());
+//        System.out.println(appFolder.isDirectory());
         int index=1;
         for (File f2 : appFolder.listFiles()) {
             if(f2.getName().endsWith(".txt")){

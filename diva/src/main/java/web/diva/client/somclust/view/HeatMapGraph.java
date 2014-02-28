@@ -26,12 +26,12 @@ public class HeatMapGraph extends VerticalPanel{
     private Image image;
     private HorizontalPanel scale = new HorizontalPanel();
     
-    public HeatMapGraph(final ImgResult imageResult,int width,int height)
+    public HeatMapGraph(final ImgResult imageResult,int width,double height)
     {
         this.image = new Image(imageResult.getImgString());
         this.width = ((double) width / 3.0) + "px";
         this.image.setWidth(this.width);
-        this.height = (int) (height+30) + "px";
+        this.height =  (height+30.0) + "px";
         this.image.setHeight(height+"px");
         final double colIndicator = ((double) width / 3.0) / (double) imageResult.getColNum();
         final double rowIndicator = height / (double) imageResult.getRowNum();

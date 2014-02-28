@@ -5,6 +5,7 @@
 package web.diva.client.core.model;
 
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -100,11 +101,14 @@ public class SelectionManager implements IsSerializable {
      */
     public void setSelectedRows(int datasetId, Selection s,int compType) {
         if (datasetId == 0) {
+            Window.alert("dataset is 0");
             throw new IllegalArgumentException("Trying to select rows in a null DataSet");
         }
         if (s == null) {
+            Window.alert("selection is null");
             selectedRows.remove(datasetId);
         } else if (!s.type.equals(Selection.TYPE.OF_ROWS)) {
+            Window.alert("selection type is not rows");
             throw new IllegalArgumentException("Trying to select rows with an incorrect type of selection");
         } else {
             //here we add update  indexis componant
