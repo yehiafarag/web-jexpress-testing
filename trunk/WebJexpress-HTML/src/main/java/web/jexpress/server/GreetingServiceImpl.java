@@ -199,22 +199,16 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
                         updatedActiveGroupList.add(g);
                     }
                 }
-            }
-            
-            
-            
+            }     
             
             
             jDataset.getColumnGroups().clear();
             jDataset.getColumnGroups().addAll(updatedActiveGroupList);
             updatedActiveGroupList.clear();                
 
-        }
-
-    
+        }    
         dataset = util.initWebDataset(jDataset, datasetId);
         datasetInfo = this.updateDatasetInfo(datasetId);
-
         return datasetInfo;
     }
 
