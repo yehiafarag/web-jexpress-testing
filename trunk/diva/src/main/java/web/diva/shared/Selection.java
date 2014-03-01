@@ -7,7 +7,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package web.diva.client.core.model;
+package web.diva.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import java.util.HashSet;
