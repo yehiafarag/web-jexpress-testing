@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import web.diva.client.core.model.SelectionManager;
+import web.diva.shared.SelectionManager;
 import web.diva.client.geneTable.view.LeftPanelView;
 import web.diva.client.linechart.view.LineChartComp;
 import web.diva.client.pca.view.PCAPanel;
@@ -32,7 +32,7 @@ import web.diva.shared.beans.RankResult;
 import web.diva.shared.beans.SomClusteringResults;
 import web.diva.shared.model.core.model.dataset.DatasetInformation;
 import java.util.LinkedHashMap;
-import web.diva.client.core.model.Selection;
+import web.diva.shared.Selection;
 import web.diva.client.view.ButtonsMenu;
 import web.diva.client.view.HeaderLayout;
 import web.diva.client.view.InitImgs;
@@ -55,10 +55,11 @@ public class DivaMain implements EntryPoint {
     private int[] selectedRows;
     private int[] selectedCol;
     private final GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
-    private List<String> indexer;
+//    private List<String> indexer;
     private SomClustView hc;
     private InitImgs initImgs;
     private HeaderLayout header;
+    private SomClustPanel somClustPanel;
 
     @Override
     public void onModuleLoad() {
@@ -81,7 +82,6 @@ public class DivaMain implements EntryPoint {
 
         final ButtonsMenu btnMenue = new ButtonsMenu();
         RootPanel.get("menubuttons").add(btnMenue);
-
         initImgs = new InitImgs();
         RootPanel.get("geneTable").add(initImgs.getGtImg());
         RootPanel.get("LineChartResults").add(initImgs.getlCImg());
@@ -102,16 +102,19 @@ public class DivaMain implements EntryPoint {
                     btnMenue.getSomClustBtn().addClickHandler(new ClickHandler() {
                         @Override
                         public void onClick(ClickEvent event) {
-                            final SomClustPanel somClustPanel = new SomClustPanel();
+                            if(somClustPanel == null)
+                                somClustPanel = new SomClustPanel();
                             somClustPanel.getOkBtn().addClickHandler(new ClickHandler() {
                                 @Override
                                 public void onClick(ClickEvent event) {
+                                    RootPanel.get("loaderImage").setVisible(true);
                                     runSomClustering(datasetId, somClustPanel.getX(), somClustPanel.getY());
                                     somClustPanel.hide();
-                                    somClustPanel.destroy();
-                                    somClustPanel.destroy();
+                                
                                 }
                             });
+                            somClustPanel.show();
+                            
                         }
                     });
 
@@ -179,7 +182,7 @@ public class DivaMain implements EntryPoint {
                                         saveDs.getErrorlabl().setVisible(false);
                                         saveDataset(newName);
                                         saveDs.hide();
-                                        saveDs.destroy();
+                                        saveDs.deparent();
                                     }
                                 }
                             });
@@ -245,7 +248,7 @@ public class DivaMain implements EntryPoint {
                 });
     }
 
-    private void runSomClustering(int datasetId, int linkage, int distanceMeasure) {
+    private void runSomClustering(int datasetId, int linkage, int distanceMeasure) {       
         RootPanel.get("loaderImage").setVisible(true);
         greetingService.computeSomClustering(datasetId, linkage, distanceMeasure,
                 new AsyncCallback<SomClusteringResults>() {
@@ -264,14 +267,14 @@ public class DivaMain implements EntryPoint {
                         RootPanel.get("SomClusteringResults").clear();
                         RootPanel.get("SomClusteringResults").add(hc.asWidget());
                         //RootPanel.get("loaderImage").setVisible(false);
-                        indexer = hc.getIndexer();
-                        generateHeatMap(indexer,hc.getColIndexer());
+                        generateHeatMap(hc.getIndexer(),hc.getColIndexer());
                     }
                 });
 
     }
 
     private void generateHeatMap(List<String> indexers,List<String> colIndexer) {
+         RootPanel.get("loaderImage").setVisible(true);
         greetingService.computeHeatmap(datasetId, indexers,colIndexer,
                 new AsyncCallback<ImgResult>() {
                     @Override
@@ -568,7 +571,7 @@ public class DivaMain implements EntryPoint {
                                         } else {
                                             activateGroups(datasetId, rowValues, colValues);
                                             activateGroupPanel.hide();
-                                            activateGroupPanel.destroy();
+                                            activateGroupPanel.deparent();
                                         }
                                     } catch (Exception exp) {
                                     }
@@ -595,7 +598,7 @@ public class DivaMain implements EntryPoint {
                                    else{
                                        viewRankTables(datasetId, perm, seed, groups, log2);
                                        rankPanel.hide();
-                                       rankPanel.destroy();
+                                       rankPanel.deparent();
                                         }
                                 }
                             });
@@ -634,7 +637,7 @@ public class DivaMain implements EntryPoint {
                                         int pcaII = pcaPanel.getPcaII();
                                         viewPCAChart(datasetId,pcaI,pcaII);
                                             pcaPanel.hide();
-                                            pcaPanel.destroy();
+                                            pcaPanel.deparent();
                                         
                                     } catch (Exception exp) {
                                     }
@@ -687,13 +690,13 @@ public class DivaMain implements EntryPoint {
                                              dsPanel.getErrorlabl().setVisible(false);
                                             createColGroup(datasetId, name, color, selCol, type);
                                             dsPanel.hide();
-                                            dsPanel.destroy();
+                                            dsPanel.deparent();
                                             }
                                         }else{
                                              dsPanel.getErrorlabl().setVisible(false);
                                             createRowGroup(datasetId, name, color, type);
                                             dsPanel.hide();
-                                            dsPanel.destroy();                                      
+                                            dsPanel.deparent();                                      
                                         
                                         }
 
@@ -707,7 +710,7 @@ public class DivaMain implements EntryPoint {
                                         else{
                                             createSubDataset(name);
                                             dsPanel.hide();
-                                            dsPanel.destroy();  
+                                            dsPanel.deparent();  
                                         
                                         }
                                         
@@ -736,8 +739,10 @@ public class DivaMain implements EntryPoint {
          RootPanel.get("PCAChartResults").add(initImgs.getPcaImg());
          RootPanel.get("RankTablesResults").clear();
          RootPanel.get("RankTablesResults").add(initImgs.getRtImg());
-         RootPanel.get("SomClusteringResults").clear();        
-          selectionManager.setSelectedColumns(datasetId, new Selection(Selection.TYPE.OF_COLUMNS,new int[]{}));
-          selectionManager.setSelectedRows(datasetId, new Selection(Selection.TYPE.OF_ROWS,new int[]{}),10);
+         hc = null;
+         RootPanel.get("SomClusteringResults").clear();      
+         
+//          selectionManager.setSelectedColumns(datasetId, new Selection(Selection.TYPE.OF_COLUMNS,new int[]{}));
+//          selectionManager.setSelectedRows(datasetId, new Selection(Selection.TYPE.OF_ROWS,new int[]{}),10);
     }
 }

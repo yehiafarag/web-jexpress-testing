@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.smartgwt.client.widgets.layout.HLayout;
 import java.util.List;
-import web.diva.client.core.model.SelectionManager;
+import web.diva.shared.SelectionManager;
 import web.diva.shared.beans.ImgResult;
 import web.diva.shared.beans.SomClusteringResults;
 
@@ -43,7 +43,10 @@ public class SomClustComp extends HLayout {
         width =(RootPanel.get("SomClusteringResults").getOffsetWidth()-50);
         this.setWidth(width);
         double topTreeHeight = Double.valueOf(results.getColsNames().length) * 4.0;
-        sideTreeHeight = (Double.valueOf(results.getGeneNames().length) *2);
+        
+        sideTreeHeight = (Double.valueOf(results.getGeneNames().length) *1.5);
+        if(sideTreeHeight > 3000.0)
+            sideTreeHeight = 3000.0;
         sideTree = new TreeGraph(results, "left", selectionManager, sideTreeHeight, (width),(topTreeHeight+15.0));
         this.addMember(sideTree.asWidget());
         this.indexer = sideTree.getIndexers();

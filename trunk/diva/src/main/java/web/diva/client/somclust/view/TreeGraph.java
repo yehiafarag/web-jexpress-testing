@@ -23,8 +23,8 @@ import org.thechiselgroup.choosel.protovis.client.ProtovisWidget;
 import org.thechiselgroup.choosel.protovis.client.jsutil.JsArgs;
 import org.thechiselgroup.choosel.protovis.client.jsutil.JsDoubleFunction;
 import org.thechiselgroup.choosel.protovis.client.jsutil.JsStringFunction;
-import web.diva.client.core.model.Selection;
-import web.diva.client.core.model.SelectionManager;
+import web.diva.shared.Selection;
+import web.diva.shared.SelectionManager;
 import web.diva.shared.CustomNode;
 import web.diva.shared.Unit;
 import web.diva.shared.UnitDomAdapter;
@@ -36,15 +36,17 @@ import web.diva.shared.beans.SomClusteringResults;
  */
 public final class TreeGraph extends ProtovisWidget implements IsSerializable {
 
-    private final Unit root;
-    private final SelectionManager selectionManager;
-    private final SomClusteringResults results;
-    private final TreeMap<String, CustomNode> nodesMap;
+    private Unit root;
+    private  SelectionManager selectionManager;
+    private  SomClusteringResults results;
+    private  TreeMap<String, CustomNode> nodesMap;
+     private  TreeMap<String, String> tooltips;
     private List<String> indexers = new ArrayList<String>();
     private boolean initIndexer = true;
     private double height;
     private double width;
     private double top;
+    private final int datasetId;
     
     public void resize(double width,double height)
     {
@@ -66,7 +68,11 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
     public TreeGraph(SomClusteringResults results, String orintation, SelectionManager selectionManager, double height, double width,double top ) {
 
         this.root = results.getSideTree();
-        this.nodesMap = root.getNodesMap();
+        this.datasetId = results.getDatasetId();
+        this.nodesMap = new TreeMap<String, CustomNode>();
+        nodesMap.putAll((root.getNodesMap()));
+        this.tooltips = new TreeMap<String, String>();
+        tooltips.putAll(results.getToolTips());
         this.selectionManager = selectionManager;
         this.results = results;
         this.width = (width*2.0/3.0);
@@ -81,6 +87,19 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
         createVisualization(root);
         getPVPanel().render();
         initIndexer = false;
+        root = null;
+        results = null;
+    }
+
+    @Override
+    protected void onDetach() {
+        super.onDetach(); //To change body of generated methods, choose Tools | Templates.
+        tooltips = null;
+        root = null;
+        nodesMap = null;
+        selectionManager = null;
+        results = null;
+        vis = null;
     }
     PVEventHandler nodeMouseClickHandler = new PVEventHandler() {
         @Override
@@ -155,7 +174,7 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
                             public String f(JsArgs args) {
                                 PVDomNode n = args.getObject();
                                 // CustomNode cNode = util.getCustomNode(n.nodeName());
-                                return results.getToolTips().get(n.nodeName());//"kokowawaw";//n.firstChild() != null ? "Merged at "+cNode.getValue()+" Nodes : "+(cNode.getSelectedNodes().length) :"  ";
+                                return tooltips.get(n.nodeName());//"kokowawaw";//n.firstChild() != null ? "Merged at "+cNode.getValue()+" Nodes : "+(cNode.getSelectedNodes().length) :"  ";
                             }
                         })
                 .events("all")
@@ -180,7 +199,8 @@ public final class TreeGraph extends ProtovisWidget implements IsSerializable {
     private void updateSelectedList(int[] selIndex) {
        
         Selection selection = new Selection(Selection.TYPE.OF_ROWS, selIndex);
-        selectionManager.setSelectedRows(results.getDatasetId(), selection,2);
+        selectionManager.setSelectedRows(datasetId, selection,2);
+        selection = null;
        
 
     }

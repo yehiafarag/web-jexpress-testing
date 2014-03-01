@@ -7,9 +7,9 @@ package web.diva.client.somclust.view;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.smartgwt.client.widgets.layout.HLayout;
 import java.util.List;
-import web.diva.client.core.model.ModularizedListener;
-import web.diva.client.core.model.Selection;
-import web.diva.client.core.model.SelectionManager;
+import web.diva.shared.ModularizedListener;
+import web.diva.shared.Selection;
+import web.diva.shared.SelectionManager;
 import web.diva.shared.beans.ImgResult;
 import web.diva.shared.beans.SomClusteringResults;
 
@@ -41,6 +41,7 @@ public class SomClustView extends ModularizedListener implements IsSerializable 
         this.selectionManager.addSelectionChangeListener(datasetId, SomClustView.this);
         this.indexer = somClustCom.getIndexer();
         this.colIndexer =somClustCom.getColIndexer();
+        somClusteringResults = null;
     }
 
     public List<String> getIndexer() {

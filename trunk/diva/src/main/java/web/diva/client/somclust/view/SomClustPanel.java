@@ -44,7 +44,6 @@ public class SomClustPanel extends Window{
             @Override
             public void onCloseClick(CloseClickEvent event) {
                 hide();
-                destroy();
             }
         });
         this.setHeight("150px");
@@ -133,7 +132,7 @@ public class SomClustPanel extends Window{
         vp.setTop(20);
         vp.setMembersMargin(15); 
         
-        show();
+//        show();
        
 
     }

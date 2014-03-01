@@ -24,8 +24,8 @@ import org.thechiselgroup.choosel.protovis.client.ProtovisWidget;
 import org.thechiselgroup.choosel.protovis.client.jsutil.JsArgs;
 import org.thechiselgroup.choosel.protovis.client.jsutil.JsDoubleFunction;
 import org.thechiselgroup.choosel.protovis.client.jsutil.JsStringFunction;
-import web.diva.client.core.model.Selection;
-import web.diva.client.core.model.SelectionManager;
+import web.diva.shared.Selection;
+import web.diva.shared.SelectionManager;
 import web.diva.shared.CustomNode;
 import web.diva.shared.Unit;
 import web.diva.shared.UnitDomAdapter;
@@ -37,14 +37,14 @@ import web.diva.shared.beans.SomClusteringResults;
  */
 public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
 
-    private final Unit root;
-    private final SelectionManager selectionManager;
-    private final SomClusteringResults results;
-    private final TreeMap<String, CustomNode> nodesMap;
+    private Unit root;
+    private SelectionManager selectionManager;
+    private TreeMap<String, CustomNode> nodesMap;
     private  List<String> indexers = new ArrayList<String>();
     private boolean initIndexer = true;
     private double height;
     private double width;
+    private final int datasetId ;
     
     public void resize(double width,double height)
     {
@@ -65,12 +65,15 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
 
     public TopTreeGraph(SomClusteringResults results, String orintation, SelectionManager selectionManager, double height, double width) {
 
+        this.datasetId = results.getDatasetId();
         this.root = results.getTopTree();
-        this.nodesMap = root.getNodesMap();
-        this.selectionManager = selectionManager;
-        this.results = results;
+        this.nodesMap = new TreeMap<String, CustomNode>();
+        nodesMap.putAll(root.getNodesMap());
+        this.selectionManager = selectionManager;        
         this.width = (width/3.0);
         this.height = height;
+        results = null;
+      
     }
 
     @Override
@@ -80,6 +83,15 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
         createVisualization(root);
         getPVPanel().render();
         initIndexer = false;
+         root = null;
+    }
+    @Override
+    protected void onDetach() {
+        super.onDetach(); //To change body of generated methods, choose Tools | Templates.
+        root = null;
+        nodesMap = null;
+        selectionManager = null;
+        vis = null;
     }
     PVEventHandler nodeMouseClickHandler = new PVEventHandler() {
         @Override
@@ -178,7 +190,7 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
 
     private void updateSelectedList(int[] selIndex) {
         Selection selection = new Selection(Selection.TYPE.OF_COLUMNS, selIndex);
-        selectionManager.setSelectedColumns(results.getDatasetId(), selection);
+        selectionManager.setSelectedColumns(datasetId, selection);
 
     }
     

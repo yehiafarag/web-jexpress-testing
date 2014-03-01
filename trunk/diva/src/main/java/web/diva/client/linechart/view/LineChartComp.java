@@ -16,9 +16,9 @@ import org.moxieapps.gwt.highcharts.client.Series;
 import org.moxieapps.gwt.highcharts.client.plotOptions.LinePlotOptions;
 import org.moxieapps.gwt.highcharts.client.plotOptions.Marker;
 import org.moxieapps.gwt.highcharts.client.plotOptions.SeriesPlotOptions;
-import web.diva.client.core.model.ModularizedListener;
-import web.diva.client.core.model.Selection;
-import web.diva.client.core.model.SelectionManager;
+import web.diva.shared.ModularizedListener;
+import web.diva.shared.Selection;
+import web.diva.shared.SelectionManager;
 import web.diva.shared.beans.LineChartResults;
 //import web.jexpress.shared.model.core.model.SelectionManager;
 
