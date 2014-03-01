@@ -24,7 +24,6 @@ public class HeatMapGraph extends VerticalPanel{
     private String width ;
     private String height ;
     private Image image;
-    private HorizontalPanel scale = new HorizontalPanel();
     
     public HeatMapGraph(final ImgResult imageResult,int width,double height)
     {

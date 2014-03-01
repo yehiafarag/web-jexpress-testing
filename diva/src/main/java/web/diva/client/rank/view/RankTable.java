@@ -14,9 +14,9 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.SelectionChangedHandler;
 import com.smartgwt.client.widgets.grid.events.SelectionEvent;
-import web.diva.client.core.model.ModularizedListener;
-import web.diva.client.core.model.Selection;
-import web.diva.client.core.model.SelectionManager;
+import web.diva.shared.ModularizedListener;
+import web.diva.shared.Selection;
+import web.diva.shared.SelectionManager;
 //import web.jexpress.shared.model.core.model.SelectionManager;
 
 /**

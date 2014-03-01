@@ -18,7 +18,7 @@ import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
-import web.diva.client.core.model.SelectionManager;
+import web.diva.shared.SelectionManager;
 import web.diva.shared.model.core.model.dataset.DatasetInformation;
 
 /**

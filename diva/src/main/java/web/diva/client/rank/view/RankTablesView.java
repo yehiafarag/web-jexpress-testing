@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
-import web.diva.client.core.model.SelectionManager;
+import web.diva.shared.SelectionManager;
 import web.diva.shared.beans.RankResult;
 //import web.jexpress.shared.model.core.model.SelectionManager;
 
