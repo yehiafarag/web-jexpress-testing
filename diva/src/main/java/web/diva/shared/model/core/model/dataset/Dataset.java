@@ -26,6 +26,8 @@ public class Dataset implements IsSerializable {
     
     private String[] geneColorArr;
      private String[] geneNamesArr;
+     
+     private Number[][] lineChartPointArr;
     
 
    
@@ -170,6 +172,14 @@ public class Dataset implements IsSerializable {
 
     public void setGeneNamesArr(String[] geneNamesArr) {
         this.geneNamesArr = geneNamesArr;
+    }
+
+    public Number[][] getLineChartPointArr() {
+        return lineChartPointArr;
+    }
+
+    public void setLineChartPointArr(Number[][] lineChartPointArr) {
+        this.lineChartPointArr = lineChartPointArr;
     }
 
 

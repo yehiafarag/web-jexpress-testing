@@ -67,6 +67,23 @@
             <artifactId>ProtovisGWT</artifactId>
             <version>0.4.1</version>
         </dependency>
+       <!-- <dependency>
+            <groupId>web.jexpress.jars</groupId>
+            <artifactId>jOpenChart</artifactId>
+            <version>0.94</version>
+        </dependency>-->
+        <dependency>
+	<groupId>org.jfree</groupId>
+	<artifactId>jfreechart</artifactId>
+	<version>1.0.17</version>
+        </dependency>
+            
+        <dependency>
+	<groupId>org.jfree</groupId>
+	<artifactId>jcommon</artifactId>
+	<version>1.0.17</version>
+        </dependency>
+            
         <dependency>
             <groupId>com.smartgwt</groupId>
             <artifactId>smartgwt</artifactId>
@@ -76,7 +93,7 @@
         <dependency>
             <groupId>org.moxieapps.gwt</groupId>
             <artifactId>org.moxieapps.gwt.highcharts</artifactId>
-            <version>1.6.0</version>
+            <version>1.5.0</version>
         </dependency>
                 
                 

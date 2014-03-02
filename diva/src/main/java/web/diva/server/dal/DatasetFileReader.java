@@ -22,7 +22,9 @@ public class DatasetFileReader {
     private Dataset dataset;
 
     public Dataset readDatasetFile(File file) {
+        System.out.println(file.getName());
         this.dataset = fr.readDataset(file);
+        
         List<no.uib.jexpress_modularized.core.dataset.Group> updatedActiveGroupList = new ArrayList<no.uib.jexpress_modularized.core.dataset.Group>();
                 for(no.uib.jexpress_modularized.core.dataset.Group g:dataset.getRowGroups())
                 {
