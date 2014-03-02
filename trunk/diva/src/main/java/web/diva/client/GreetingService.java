@@ -48,4 +48,6 @@ public interface GreetingService extends RemoteService {
     
     LinkedHashMap<String,String> getColNamesMaps(int datasetId);
     
+    String updateLineChartSelection(int datasetId,int[] selection);
+    
 }

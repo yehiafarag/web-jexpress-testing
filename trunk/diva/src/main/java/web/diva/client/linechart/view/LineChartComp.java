@@ -5,17 +5,13 @@
 package web.diva.client.linechart.view;
 
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.moxieapps.gwt.highcharts.client.Chart;
-import org.moxieapps.gwt.highcharts.client.Legend;
-import org.moxieapps.gwt.highcharts.client.Series;
-import org.moxieapps.gwt.highcharts.client.plotOptions.LinePlotOptions;
-import org.moxieapps.gwt.highcharts.client.plotOptions.Marker;
-import org.moxieapps.gwt.highcharts.client.plotOptions.SeriesPlotOptions;
+import web.diva.client.GreetingServiceAsync;
 import web.diva.shared.ModularizedListener;
 import web.diva.shared.Selection;
 import web.diva.shared.SelectionManager;
@@ -42,12 +38,15 @@ public class LineChartComp extends ModularizedListener {
     }
 
 //    private Dataset dataset;
-    private Chart chart;
+//    private Chart chart;
     private VerticalPanel layout;
-    private HorizontalPanel buttonsLayout;
-    private LineChartResults results;
+//    private HorizontalPanel buttonsLayout;
+////    private LineChartResults results;
+     private Image image;
+     private final GreetingServiceAsync greetingService;
     
-    public LineChartComp(LineChartResults results, SelectionManager selectionManager) {
+    public LineChartComp(LineChartResults results, SelectionManager selectionManager,GreetingServiceAsync greetingService) {
+        this.greetingService =  greetingService;
         try {
             
             this.classtype = 3;
@@ -60,53 +59,55 @@ public class LineChartComp extends ModularizedListener {
             layout.setHeight("300px");
             layout.setWidth("" + RootPanel.get("LineChartResults").getOffsetWidth() + "px");
             
-            buttonsLayout = new HorizontalPanel();
-            buttonsLayout.setWidth("" + RootPanel.get("LineChartResults").getOffsetWidth() + "px");
-            buttonsLayout.setHeight("50px");            
-            this.results = results;
-            chart = new Chart()
-                    .setType(Series.Type.LINE)
-                    .setChartTitleText(" ")
-                    .setMarginRight(5);            
-            chart.setHeight(300);
-            chart.setTitle("Line Chart");
-            chart.setWidth(RootPanel.get("LineChartResults").getOffsetWidth());
-            chart.getXAxis().setAxisTitleText("");
-            chart.getYAxis().setAxisTitleText("");
-            chart.setAnimation(false);
-            chart.setLegend(new Legend().setEnabled(false));
-            chart.setSeriesPlotOptions(new SeriesPlotOptions().setShowInLegend(false));
-            chart.setLinePlotOptions(new LinePlotOptions()
-                    .setLineWidth(1)
-                    .setShadow(false)
-                    .setAnimation(false)
-                    .setMarker(new Marker().setSymbol(Marker.Symbol.CIRCLE)
-                            .setEnabled(false).setRadius(0.001)));
-
-        for (int x = 0; x < results.getGeneNames().length; x++) {
-            Number[] points = results.getLineChartPoints()[x];
-            Series series = chart.createSeries().setPoints(points);
-            series.setPlotOptions(new LinePlotOptions()
-                    .setLineWidth(1).setShadow(false)
-                    .setMarker(new Marker().setSymbol(Marker.Symbol.CIRCLE).setFillColor("#BDBDBD")
-                    .setEnabled(false).setRadius(0.001)).setColor(results.getColours()[x]));
-            chart.addSeries(series);
-
-        }
-            chart.redraw();
+//            buttonsLayout = new HorizontalPanel();
+//            buttonsLayout.setWidth("" + RootPanel.get("LineChartResults").getOffsetWidth() + "px");
+//            buttonsLayout.setHeight("50px");            
+//            this.results = results;
             
-            layout.add(chart);
-            layout.add(buttonsLayout);
-            buttonsLayout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-            buttonsLayout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-            layout.add(buttonsLayout);
-            layout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-            layout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+//            chart = new Chart()
+//                    .setType(Series.Type.LINE)
+//                    .setChartTitleText(" ")
+//                    .setMarginRight(5);            
+//            chart.setHeight(300);
+//            chart.setTitle("Line Chart");
+//            chart.setWidth(RootPanel.get("LineChartResults").getOffsetWidth());
+//            chart.getXAxis().setAxisTitleText("");
+//            chart.getYAxis().setAxisTitleText("");
+//            chart.setAnimation(false);
+//            chart.setLegend(new Legend().setEnabled(false));
+//            chart.setSeriesPlotOptions(new SeriesPlotOptions().setShowInLegend(false));
+//            chart.setLinePlotOptions(new LinePlotOptions()
+//                    .setLineWidth(1)
+//                    .setShadow(false)
+//                    .setAnimation(false)
+//                    .setMarker(new Marker().setSymbol(Marker.Symbol.CIRCLE)
+//                            .setEnabled(false).setRadius(0.001)));
+//
+//        for (int x = 0; x < results.getGeneNames().length; x++) {
+//            Number[] points = results.getLineChartPoints()[x];
+//            Series series = chart.createSeries().setPoints(points);
+//            series.setPlotOptions(new LinePlotOptions()
+//                    .setLineWidth(1).setShadow(false)
+//                    .setMarker(new Marker().setSymbol(Marker.Symbol.CIRCLE).setFillColor("#BDBDBD")
+//                    .setEnabled(false).setRadius(0.001)).setColor(results.getColours()[x]));
+//            chart.addSeries(series);
+//
+//        }
+//            chart.redraw();
+            
+           
+//            layout.add(buttonsLayout);
+//            buttonsLayout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+//            buttonsLayout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+//            layout.add(buttonsLayout);
+            
             
             Selection sel = selectionManager.getSelectedRows(datasetId);            
             if (sel != null) {
                 int[] selectedRows = sel.getMembers();
                 this.updateSelection(selectedRows);
+            }else{
+                initImage(results.getImageString());
             }            
             
         } catch (Exception exp) {
@@ -116,8 +117,20 @@ public class LineChartComp extends ModularizedListener {
     }
     
     private void updateSelection(int[] selection) {
-        if (selection != null && selection.length > 0) {
-            chart.removeAllSeries();
+        if (selection != null && selection.length > 0) {            
+             greetingService.updateLineChartSelection(datasetId, selection,new AsyncCallback<String>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        RootPanel.get("loaderImage").setVisible(false);
+                    }
+
+                    @Override
+                    public void onSuccess(String result) {
+                        initImage(result);
+                        RootPanel.get("loaderImage").setVisible(false);
+                    }
+                });
+//            chart.removeAllSeries();
 //            for(Series ser:chart.getSeries())
 //            {
 //                ser.hide();
@@ -145,18 +158,18 @@ public class LineChartComp extends ModularizedListener {
 //            }
 //        }
 //        chart.removeAllSeries();
-            for (int x = 0; x < selection.length; x++) {
-                Number[] points = results.getLineChartPoints()[selection[x]];
-                Series series = chart.createSeries().setPoints(points);
-                series.setPlotOptions(new LinePlotOptions().setShadow(false)
-                        //                        .setLineWidth(1)
-                        //                        .setMarker(new Marker().setSymbol(Marker.Symbol.CIRCLE)
-                        //                        .setEnabled(false).setRadius(0.001))
-                        .setColor(results.getColours()[selection[x]]));
-                
-                chart.addSeries(series);
-                
-            }
+//            for (int x = 0; x < selection.length; x++) {
+//                Number[] points = results.getLineChartPoints()[selection[x]];
+//                Series series = chart.createSeries().setPoints(points);
+//                series.setPlotOptions(new LinePlotOptions().setShadow(false)
+//                        //                        .setLineWidth(1)
+//                        //                        .setMarker(new Marker().setSymbol(Marker.Symbol.CIRCLE)
+//                        //                        .setEnabled(false).setRadius(0.001))
+//                        .setColor(results.getColours()[selection[x]]));
+//                
+//                chart.addSeries(series);
+//                
+//            }
             //chart.redraw();
         }
         
@@ -164,5 +177,19 @@ public class LineChartComp extends ModularizedListener {
     
     public VerticalPanel getLayout() {
         return layout;
+    }
+    
+    private void initImage(String url){ 
+        if(image != null ){
+        layout.remove(image);
+        image = null;
+        }
+        image = new Image(url);
+        image.setHeight("300px");
+        image.setWidth(RootPanel.get("LineChartResults").getOffsetWidth()+"px");
+        layout.add(image);
+        layout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        layout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+    
     }
 }

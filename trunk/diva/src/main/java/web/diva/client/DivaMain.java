@@ -309,7 +309,7 @@ public class DivaMain implements EntryPoint {
                     public void onSuccess(LineChartResults result) {
                         RootPanel.get("datasetInformation").setVisible(true);
                         errorLabel.setText("");
-                        LineChartComp linechart = new LineChartComp(result, selectionManager);
+                        LineChartComp linechart = new LineChartComp(result, selectionManager,greetingService);
                         RootPanel.get("LineChartResults").clear();
                         RootPanel.get("LineChartResults").add(linechart.getLayout());
                         RootPanel.get("loaderImage").setVisible(false);

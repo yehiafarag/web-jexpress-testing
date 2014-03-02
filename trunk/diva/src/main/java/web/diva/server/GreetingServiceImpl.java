@@ -20,13 +20,13 @@ import web.diva.server.dal.DB;
 import web.diva.server.model.GroupColorUtil;
 import web.diva.server.model.HMGen;
 import web.diva.server.model.JexpressUtil;
+import web.diva.server.model.LineChartGenerator;
 import web.diva.server.model.PCAUtil;
 import web.diva.server.model.SOMClustUtil;
 import web.diva.shared.beans.LineChartResults;
 import web.diva.shared.beans.PCAResults;
 import web.diva.shared.beans.RankResult;
 import web.diva.shared.beans.SomClusteringResults;
-//import web.jexpress.shared.model.core.model.dataset.Dataset;
 import web.diva.shared.model.core.model.dataset.DatasetInformation;
 import web.diva.shared.model.core.model.dataset.Group;
 import web.diva.server.model.RankUtil;
@@ -51,13 +51,15 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     private final RankUtil rankUtil = new RankUtil();
     private DatasetInformation datasetInfo;
     private final GroupColorUtil colGen = new GroupColorUtil();
-    
+    private String path ;
+    private  LineChartGenerator lcg;
    
     private final DB database = new DB();
 
     @Override
     public Map<Integer, String> getAvailableDatasets() {
         TreeMap<Integer, String> datasetsMap = database.getAvailableDatasets();
+        path = this.getServletContext().getInitParameter("fileFolder");
         return datasetsMap;
     }
 
@@ -253,8 +255,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         results = somClustUtil.initHC(jDataset, distanceMeasure, linkageStr, true, dataset.getId());
         results = somClustUtil.initSelectedNodes(results);
         TreeMap<String, String> toolTipsMap = somClustUtil.initToolTips(results.getSideTree(), dataset.getGeneIndexNameMap());
-        TreeMap<String, String> topToolTipsMap = somClustUtil.initTopToolTips(results.getTopTree());
-       
+        TreeMap<String, String> topToolTipsMap = somClustUtil.initTopToolTips(results.getTopTree());       
         results.setToolTips(toolTipsMap);
         results.setTopToolTips(topToolTipsMap);
         results.setColsNames(jDataset.getColumnIds());
@@ -453,7 +454,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     public LineChartResults computeLineChart(int datasetId) {
         LineChartResults lcResults = new LineChartResults();
         lcResults.setDatasetId(datasetId);
-        String[] geneNames = dataset.getGeneNamesArr();
+        String[] rowIds = dataset.getGeneNamesArr();
         String[] colours = dataset.getGeneColorArr();//new String[dataset.getRowIds().length];
         
         Number[] pointsArr[] = new Number[dataset.getDataLength()][dataset.getDataWidth()];
@@ -463,12 +464,21 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
             pointsArr[x] = updatedRow;
 
         }
-        lcResults.setColours(colours);
-        lcResults.setGeneNames(geneNames);
-        lcResults.setLineChartPoints(pointsArr);
+        lcg = new LineChartGenerator();
+        dataset.setLineChartPointArr(pointsArr);
+        
+        lcResults.setImageString(lcg.generateChart(path, pointsArr,rowIds,colours,dataset.getColumnIds(),null));       
+               
         return lcResults;
     }
 
+    @Override
+    public String updateLineChartSelection(int datasetId, int[] selection) {
+       return  lcg.generateChart(path, dataset.getLineChartPointArr(),dataset.getGeneNamesArr(),dataset.getGeneColorArr(),dataset.getColumnIds(),selection); 
+       }
+
+    
+    
     DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     Calendar cal = Calendar.getInstance();
     @Override

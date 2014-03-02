@@ -39,6 +39,8 @@ public interface GreetingServiceAsync {
       public void getPcaColNames(int datasetId,AsyncCallback<String[]> asyncCallback);
       
       public void getColNamesMaps(int datasetId,AsyncCallback<LinkedHashMap<String,String>> asyncCallback);
+
+    public void updateLineChartSelection(int datasetId, int[] selection, AsyncCallback<String> asyncCallback);
     
     
 }
