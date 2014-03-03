@@ -47,7 +47,7 @@ public class SaveDatasetDialog extends Window{
     public SaveDatasetDialog() {
         
         this.setWidth(300);
-        this.setHeight(200);
+        this.setHeight(150);
         this.setTitle("Save Dataset");
         this.setShowMinimizeButton(false);
         this.setIsModal(false);
@@ -56,16 +56,16 @@ public class SaveDatasetDialog extends Window{
             @Override
             public void onCloseClick(CloseClickEvent event) {
                 hide();
-                destroy();
             }
         });
         final VLayout vlo = new VLayout();
-        vlo.setWidth100();
-        vlo.setHeight100();
+        vlo.setWidth("100%");
+        vlo.setHeight("100%");
         this.addItem(vlo);
         form = new DynamicForm();
         form.setIsGroup(false);
-        form.setWidth100();
+        form.setWidth("100%");
+        form.setHeight("60%");
         form.setPadding(5);
         form.setLayoutAlign(VerticalAlignment.BOTTOM);
         name = new TextItem();
@@ -75,8 +75,8 @@ public class SaveDatasetDialog extends Window{
         vlo.addMember(form);
         
          HLayout hlo = new HLayout();
-        hlo.setWidth100();
-        hlo.setHeight(20);
+        hlo.setWidth("100%");
+        hlo.setHeight("20%");
 
         okBtn = new IButton("OK");
         hlo.addMember(okBtn);
@@ -87,9 +87,10 @@ public class SaveDatasetDialog extends Window{
 
         errorlabl = new HTML("<h4 style='color:red;margin-left: 20px;height=20px;'>PLEASE CHECK YOUR DATA INPUT  </h4>");
         errorlabl.setVisible(false);
+        errorlabl.setHeight("10%");
+       errorlabl.setWidth("100%");
         vlo.addMember(errorlabl);
-          vlo.redraw();
-        this.show();
+        vlo.redraw();
 
     }
     

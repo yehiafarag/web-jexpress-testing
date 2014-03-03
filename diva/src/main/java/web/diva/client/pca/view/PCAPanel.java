@@ -40,7 +40,6 @@ public class PCAPanel extends Window {
             @Override
             public void onCloseClick(CloseClickEvent event) {
                 hide();
-                destroy();
             }
         });
         
@@ -112,7 +111,6 @@ public class PCAPanel extends Window {
         vp.setTop(20);
         vp.setMembersMargin(15);       
         colsNames = null;
-        this.show();
 
     }
 
