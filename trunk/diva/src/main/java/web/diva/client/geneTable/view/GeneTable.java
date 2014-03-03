@@ -4,6 +4,7 @@
  */
 package web.diva.client.geneTable.view;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.smartgwt.client.types.ListGridFieldType;
 import com.smartgwt.client.types.SelectionStyle;
@@ -35,6 +36,7 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
 
     public void setSelectionTable(ListGrid selectionTable) {
         this.selectionTable = selectionTable;
+        selectionChanged(Selection.TYPE.OF_ROWS);
     }
 
     public GeneTable(SelectionManager selectionManager, DatasetInformation datasetInfo) {
@@ -47,6 +49,11 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
         this.classtype = 1;
         this.components.add(GeneTable.this);
         this.selectionManager.addSelectionChangeListener(datasetId, GeneTable.this);
+        
+        
+        
+        
+        selectionChanged(Selection.TYPE.OF_ROWS);
         datasetInfo = null;
     }
 
@@ -220,6 +227,7 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
                     for (int x = 0; x < selectedColumn.length; x++) {
                         values[x] = "" + selectedColumn[x];
                     }
+                    
                     colSelectionTable.setValues(values);
                     colSelectionTable.redraw();
                 }
@@ -229,5 +237,6 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
 
     public void setColSelectionTable(SelectItem colSelectionTable) {
         this.colSelectionTable = colSelectionTable;
+          selectionChanged(Selection.TYPE.OF_COLUMNS);
     }
 }

@@ -33,7 +33,7 @@ public class ActivateGroupPanel extends Window {
     public ActivateGroupPanel(LinkedHashMap<String, String> rowGroupsNamesMap, LinkedHashMap<String, String> colGroupsNamesMap) {
 
         this.setWidth(400);
-        this.setHeight(400);
+        this.setHeight(500);
         this.setTitle("SELECT ACTIVE GROUPS");
         this.setShowMinimizeButton(false);
         this.setIsModal(false);
@@ -42,18 +42,17 @@ public class ActivateGroupPanel extends Window {
             @Override
             public void onCloseClick(CloseClickEvent event) {
                 hide();
-                destroy();
             }
         });
 
         final VLayout vlo = new VLayout();
-        vlo.setWidth100();
-        vlo.setHeight100();
+        vlo.setWidth(380);
+        vlo.setHeight(450);
         this.addItem(vlo);
 
         form = new DynamicForm();
         form.setHeight(240);
-        form.setWidth100();
+        form.setWidth(380);
         form.setPadding(5);
         form.setGroupTitle("Select Groups to Activate");
         form.setIsGroup(true);
@@ -74,15 +73,14 @@ public class ActivateGroupPanel extends Window {
         selectColGroups.setMultipleAppearance(MultipleAppearance.GRID);
 
 //                            if (datasetInfo != null) {
-        selectRowGroups.setValueMap(rowGroupsNamesMap);
-        selectColGroups.setValueMap(colGroupsNamesMap);
+       this.updataChartData(rowGroupsNamesMap, colGroupsNamesMap);
 //                            }
         form.setFields(selectRowGroups, selectColGroups);
         form.redraw();
         rowGroupsNamesMap = null;
         colGroupsNamesMap =null;
         HLayout hlo = new HLayout();
-        hlo.setWidth100();
+        hlo.setWidth(380);
         hlo.setHeight(20);
 
         okBtn = new IButton("Activate");
@@ -97,7 +95,8 @@ public class ActivateGroupPanel extends Window {
 
         HTML infolable = new HTML("<h4 style='color:blue;margin-left: 20px;margin-top: 20px;height=30px;'>*SELECT (ALL GROUP) WILL DEACTIVATE THE REST OF THE GROUPS</h4>");
         errorlabl = new HTML("<h4 style='color:red;margin-left: 20px;height=30px;'>YOU CAN NOT SELECT MORE THAN 2 GROUPS</h4>");
-
+        errorlabl.setWidth("380px");
+        errorlabl.setHeight("30px");
         errorlabl.setVisible(false);
         vlo.addMember(form);
         vlo.addMember(hlo);
@@ -107,8 +106,18 @@ public class ActivateGroupPanel extends Window {
         vlo.setMembersMargin(5);
 
         vlo.redraw();
-        show();
 
+    }
+    public void updataChartData(LinkedHashMap<String, String> rowGroupsNamesMap, LinkedHashMap<String, String> colGroupsNamesMap){
+     if(errorlabl != null)
+            errorlabl.setVisible(false);
+        if(form != null){
+            form.clearErrors(true);
+            form.clearValues();
+            form.redraw();
+        }
+        selectRowGroups.setValueMap(rowGroupsNamesMap);
+        selectColGroups.setValueMap(colGroupsNamesMap);
     }
 
     public DynamicForm getForm() {

@@ -39,7 +39,7 @@ public class DatasetInformation implements IsSerializable{
 //        this.colGroupsNamesMap = colGroupsNamesMap;
 //    }
 //    private LinkedHashMap<String,String> colGroupsNamesMap;
-//    private LinkedHashMap<String,String> colNamesMap;
+    private LinkedHashMap<String,String> colNamesMap;
     
     
   
@@ -118,11 +118,11 @@ public class DatasetInformation implements IsSerializable{
 //        this.colsNames = colsNames;
 //    }
 
-//    public LinkedHashMap<String,String> getColNamesMap() {
-//        return colNamesMap;
-//    }
-//
-//    public void setColNamesMap(LinkedHashMap<String,String> colNamesMap) {
-//        this.colNamesMap = colNamesMap;
-//    }
+    public LinkedHashMap<String,String> getColNamesMap() {
+        return colNamesMap;
+    }
+
+    public void setColNamesMap(LinkedHashMap<String,String> colNamesMap) {
+        this.colNamesMap = colNamesMap;
+    }
 }

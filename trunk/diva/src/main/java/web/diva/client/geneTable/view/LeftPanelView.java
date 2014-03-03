@@ -18,6 +18,7 @@ import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
+import java.util.LinkedHashMap;
 import web.diva.shared.SelectionManager;
 import web.diva.shared.model.core.model.dataset.DatasetInformation;
 
@@ -29,8 +30,10 @@ public class LeftPanelView extends SectionStack {
 
     private  final ListGrid selectionTable;
     private   final SelectItem  colSelectionTable;
+   
     public LeftPanelView(SelectionManager selectionManager, DatasetInformation datasetInfo) {
         this.setVisibilityMode(VisibilityMode.MUTEX);        
+        
         this.setWidth((RootPanel.get("geneTable").getOffsetWidth()));
         this.setHeight(580);
         this.setScrollSectionIntoView(true);
@@ -53,11 +56,11 @@ public class LeftPanelView extends SectionStack {
         
         SectionStackSection section3 = new SectionStackSection("Column Selections");
         section3.setExpanded(false);
-        colSelectionTable = initColSelectionTable();
+        colSelectionTable = initColSelectionTable(datasetInfo.getColNamesMap());
         DynamicForm form = new DynamicForm();
         form.setItems(colSelectionTable);
         form.setWidth((RootPanel.get("geneTable").getOffsetWidth()));
-        form.setHeight(200);
+        form.setHeight(400);
         section3.addItem(form); 
         geneTable.setColSelectionTable(colSelectionTable);
         
@@ -98,14 +101,18 @@ public class LeftPanelView extends SectionStack {
         return geneTable;
     }
     
-    private SelectItem initColSelectionTable(){
+    private SelectItem initColSelectionTable( LinkedHashMap<String,String> colNamesMap){
      SelectItem selectCols = new SelectItem();
-        selectCols.setTitle(" ");
+        selectCols.setTitle(" Selected Columns ");
+        selectCols.setWidth(RootPanel.get("geneTable").getOffsetWidth());
         selectCols.setTextAlign(Alignment.CENTER);
         selectCols.setTitleAlign(Alignment.CENTER);
         selectCols.setTitleOrientation(TitleOrientation.TOP);
         selectCols.setMultiple(true);        
-        selectCols.setMultipleAppearance(MultipleAppearance.GRID);
+        selectCols.setMultipleAppearance(MultipleAppearance.GRID);    
+        selectCols.setValueMap(colNamesMap);
+        selectCols.disable();
+        
         return selectCols;
     }
     
@@ -113,6 +120,10 @@ public class LeftPanelView extends SectionStack {
 
     public ListGrid getSelectionTable() {
         return selectionTable;
+    }
+
+    public SelectItem getColSelectionTable() {
+        return colSelectionTable;
     }
     
 }

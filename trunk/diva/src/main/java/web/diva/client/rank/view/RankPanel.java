@@ -10,6 +10,7 @@ import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.ui.HTML;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.MultipleAppearance;
+import com.smartgwt.client.types.TitleOrientation;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.Window;
@@ -25,7 +26,6 @@ import com.smartgwt.client.widgets.form.validator.IsIntegerValidator;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import java.util.LinkedHashMap;
-import web.diva.shared.model.core.model.dataset.DatasetInformation;
 
 /**
  *
@@ -60,32 +60,35 @@ public class RankPanel extends Window {
             @Override
             public void onCloseClick(CloseClickEvent event) {
                 hide();
-                destroy();
             }
         });
 
         VLayout vlo = new VLayout();
-        vlo.setWidth100();
-        vlo.setHeight100();
+        vlo.setWidth("100%");
+        vlo.setHeight("100%");
         this.addItem(vlo);
 
         DynamicForm form = new DynamicForm();
-        form.setHeight(150);
+        form.setHeight("50%");
         form.setIsGroup(true);
-        form.setWidth100();
+        form.setWidth("100%");
         form.setPadding(5);
-        form.setLayoutAlign(VerticalAlignment.BOTTOM);
+//        form.setLayoutAlign(VerticalAlignment.BOTTOM);
 
         selectColGroups = new SelectItem();
         selectColGroups.setTitle("COLUMN GROUPS (MAX 2)");
+        selectColGroups.setTitleOrientation(TitleOrientation.TOP);
         selectColGroups.setTextAlign(Alignment.CENTER);
         selectColGroups.setTitleAlign(Alignment.CENTER);
         selectColGroups.setMultiple(true);
         selectColGroups.setMultipleAppearance(MultipleAppearance.GRID);
-        
-        selectColGroups.setValueMap(colGroupsNamesMap);
+        selectColGroups.setWidth("100%");
+        selectColGroups.setHeight("60%");
+        this.updateData(colGroupsNamesMap);
      
         radioGroupItem = new RadioGroupItem();
+        radioGroupItem.setHeight("20%");
+        radioGroupItem.setWidth("100%");
         radioGroupItem.setTitle("Values");        
         radioGroupItem.setValueMap("Log 2", "Linear");
         radioGroupItem.setValue("Log 2");
@@ -95,6 +98,8 @@ public class RankPanel extends Window {
         form2 = new DynamicForm();
         form2.setGroupTitle("Permutations");
         form2.setIsGroup(true);
+        form2.setHeight("25%");
+        form2.setWidth("100%");
         permutation = new TextItem();
         permutation.setTitle("Permutation");
         permutation.setBrowserInputType("digits");
@@ -117,8 +122,8 @@ public class RankPanel extends Window {
         vlo.addMember(form2);
         
         HLayout hlo = new HLayout();
-        hlo.setWidth100();
-        hlo.setHeight(20);
+        hlo.setWidth("100%");
+        hlo.setHeight("10%");
         
 
         IButton newSeedBtn = new IButton("Create new seed");
@@ -133,8 +138,9 @@ public class RankPanel extends Window {
         
         errorlabl = new HTML("<h4 style='color:red;margin-left: 20px;height=20px;'>PLEASE CHECK YOUR DATA INPUT .. PLEASE NOTE THAT YOU CAN NOT SELECT MORE THAN 2 GROUPS</h4>");
         errorlabl.setVisible(false);
+         errorlabl.setHeight("15%");
+       errorlabl.setWidth("100%");
         vlo.addMember(errorlabl);
-        this.show();
         colGroupsNamesMap=null;
         
         
@@ -145,6 +151,19 @@ public class RankPanel extends Window {
                                  }
                             });
     
+    
+    }
+    
+    public void updateData(LinkedHashMap<String,String> colGroupsNamesMap)
+    {
+         if(errorlabl != null)
+            errorlabl.setVisible(false);
+        if(form2 != null){
+            form2.clearErrors(true);
+            form2.redraw();
+        }
+    
+        selectColGroups.setValueMap(colGroupsNamesMap);
     
     }
 

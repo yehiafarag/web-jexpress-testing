@@ -58,8 +58,9 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
     @Override
     public Map<Integer, String> getAvailableDatasets() {
-        TreeMap<Integer, String> datasetsMap = database.getAvailableDatasets();
-        path = this.getServletContext().getInitParameter("fileFolder");
+         path = this.getServletContext().getInitParameter("fileFolder");
+         database.loadDatasets(path);
+        TreeMap<Integer, String> datasetsMap = database.getAvailableDatasets();       
         return datasetsMap;
     }
 
@@ -75,7 +76,8 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     
     
     @Override
-    public DatasetInformation updateDatasetInfo(int datasetId){         
+    public DatasetInformation updateDatasetInfo(int datasetId){        
+        System.out.println("update dataset information");
         String[] geneTableData[] = new String[dataset.getRowGroups().size() + 1][dataset.getRowIds().length];
         //init gene names with index
         String[] geneNamesArr = util.initGeneNamesArr(dataset.getGeneIndexNameMap());
@@ -123,7 +125,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         datasetInfo.setDatasetInfo(dataset.getInfoHeaders()[0]);
 //        LinkedHashMap<String,String> rowGroupsNamesMap = new LinkedHashMap<String, String>();
 //        LinkedHashMap<String,String> colGroupsNamesMap = new LinkedHashMap<String, String>();
-//        LinkedHashMap<String,String> colNamesMap = new LinkedHashMap<String, String>();
+        LinkedHashMap<String,String> colNamesMap = new LinkedHashMap<String, String>();
         
 //        
 //        for(int x=0;x<dataset.getRowGroups().size();x++){
@@ -133,9 +135,9 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 //            colGroupsNamesMap.put(dataset.getColumnGroups().get(x).isActive()+","+dataset.getColumnGroups().get(x).getId(), dataset.getColumnGroups().get(x).getId());
 //        }
 //        LinkedHashMap<String,String> colNamesMap = new LinkedHashMap<String, String>();
-//          for(int x=0;x<dataset.getColumnIds().length;x++){
-//            colNamesMap.put(""+x, dataset.getColumnIds()[x]);
-//        }
+          for(int x=0;x<dataset.getColumnIds().length;x++){
+            colNamesMap.put(""+x, dataset.getColumnIds()[x]);
+        }
          
 //         String[] pcaColNames = new String[dataset.getColumnIds().length];
 //         for(int x=0;x<pcaColNames.length;x++)
@@ -145,12 +147,13 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 //        datasetInfo.setRowGroupsNamesMap(rowGroupsNamesMap);
         datasetInfo.setGeneTabelData(geneTableData);
         datasetInfo.setRowGroupsNames(rowGroupsNames);   
-//        datasetInfo.setColNamesMap(colNamesMap);
+        datasetInfo.setColNamesMap(colNamesMap);
         return datasetInfo;   
     }
      @Override
     public DatasetInformation activateGroups(int datasetId, String[] rowGroups, String[] colGroups) {
 
+        System.out.println("active gr is running");
         if (rowGroups != null && rowGroups.length > 0) {
             List<no.uib.jexpress_modularized.core.dataset.Group> updatedActiveGroupList = new ArrayList<no.uib.jexpress_modularized.core.dataset.Group>();
             for (no.uib.jexpress_modularized.core.dataset.Group g : jDataset.getRowGroups()) {
@@ -163,7 +166,6 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
             for (String str : rowGroups) {
                 String gName = str.split(",")[1];
-
                 if (gName.equalsIgnoreCase("ALL")) {
                     updatedActiveGroupList.clear();
                     for (no.uib.jexpress_modularized.core.dataset.Group g : jDataset.getRowGroups()) {
@@ -316,19 +318,41 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         @Override
         public Boolean createRowGroup(int datasetId,String name,String color,String type,int[] selection)
          {
+             for (int i:selection)
+                System.out.println("create row group "+i);
              List<no.uib.jexpress_modularized.core.dataset.Group> updatedActiveGroupList = new ArrayList<no.uib.jexpress_modularized.core.dataset.Group>();
-            for (no.uib.jexpress_modularized.core.dataset.Group g : jDataset.getRowGroups()) {
-                g.setActive(false);
-                updatedActiveGroupList.add(g);
-            }
+             
+             for(int x=0;x<jDataset.getRowGroups().size();x++){
+               no.uib.jexpress_modularized.core.dataset.Group g = jDataset.getRowGroups().get(x);
+               if(x == (jDataset.getRowGroups().size()-1))
+                   g.setActive(true);
+               else
+                   g.setActive(false);
+               updatedActiveGroupList.add(g);
+           }
+//             for (no.uib.jexpress_modularized.core.dataset.Group g : jDataset.getRowGroups()) {
+//                g.setActive(false);
+//                updatedActiveGroupList.add(g);
+//            }
             jDataset.getRowGroups().clear();
             jDataset.getRowGroups().addAll(updatedActiveGroupList);
             
              List<Group> updatedDevaActiveGroupList = new ArrayList<Group>();
-            for (Group g : dataset.getRowGroups()) {
-                g.setActive(false);
-                updatedDevaActiveGroupList.add(g);
-            }
+//            for (Group g : dataset.getRowGroups()) {
+//                g.setActive(false);
+//                updatedDevaActiveGroupList.add(g);
+//            }
+             
+             for(int x=0;x<dataset.getRowGroups().size();x++){
+              Group g = dataset.getRowGroups().get(x);
+               if(x == (dataset.getRowGroups().size()-1))
+                   g.setActive(true);
+               else
+                   g.setActive(false);
+               updatedDevaActiveGroupList.add(g);
+           }
+            
+            
             dataset.getRowGroups().clear();
             dataset.getRowGroups().addAll(updatedDevaActiveGroupList);
             
@@ -339,14 +363,11 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
                 gColor  = "#" + Integer.toHexString(c.getRGB()).substring(2);
            }else
            {
-               c = Color.getColor(color);
-               gColor = color;
+//               c = Color.getColor(color);
+//               gColor = color;
            }
-                Selection.TYPE s = null;
-                String gType = "";
-         
-                s =  Selection.TYPE.OF_ROWS;
-                gType = "Row";
+                Selection.TYPE s = Selection.TYPE.OF_ROWS;
+                String gType = "Row";
           
             no.uib.jexpress_modularized.core.dataset.Group jG = new no.uib.jexpress_modularized.core.dataset.Group(name, c, new Selection(s, selection));
             jG.setActive(true);
@@ -364,8 +385,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
                 g.setGeneList(util.initGroupGeneList(dataset, jG.getMembers()));
                 g.setId(jG.getName());
                 dataset.addRowGroup(g);
-                return true;
-        
+                return true;    
         
         
         }
@@ -432,7 +452,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         newDS.setColumnIds(jDataset.getColumnIds());
         newDS.setMissingMeasurements(newMissingMeasurments);
         newDS.addRowAnnotationNameInUse(jDataset.getInfoHeaders()[0]);        
-        newDS.setName("SUB - "+jDataset.getName()+" - "+ name+" - "+dateFormat.format(cal.getTime()));
+        newDS.setName("SUB - "+jDataset.getName()+" - "+ name+" - "+dateFormat.format(cal.getTime()).replace(":", " "));
         database.setDataset(newDS, id);
         return id;
         
@@ -479,14 +499,15 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
     
     
-    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    DateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
     Calendar cal = Calendar.getInstance();
     @Override
     public Integer saveDataset(int datasetId, String newName) {
         TreeMap<Integer, String> datasetsMap = database.getAvailableDatasets();
         int id = datasetsMap.lastKey()+1;         
-        jDataset.setName(jDataset.getName()+" - "+newName+" - "+dateFormat.format(cal.getTime()));
+        jDataset.setName((jDataset.getName()+" - "+newName+" - "+dateFormat.format(cal.getTime())).replace(":", " "));
         database.setDataset(jDataset, id);
+        
         return id;
     }
     

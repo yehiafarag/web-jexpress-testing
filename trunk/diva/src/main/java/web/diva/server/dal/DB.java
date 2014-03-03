@@ -29,53 +29,29 @@ import no.uib.jexpress_modularized.core.dataset.Dataset;
  */
 public class DB {
     private final Util databaseUtil = new Util();
-    private static  Map<Integer,Dataset> DATASET_MAP;
+    private  Map<Integer,String> datasetsNameMap;
     private String path;
     
     public void loadDatasets(String fileFolderPath)
     {
         path = fileFolderPath;
-        ArrayList<Integer>removeableKeys = new ArrayList<Integer>();
-        TreeMap<Integer,Dataset> datasetsMapI = getSavedList();        
-        Map<Integer,Dataset> datasetsMapII= databaseUtil.readDatasetsFiles(fileFolderPath); 
-        if(datasetsMapI == null){
-            System.out.println("no serial reading");
-         DATASET_MAP = datasetsMapII;
-        }else{
-            for(int keyI:datasetsMapI.keySet()){
-                Dataset tds = datasetsMapI.get(keyI);
-                for(int keyII:datasetsMapII.keySet()){
-                    Dataset tds2 = datasetsMapII.get(keyII);
-                    if(tds.getName().equalsIgnoreCase(tds2.getName()))
-                        removeableKeys.add(keyII);                    
-                }
-            }
-            for(int key:removeableKeys){
-                datasetsMapII.remove(key);
-            }
-            DATASET_MAP = datasetsMapI;
-            int index = datasetsMapI.lastKey()+1;
-            for(Dataset ds:datasetsMapII.values()){
-                DATASET_MAP.put(index, ds);
-                index++;
-            }
-        }
-        
-        storeList();
+        datasetsNameMap= databaseUtil.getDatasetsNameMap(fileFolderPath); 
+
     
     }
     public  TreeMap<Integer, String> getAvailableDatasets()
     {
-        TreeMap<Integer, String> datasetsNameMap = new TreeMap<Integer, String>();
-        for(int key:DATASET_MAP.keySet()){
-            Dataset ds = DATASET_MAP.get(key);
-            datasetsNameMap.put(key, ds.getName());
+        TreeMap<Integer, String> datasetsTitleMap = new TreeMap<Integer, String>();
+        for(int key:datasetsNameMap.keySet()){
+            String name = datasetsNameMap.get(key);
+            name = name.substring(0,(name.length()-4));
+            datasetsTitleMap.put(key, name);
         }
-        return datasetsNameMap;
+        return datasetsTitleMap;
     }
     
     public Dataset getDataset(int datasetId){
-        Dataset jDataset = DATASET_MAP.get(datasetId);
+        Dataset jDataset = databaseUtil.getDataset(datasetsNameMap.get(datasetId), path);
         Dataset newDS = new Dataset(jDataset.getData(),jDataset.getRowIds(),jDataset.getColumnIds());
         newDS.setColumnIds(jDataset.getColumnIds());
         newDS.setMissingMeasurements(jDataset.getMissingMeasurements());
@@ -89,87 +65,101 @@ public class DB {
         return newDS;
     }
     public void setDataset(Dataset ds,int id){
-        DATASET_MAP.put(id, ds);
-        storeList();
-    
-    }
-    
-    private void storeList(){
-      TreeMap<Integer,Dataset> serDatasetsMap = new TreeMap<Integer,Dataset>();
-      serDatasetsMap.putAll(DATASET_MAP);
-        try { 
-            File dbFile = new File(path,"db1.ser");
+         try { 
+            File dbFile = new File(path,ds.getName()+".ser");
             if(!dbFile.exists())
                 dbFile.createNewFile();
             OutputStream file = new FileOutputStream(dbFile);
             OutputStream buffer = new BufferedOutputStream(file);
             ObjectOutput output = new ObjectOutputStream(buffer);
-            output.writeObject(serDatasetsMap);
+            output.writeObject(ds);
             output.flush();
             output.close();
         } catch (IOException ex) {
             ex.printStackTrace();
             System.err.println(ex.getMessage());//.log(Level.SEVERE, "Cannot perform output.", ex);
         }
+         datasetsNameMap.put(id,ds.getName()+".ser");
 
-    }
-
-    private TreeMap<Integer, Dataset> getSavedList() {
-        try {
-            File dbFile = new File(path, "db1.ser");
-            if (!dbFile.exists()) {
-                System.out.println("cant find the file");
-                return null;
-            }
-            System.out.println("befor error---->>> ");
-            InputStream file = new FileInputStream(dbFile);
-            InputStream buffer = new BufferedInputStream(file);
-            ObjectInput input = new ObjectInputStream(buffer);
-            System.out.println("after fileinput ---->>> ");
-            
-            //deserialize the List
-            TreeMap<Integer, Dataset> serDatasetsMap = (TreeMap<Integer, Dataset>) input.readObject();
-             System.out.println("after error---->>> "+serDatasetsMap==null);
-            
-             return serDatasetsMap;
-
-        } catch (ClassNotFoundException ex) {
-            System.err.println(ex.getMessage());
-        } catch (Exception ex) {
-             System.err.println(ex.getMessage());
-        }
-        return null;
+    
     }
     
-     private Object getSavedList(int x) {
-        try {
-            File dbFile = new File(path+ "\\db.ser");
-            System.out.println(path+"db.ser");
-            if (!dbFile.exists()) {
-                System.out.println("cant find the file");
-                return null;
-            } 
-            
-                 
-            
-            System.out.println("befor error---->>> ");
-            InputStream fileinput = new FileInputStream(path+ "/db.ser");
-            InputStream bufferInput = new BufferedInputStream(fileinput);
-            ObjectInput input = new ObjectInputStream(bufferInput);
-            System.out.println("after fileinput ---->>> ");
+//    private void storeList(){
+//      TreeMap<Integer,Dataset> serDatasetsMap = new TreeMap<Integer,Dataset>();
+//      serDatasetsMap.putAll(DATASET_MAP);
+//        try { 
+//            File dbFile = new File(path,"db1.ser");
+//            if(!dbFile.exists())
+//                dbFile.createNewFile();
+//            OutputStream file = new FileOutputStream(dbFile);
+//            OutputStream buffer = new BufferedOutputStream(file);
+//            ObjectOutput output = new ObjectOutputStream(buffer);
+//            output.writeObject(serDatasetsMap);
+//            output.flush();
+//            output.close();
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//            System.err.println(ex.getMessage());//.log(Level.SEVERE, "Cannot perform output.", ex);
+//        }
+//
+//    }
 
-            
-            //deserialize the List
-           Object serDatasetsMap = input.readObject();
-           input.close();
-             System.out.println("after error---->>> "+serDatasetsMap==null);
-            return serDatasetsMap;
-
-        }  catch (Exception ex) {
-             ex.printStackTrace();
-        }
-        return null;
-
-    }
+//    private TreeMap<Integer, Dataset> getSavedList() {
+//        try {
+//            File dbFile = new File(path, "db1.ser");
+//            if (!dbFile.exists()) {
+//                System.out.println("cant find the file");
+//                return null;
+//            }
+//            System.out.println("befor error---->>> ");
+//            InputStream file = new FileInputStream(dbFile);
+//            InputStream buffer = new BufferedInputStream(file);
+//            ObjectInput input = new ObjectInputStream(buffer);
+//            System.out.println("after fileinput ---->>> ");
+//            
+//            //deserialize the List
+//            TreeMap<Integer, Dataset> serDatasetsMap = (TreeMap<Integer, Dataset>) input.readObject();
+//             System.out.println("after error---->>> "+serDatasetsMap==null);
+//            
+//             return serDatasetsMap;
+//
+//        } catch (ClassNotFoundException ex) {
+//            System.err.println(ex.getMessage());
+//        } catch (Exception ex) {
+//             System.err.println(ex.getMessage());
+//        }
+//        return null;
+//    }
+//    
+//     private Object getSavedList(int x) {
+//        try {
+//            File dbFile = new File(path+ "\\db.ser");
+//            System.out.println(path+"db.ser");
+//            if (!dbFile.exists()) {
+//                System.out.println("cant find the file");
+//                return null;
+//            } 
+//            
+//                 
+//            
+//            System.out.println("befor error---->>> ");
+//            InputStream fileinput = new FileInputStream(path+ "/db.ser");
+//            InputStream bufferInput = new BufferedInputStream(fileinput);
+//            ObjectInput input = new ObjectInputStream(bufferInput);
+//            System.out.println("after fileinput ---->>> ");
+//
+//            
+//            //deserialize the List
+//           Object serDatasetsMap = input.readObject();
+//           input.close();
+//             System.out.println("after error---->>> "+serDatasetsMap==null);
+//            return serDatasetsMap;
+//
+//        }  catch (Exception ex) {
+//             ex.printStackTrace();
+//        }
+//        return null;
+//
+//    }
 
 }
