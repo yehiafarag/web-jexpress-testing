@@ -15,6 +15,8 @@
   
   <inherits name="org.moxieapps.gwt.highcharts.Highcharts"/>
   <!--<inherits name="com.github.gwtd3.D3"/>-->
+  
+  <inherits name="com.mogaleaf.SimpleColorPicker"/>
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='web.diva.client.DivaMain'/>

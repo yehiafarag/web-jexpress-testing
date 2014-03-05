@@ -58,6 +58,7 @@ public class LineChartComp extends ModularizedListener {
             layout = new VerticalPanel();
             layout.setHeight("300px");
             layout.setWidth("" + RootPanel.get("LineChartResults").getOffsetWidth() + "px");
+            layout.setBorderWidth(1);
             
 //            buttonsLayout = new HorizontalPanel();
 //            buttonsLayout.setWidth("" + RootPanel.get("LineChartResults").getOffsetWidth() + "px");

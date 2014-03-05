@@ -21,6 +21,7 @@ import web.diva.server.model.GroupColorUtil;
 import web.diva.server.model.HMGen;
 import web.diva.server.model.JexpressUtil;
 import web.diva.server.model.LineChartGenerator;
+import web.diva.server.model.PCAGenerator;
 import web.diva.server.model.PCAUtil;
 import web.diva.server.model.SOMClustUtil;
 import web.diva.shared.beans.LineChartResults;
@@ -30,7 +31,9 @@ import web.diva.shared.beans.SomClusteringResults;
 import web.diva.shared.model.core.model.dataset.DatasetInformation;
 import web.diva.shared.model.core.model.dataset.Group;
 import web.diva.server.model.RankUtil;
-import web.diva.shared.beans.ImgResult;
+import web.diva.shared.beans.HeatMapImgResult;
+import web.diva.shared.beans.PCAImageResults;
+import web.diva.shared.beans.PCAPoint;
 
 /**
  * The server side implementation of the RPC service.
@@ -53,6 +56,8 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     private final GroupColorUtil colGen = new GroupColorUtil();
     private String path ;
     private  LineChartGenerator lcg;
+    private  PCAResults PCAResult;
+    private     PCAGenerator pcaGen = new PCAGenerator();
    
     private final DB database = new DB();
 
@@ -266,21 +271,38 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         return results;
     }
     @Override
-    public ImgResult computeHeatmap(int datasetId, List<String> indexer,List<String>colIndexer) {
+    public HeatMapImgResult computeHeatmap(int datasetId, List<String> indexer,List<String>colIndexer) {
        String path = this.getServletContext().getInitParameter("fileFolder");
         HMGen hmGenerator= new HMGen(path,jDataset,indexer,colIndexer);        
-        ImgResult imge = hmGenerator.getHeatMapResults();
+        HeatMapImgResult imge = hmGenerator.getHeatMapResults();
         return imge;
     }
 
     @Override
-    public PCAResults computePCA(int datasetId,int comI,int comII) {
-        PCAResults res = pcaUtil.getPCAResults(jDataset,dataset,comI,comII);
-        res.setDatasetId(datasetId);
-        return res;
+    public PCAImageResults computePCA(int datasetId,int comI,int comII) {
+         PCAResult = pcaUtil.getPCAResults(jDataset,dataset,comI,comII);
+       
+       // String img = pcaGen.generateChart(path, res,null);
+        PCAImageResults pcaImgResults = new PCAImageResults();
+        pcaImgResults.setDatasetId(datasetId);
+        pcaImgResults.setXyName(PCAResult.getXyName());
+        //pcaImgResults.setImgString(img);
+        return pcaImgResults;
    }
+    @Override
+    public PCAImageResults updatePCASelection(int datasetId, int[] selection,boolean zoom,boolean selectAll){
+         PCAImageResults pcaImgResults = pcaGen.generateChart(path, PCAResult,selection,zoom,selectAll);
+         pcaImgResults.setDatasetId(datasetId);
+         System.out.println("pca update with selection "+(selection == null) +"  aand soom "+zoom);
+         
+          Object[]  obj     = pcaUtil.getTooltips(pcaImgResults,PCAResult.getPoints());
+          TreeMap<String,String> tooltips =(TreeMap<String,String>) obj[0]; 
+         PCAPoint[] indexeMap = (PCAPoint[]) obj[1]; 
+         pcaImgResults.setXyName(tooltips);
+         pcaImgResults.setIndexeMap(indexeMap);
+        return pcaImgResults;
     
-    
+    } 
         @Override
     public RankResult computeRank(int datasetId,String perm,String seed,String[] colGropNames,String log2) {
         String type = "TwoClassUnPaired";

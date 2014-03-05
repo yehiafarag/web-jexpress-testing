@@ -13,12 +13,22 @@ import java.util.TreeMap;
  */
 public class PCAResults implements IsSerializable{
     
-    private  TreeMap<String,PCAPoint>  points ;
+    private  TreeMap<Integer,PCAPoint>  points ;
     private int datasetId;
     private int dataSize;
     private String header;
     private int pcai;
     private int pcaii;
+    
+    private TreeMap<String,String> xyName ;
+
+    public TreeMap<String, String> getXyName() {
+        return xyName;
+    }
+
+    public void setXyName(TreeMap<String, String> xyName) {
+        this.xyName = xyName;
+    }
 
     public String getHeader() {
         return header;
@@ -48,11 +58,11 @@ public class PCAResults implements IsSerializable{
         this.dataSize = dataSize;
     }
 
-    public TreeMap<String, PCAPoint> getPoints() {
+    public TreeMap<Integer, PCAPoint> getPoints() {
         return points;
     }
 
-    public void setPoints(TreeMap<String, PCAPoint> points) {
+    public void setPoints(TreeMap<Integer, PCAPoint> points) {
         this.points = points;
     }
 

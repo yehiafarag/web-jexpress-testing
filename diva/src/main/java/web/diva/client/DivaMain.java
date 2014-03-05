@@ -25,9 +25,8 @@ import web.diva.client.somclust.view.SomClustView;
 import web.diva.client.view.ActivateGroupPanel;
 import web.diva.client.view.DatasetPanel;
 import web.diva.client.view.SaveDatasetDialog;
-import web.diva.shared.beans.ImgResult;
+import web.diva.shared.beans.HeatMapImgResult;
 import web.diva.shared.beans.LineChartResults;
-import web.diva.shared.beans.PCAResults;
 import web.diva.shared.beans.RankResult;
 import web.diva.shared.beans.SomClusteringResults;
 import web.diva.shared.model.core.model.dataset.DatasetInformation;
@@ -36,6 +35,7 @@ import web.diva.shared.Selection;
 import web.diva.client.view.ButtonsMenu;
 import web.diva.client.view.HeaderLayout;
 import web.diva.client.view.InitImgs;
+import web.diva.shared.beans.PCAImageResults;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -285,7 +285,7 @@ public class DivaMain implements EntryPoint {
     private void generateHeatMap(List<String> indexers,List<String> colIndexer) {
          RootPanel.get("loaderImage").setVisible(true);
         greetingService.computeHeatmap(datasetId, indexers,colIndexer,
-                new AsyncCallback<ImgResult>() {
+                new AsyncCallback<HeatMapImgResult>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         errorLabel.setText(SERVER_ERROR);
@@ -294,7 +294,7 @@ public class DivaMain implements EntryPoint {
                     }
 
                     @Override
-                    public void onSuccess(ImgResult result) {
+                    public void onSuccess(HeatMapImgResult result) {
                         RootPanel.get("datasetInformation").setVisible(true);
                         errorLabel.setText("");
                         hc.setImge(result);
@@ -329,7 +329,7 @@ public class DivaMain implements EntryPoint {
     private void viewPCAChart(int datasetId,int pcaI,int pcaII) {
         RootPanel.get("loaderImage").setVisible(true);
         greetingService.computePCA(datasetId,pcaI,pcaII,
-                new AsyncCallback<PCAResults>() {
+                new AsyncCallback<PCAImageResults>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         errorLabel.setText(SERVER_ERROR);
@@ -338,10 +338,10 @@ public class DivaMain implements EntryPoint {
                     }
 
                     @Override
-                    public void onSuccess(PCAResults result) {
+                    public void onSuccess(PCAImageResults result) {
                         errorLabel.setText("");
                          RootPanel.get("datasetInformation").setVisible(true);
-                        PCAPlot pca = new PCAPlot(result,selectionManager);
+                        PCAPlot pca = new PCAPlot(result,selectionManager,greetingService);
                         RootPanel.get("PCAChartResults").clear();
                         RootPanel.get("PCAChartResults").add(pca.getScatterPlotLayout());
                         RootPanel.get("loaderImage").setVisible(false);
@@ -694,7 +694,7 @@ public class DivaMain implements EntryPoint {
                                     String processType = dsPanel.getProcessType();
                                     if (processType.equalsIgnoreCase("Groups")) {
                                         String name = dsPanel.getName().getValueAsString();
-                                        String color = "";//dsPanel.getColorPicker();
+                                        String color = dsPanel.getColor();
                                         String type = dsPanel.getRadioGroupItemValue();
                                         if (name == null || name.equals("")) {
                                             dsPanel.getErrorlabl().setVisible(true);
@@ -712,7 +712,7 @@ public class DivaMain implements EntryPoint {
                                             }
                                         }else{
                                              dsPanel.getErrorlabl().setVisible(false);
-                                             
+                                            
                                             createRowGroup(datasetId, name, color, type,dsPanel.getRowSelection());
                                             dsPanel.hide();                                   
                                         

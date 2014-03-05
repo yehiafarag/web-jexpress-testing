@@ -5,14 +5,21 @@
  */
 package web.diva.client.view;
 
+//import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
-import com.smartgwt.client.data.Record;
-import com.smartgwt.client.data.RecordList;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.mogaleaf.client.common.widgets.ColorHandler;
+import com.mogaleaf.client.common.widgets.SimpleColorPicker;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.MultipleAppearance;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.Window;
+//import com.smartgwt.client.widgets.events.ClickEvent;
+//import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.CloseClickEvent;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -78,6 +85,7 @@ public class DatasetPanel extends Window {
     private final DynamicForm form2;
     private final DynamicForm form;
     private int[] rowSelection, colSelection;
+    private String color;
 
     public int[] getRowSelection() {
         return rowSelection;
@@ -157,7 +165,31 @@ public class DatasetPanel extends Window {
        
         name.setTitle("Group Name");
         name.setRequired(true);
-        
+      
+        final SimpleColorPicker picker = new SimpleColorPicker();
+        final Button button = new Button();
+        picker.addListner(new ColorHandler() {
+
+            @Override
+            public void newColorSelected(String colour) {
+                color = colour;
+                // What you want to do with the color here
+            }
+        });
+        button.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                picker.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
+                    @Override
+                    public void setPosition(int offsetWidth, int offsetHeight) {
+                        int left = button.getAbsoluteLeft() - offsetWidth + button.getOffsetWidth();
+                        int top = button.getAbsoluteTop() + button.getOffsetHeight();
+                        picker.setPopupPosition(left, top);
+                    }
+                });
+            }
+        });
 //        colorPicker = new ColorPickerItem(); //       
 //        colorPicker.setTitle("Color Picker");  
 //        colorPicker.setWidth(85); 
@@ -174,6 +206,7 @@ public class DatasetPanel extends Window {
         form2.setFields(datasetName);
         form2.disable();
         vlo.addMember(form);
+        vlo.addMember(picker);
         vlo.addMember(form2);
 
         HLayout hlo = new HLayout();
@@ -273,6 +306,10 @@ public class DatasetPanel extends Window {
 
     
     
+    }
+
+    public String getColor() {
+        return color;
     }
 
 }
