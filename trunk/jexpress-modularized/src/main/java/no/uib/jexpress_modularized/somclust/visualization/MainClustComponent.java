@@ -76,7 +76,8 @@ import no.uib.jexpress_modularized.core.visualization.ErrorMsg;
 import no.uib.jexpress_modularized.core.visualization.Scrollpic;
 import no.uib.jexpress_modularized.core.visualization.Tools;
 import no.uib.jexpress_modularized.core.visualization.colors.colorcomponents.ColorFactoryList;
-import org.freehep.util.export.ExportDialog;
+import org.freehep.graphicsbase.util.export.ExportDialog;
+//import org.freehep.util.export.ExportDialog;
 
 /**
  * This is the class that performs hierarchical clustering and produces a

@@ -4,7 +4,6 @@
  */
 package utility;
 
-import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -13,8 +12,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 import no.uib.jexpress_modularized.core.dataset.Dataset;
-import no.uib.jexpress_modularized.core.dataset.Group;
-import no.uib.jexpress_modularized.core.model.Selection;
 
 /**
  *
@@ -43,27 +40,29 @@ public class FilesReader implements Serializable{
             Map<Integer,double[]>geneMap = new TreeMap<Integer,double[]>();
               while((line = bufRdr.readLine()) != null )
 		{
+                    System.out.println(" the line "+ index+"   -- "+line);
                     line = line.toUpperCase();
                     
-                    String[] strArr = line.trim().split("\\s");
+                    String[] strArr = line.trim().split("\t");
                     if(index==0)
                     {
                         info = strArr[0].trim();
+                        
                         String col="";
-                        int tag =0;
+//                        int tag =0;
                         for(int z =1;z<strArr.length;z++)
                         {
                             String s= strArr[z];
-                            if(tag < 2)
-                            {
+//                            if(tag < 2)
+//                            {
                              col = col+s;
-                             tag++;
-                            }
-                            if(tag==2){
+//                             tag++;
+//                            }
+//                            if(tag==2){
                             columnNameList.add(col.trim());
-                            tag = 0;
+//                            tag = 0;
                             col ="";
-                            }
+//                            }
                            
                             
                           
@@ -72,9 +71,17 @@ public class FilesReader implements Serializable{
                         index++;
                         continue;
                     }
-                    double[] raw = new double[strArr.length-1];
-                    for(int x = 1; x<strArr.length;x++)
+                    double[] raw = new double[columnNameList.size()];
+                    for(int x = 1; x<raw.length;x++){
+                        try{
                         raw[x-1] = Double.valueOf(strArr[x]);
+                        }catch(NumberFormatException nfx){
+                        raw[x-1] =0.0;
+                        }catch(ArrayIndexOutOfBoundsException exp){
+                        raw[x-1] =0.0;
+                        
+                        }
+                    }
                     column = strArr.length-1;
                    geneMap.put((index-1), raw);
                    rowNameList.add(strArr[0]);
@@ -132,27 +139,27 @@ public class FilesReader implements Serializable{
              
              
              ///add the groups
-              int[] selectionRowsAArr = new int[selectionRowsA.size()] ;
-              for(int c=0;c<selectionRowsA.size();c++)
-              {
-                  selectionRowsAArr[c] = selectionRowsA.get(c);
-              }
-              int[] selectionRowsBArr = new int[selectionRowsB.size()] ;
-              for(int c=0;c<selectionRowsB.size();c++)
-              {
-                  selectionRowsBArr[c] = selectionRowsB.get(c);
-              }
-              Group g1 = new Group("test group rows A", new Color(180,49,4), new Selection(Selection.TYPE.OF_ROWS, selectionRowsAArr));
-              g1.setActive(true);
-              dataset.addRowGroup(g1);
-              Group g2 = new Group("test group rows B", new Color(4,180,49), new Selection(Selection.TYPE.OF_ROWS, selectionRowsBArr));
-              g2.setActive(true);              
-              dataset.addRowGroup(g2);
-              
-              int[] selectionCol = {0,1,2,3};                
-              dataset.addColumnGroup(new Group("test group columns A", Color.CYAN, new Selection(Selection.TYPE.OF_COLUMNS, selectionCol)));
-                int[] selectionCol2 = new int[]{4,5,6};
-              dataset.addColumnGroup(new Group("test group columns B", Color.orange, new Selection(Selection.TYPE.OF_COLUMNS, selectionCol2)));
+//              int[] selectionRowsAArr = new int[selectionRowsA.size()] ;
+//              for(int c=0;c<selectionRowsA.size();c++)
+//              {
+//                  selectionRowsAArr[c] = selectionRowsA.get(c);
+//              }
+//              int[] selectionRowsBArr = new int[selectionRowsB.size()] ;
+//              for(int c=0;c<selectionRowsB.size();c++)
+//              {
+//                  selectionRowsBArr[c] = selectionRowsB.get(c);
+//              }
+//              Group g1 = new Group("test group rows A", new Color(180,49,4), new Selection(Selection.TYPE.OF_ROWS, selectionRowsAArr));
+//              g1.setActive(true);
+//              dataset.addRowGroup(g1);
+//              Group g2 = new Group("test group rows B", new Color(4,180,49), new Selection(Selection.TYPE.OF_ROWS, selectionRowsBArr));
+//              g2.setActive(true);              
+//              dataset.addRowGroup(g2);
+//              
+//              int[] selectionCol = {0,1,2,3};                
+//              dataset.addColumnGroup(new Group("test group columns A", Color.CYAN, new Selection(Selection.TYPE.OF_COLUMNS, selectionCol)));
+//                int[] selectionCol2 = new int[]{4,5,6};
+//              dataset.addColumnGroup(new Group("test group columns B", Color.orange, new Selection(Selection.TYPE.OF_COLUMNS, selectionCol2)));
 
 //                
              
