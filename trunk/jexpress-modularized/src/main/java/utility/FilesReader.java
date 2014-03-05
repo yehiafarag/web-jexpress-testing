@@ -40,7 +40,6 @@ public class FilesReader implements Serializable{
             Map<Integer,double[]>geneMap = new TreeMap<Integer,double[]>();
               while((line = bufRdr.readLine()) != null )
 		{
-                    System.out.println(" the line "+ index+"   -- "+line);
                     line = line.toUpperCase();
                     
                     String[] strArr = line.trim().split("\t");
@@ -72,13 +71,14 @@ public class FilesReader implements Serializable{
                         continue;
                     }
                     double[] raw = new double[columnNameList.size()];
-                    for(int x = 1; x<raw.length;x++){
+                    for(int x = 0; x<raw.length;x++){
                         try{
-                        raw[x-1] = Double.valueOf(strArr[x]);
+                        raw[x] = Double.valueOf(strArr[x+1]);
+                       
                         }catch(NumberFormatException nfx){
-                        raw[x-1] =0.0;
+                            raw[x] =0.0;
                         }catch(ArrayIndexOutOfBoundsException exp){
-                        raw[x-1] =0.0;
+                            raw[x] =0.0;
                         
                         }
                     }
