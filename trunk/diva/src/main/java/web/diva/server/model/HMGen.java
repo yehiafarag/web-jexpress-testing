@@ -11,7 +11,7 @@ import java.io.FileInputStream;
 import java.util.List;
 import no.uib.jexpress_modularized.core.dataset.Dataset;
 import org.tc33.jheatchart.HeatChart;
-import web.diva.shared.beans.ImgResult;
+import web.diva.shared.beans.HeatMapImgResult;
 
 /**
  *
@@ -24,7 +24,7 @@ public class HMGen {
     
     
     private final List<String> indexer;
-    private final ImgResult results;
+    private final HeatMapImgResult results;
     private final List<String>colIndexer;
 
     public HMGen(String path, Dataset dataset,List<String> indexer,List<String>colIndexer) {
@@ -32,7 +32,7 @@ public class HMGen {
         this.path = path;
         this.indexer = indexer;
         this.colIndexer = colIndexer;
-        this.results = new ImgResult();
+        this.results = new HeatMapImgResult();
         generateImage();
         
 
@@ -140,7 +140,7 @@ public class HMGen {
 
 
 
-    public ImgResult getHeatMapResults() {
+    public HeatMapImgResult getHeatMapResults() {
         return results;
     }
 }

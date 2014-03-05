@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.smartgwt.client.widgets.layout.HLayout;
 import java.util.List;
 import web.diva.shared.SelectionManager;
-import web.diva.shared.beans.ImgResult;
+import web.diva.shared.beans.HeatMapImgResult;
 import web.diva.shared.beans.SomClusteringResults;
 
 /**
@@ -61,7 +61,7 @@ public class SomClustComp extends HLayout {
         
     }
 
-    public void setImage(final ImgResult imageResult) {
+    public void setImage(final HeatMapImgResult imageResult) {
         HeatMapGraph hmg = new HeatMapGraph(imageResult,(width), sideTreeHeight);
         vp.add(hmg);
         colIndexer = null;

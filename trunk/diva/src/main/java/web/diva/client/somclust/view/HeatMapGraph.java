@@ -9,11 +9,10 @@ import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import web.diva.shared.beans.ImgResult;
+import web.diva.shared.beans.HeatMapImgResult;
 
 /**
  *
@@ -25,7 +24,7 @@ public class HeatMapGraph extends VerticalPanel{
     private String height ;
     private Image image;
     
-    public HeatMapGraph(final ImgResult imageResult,int width,double height)
+    public HeatMapGraph(final HeatMapImgResult imageResult,int width,double height)
     {
         this.image = new Image(imageResult.getImgString());
         this.width = ((double) width / 3.0) + "px";
@@ -36,7 +35,7 @@ public class HeatMapGraph extends VerticalPanel{
         final double rowIndicator = height / (double) imageResult.getRowNum();
         final HTML toolTip = new HTML();
         toolTip.setVisible(false);
-        RootPanel.get("tooltip").setWidth(this.width);
+//        RootPanel.get("tooltip").setWidth(this.width);
         RootPanel.get("tooltip").add(toolTip);
         this.image.addMouseMoveHandler(new MouseMoveHandler() {
             @Override

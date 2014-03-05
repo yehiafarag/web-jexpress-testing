@@ -22,6 +22,8 @@ public class RankTablesView extends HorizontalPanel {
     
     public RankTablesView(SelectionManager selectionManager,RankResult results)
     {
+        
+        this.setBorderWidth(1);
 
         this.setWidth(""+RootPanel.get("RankTablesResults").getOffsetWidth()+"px");
         this.setHeight("270px");

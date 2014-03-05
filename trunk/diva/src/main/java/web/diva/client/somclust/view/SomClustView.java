@@ -10,7 +10,7 @@ import java.util.List;
 import web.diva.shared.ModularizedListener;
 import web.diva.shared.Selection;
 import web.diva.shared.SelectionManager;
-import web.diva.shared.beans.ImgResult;
+import web.diva.shared.beans.HeatMapImgResult;
 import web.diva.shared.beans.SomClusteringResults;
 
 /**
@@ -28,7 +28,7 @@ public class SomClustView extends ModularizedListener implements IsSerializable 
         return colIndexer;
     }
 
-    public void setImge(ImgResult imgeResut) {
+    public void setImge(HeatMapImgResult imgeResut) {
         somClustCom.setImage(imgeResut);
     }
 
