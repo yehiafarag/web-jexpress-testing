@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  *
- * @author Y.M
+ * @author Yehia Farag
  */
 public class Dataset implements IsSerializable {
 
@@ -21,16 +21,13 @@ public class Dataset implements IsSerializable {
     private String[] infoHeaders;
     private double[][] measurements;
     private String[][] infos;
-    private Map<Integer,String> geneIndexNameMap;
-    private Map<Integer,Number[]> memberMaps;
-    
-    private String[] geneColorArr;
-     private String[] geneNamesArr;
-     
-     private Number[][] lineChartPointArr;
-    
+    private Map<Integer, String> geneIndexNameMap;
+    private Map<Integer, Number[]> memberMaps;
 
-   
+    private String[] geneColorArr;
+    private String[] geneNamesArr;
+
+    private Number[][] lineChartPointArr;
 
     public Map<Integer, String> getGeneIndexNameMap() {
         return geneIndexNameMap;
@@ -40,22 +37,18 @@ public class Dataset implements IsSerializable {
         this.geneIndexNameMap = geneIndexNameMap;
     }
 
-    public Map<String,Integer> getGeneNameIndexMap() {
+    public Map<String, Integer> getGeneNameIndexMap() {
         return geneNameIndexMap;
     }
 
-    public void setGeneNameIndexMap(Map<String,Integer> geneNameIndexMap) {
+    public void setGeneNameIndexMap(Map<String, Integer> geneNameIndexMap) {
         this.geneNameIndexMap = geneNameIndexMap;
     }
-    private Map<String,Integer> geneNameIndexMap;
-    /*
-     *  @gwt.typeArgs <web.jexpress.shared.model.core.model.dataset.Group>
-     */
-    private List<Group> columnGroups = new ArrayList<Group>();
-     /*
-     *  @gwt.typeArgs <web.jexpress.shared.model.core.model.dataset.Group>
-     */
-    private List<Group> rowGroups = new ArrayList<Group>();
+    private Map<String, Integer> geneNameIndexMap;
+
+    private final List<Group> columnGroups = new ArrayList<Group>();
+
+    private final List<Group> rowGroups = new ArrayList<Group>();
 
     public int getId() {
         return id;
@@ -150,11 +143,11 @@ public class Dataset implements IsSerializable {
         rowGroups.remove(g);
     }
 
-    public Map<Integer,Number[]> getMemberMaps() {
+    public Map<Integer, Number[]> getMemberMaps() {
         return memberMaps;
     }
 
-    public void setMemberMaps(Map<Integer,Number[]> memberMaps) {
+    public void setMemberMaps(Map<Integer, Number[]> memberMaps) {
         this.memberMaps = memberMaps;
     }
 
@@ -181,7 +174,4 @@ public class Dataset implements IsSerializable {
     public void setLineChartPointArr(Number[][] lineChartPointArr) {
         this.lineChartPointArr = lineChartPointArr;
     }
-
-
-   
 }

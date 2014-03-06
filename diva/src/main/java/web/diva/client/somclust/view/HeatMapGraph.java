@@ -18,24 +18,20 @@ import web.diva.shared.beans.HeatMapImgResult;
  *
  * @author Yehia Farag
  */
-public class HeatMapGraph extends VerticalPanel{
-    
-    private String width ;
-    private String height ;
-    private Image image;
-    
-    public HeatMapGraph(final HeatMapImgResult imageResult,int width,double height)
-    {
+public class HeatMapGraph extends VerticalPanel {
+
+    private final String width;
+    private final Image image;
+
+    public HeatMapGraph(final HeatMapImgResult imageResult, int width, double height) {
         this.image = new Image(imageResult.getImgString());
         this.width = ((double) width / 3.0) + "px";
         this.image.setWidth(this.width);
-        this.height =  (height+30.0) + "px";
-        this.image.setHeight(height+"px");
+        this.image.setHeight(height + "px");
         final double colIndicator = ((double) width / 3.0) / (double) imageResult.getColNum();
         final double rowIndicator = height / (double) imageResult.getRowNum();
         final HTML toolTip = new HTML();
         toolTip.setVisible(false);
-//        RootPanel.get("tooltip").setWidth(this.width);
         RootPanel.get("tooltip").add(toolTip);
         this.image.addMouseMoveHandler(new MouseMoveHandler() {
             @Override
@@ -61,11 +57,10 @@ public class HeatMapGraph extends VerticalPanel{
         this.add(this.image);
         HTML scale = new HTML();
         scale.setWidth(this.width);
-        String scaleCode = "<div align='center'><b><font  color = " + imageResult.getMinColour()+ " > " +  (int)imageResult.getMinValue()+" &#8592; SC</font>A<font color = " + imageResult.getMaxColour() + " >LE &#8594; " +(int)imageResult.getMaxValue()+ "</font></b> </div>";
+        String scaleCode = "<div align='center'><b><font  color = " + imageResult.getMinColour() + " > " + (int) imageResult.getMinValue() + " &#8592; SC</font>A<font color = " + imageResult.getMaxColour() + " >LE &#8594; " + (int) imageResult.getMaxValue() + "</font></b> </div>";
         scale.setHTML(scaleCode);
         this.add(scale);
-    
-    
+
     }
-    
+
 }

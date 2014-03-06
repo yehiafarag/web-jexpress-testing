@@ -5,28 +5,29 @@
 package web.diva.shared.beans;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import java.util.HashMap;
 import java.util.TreeMap;
 
 /**
  *
- * @author Y.M
+ * @author Yehia Farag
  */
-public class PCAResults implements IsSerializable{
-    
-    private  TreeMap<Integer,PCAPoint>  points ;
+public class PCAResults implements IsSerializable {
+
+    private TreeMap<Integer, PCAPoint> points;
     private int datasetId;
     private int dataSize;
     private String header;
     private int pcai;
     private int pcaii;
-    
-    private TreeMap<String,String> xyName ;
 
-    public TreeMap<String, String> getXyName() {
+    private HashMap<String, String> xyName;
+
+    public HashMap<String, String> getXyName() {
         return xyName;
     }
 
-    public void setXyName(TreeMap<String, String> xyName) {
+    public void setXyName(HashMap<String, String> xyName) {
         this.xyName = xyName;
     }
 
@@ -38,8 +39,6 @@ public class PCAResults implements IsSerializable{
         this.header = header;
     }
 
- 
-
     public int getDatasetId() {
         return datasetId;
     }
@@ -47,8 +46,6 @@ public class PCAResults implements IsSerializable{
     public void setDatasetId(int datasetId) {
         this.datasetId = datasetId;
     }
-
-   
 
     public int getDataSize() {
         return dataSize;
@@ -82,5 +79,4 @@ public class PCAResults implements IsSerializable{
         this.pcaii = pcaii;
     }
 
-    
 }

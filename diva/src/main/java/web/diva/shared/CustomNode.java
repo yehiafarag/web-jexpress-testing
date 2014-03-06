@@ -5,7 +5,7 @@
 package web.diva.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import java.util.List;
+import java.util.HashSet;
 
 /**
  *
@@ -14,7 +14,7 @@ import java.util.List;
 public class CustomNode implements IsSerializable{
     private String name;
     private long index;
-    private List<String> childernList;
+    private HashSet<String> childernList;
     private int geneIndex;
     private double value;
     private int[] selectedNodes;
@@ -35,11 +35,11 @@ public class CustomNode implements IsSerializable{
         this.index = index;
     }
 
-    public List<String> getChildernList() {
+    public HashSet<String> getChildernList() {
         return childernList;
     }
 
-    public void setChildernList(List<String> childernList) {
+    public void setChildernList(HashSet<String> childernList) {
         this.childernList = childernList;
     }
 

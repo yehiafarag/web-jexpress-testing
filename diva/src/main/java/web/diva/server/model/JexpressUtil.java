@@ -5,13 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import no.uib.jexpress_modularized.core.dataset.Dataset;
-
 import web.diva.shared.model.core.model.dataset.Group;
 
 public class JexpressUtil {
-
-   
-    
 
     public Map<Integer, String> initIndexNameGeneMap(web.diva.shared.model.core.model.dataset.Dataset dataset) {
         Map<Integer, String> geneMap = new HashMap<Integer, String>();
@@ -46,7 +42,7 @@ public class JexpressUtil {
                 g.setIndices(ind);
                 g.setGeneList(initGroupGeneList(webDataset, jG.getMembers()));
                 g.setId(jG.getName());
-                g.setActive(jG.isActive());               
+                g.setActive(jG.isActive());
                 webDataset.addColumnGroup(g);
             }
         }
@@ -54,7 +50,7 @@ public class JexpressUtil {
         if (!jexpressDataset.getRowGroups().isEmpty()) {
             for (no.uib.jexpress_modularized.core.dataset.Group jG : jexpressDataset.getRowGroups()) {
                 String hex = "#" + Integer.toHexString(jG.getColor().getRGB()).substring(2);
-                
+
                 Group g = new Group();
                 g.setType("Row");
                 g.setColor(hex);
@@ -121,11 +117,10 @@ public class JexpressUtil {
     public String[] initColorArr(String[] geneNameArr, List<Group> groupList) {
         String[] colorArr = new String[geneNameArr.length];
         for (int x = 0; x < geneNameArr.length; x++) {
-            String color ="#BDBDBD";// 
+            String color = "#BDBDBD";
             for (Group g : groupList) {
                 if (g.getId().equalsIgnoreCase("all") && g.isActive()) {
-                    color="#000000";
-//                    continue;
+                    color = "#000000";
                 } else if (g.getGeneList().contains(geneNameArr[x]) && g.isActive()) {
                     color = g.getColor();
                 }

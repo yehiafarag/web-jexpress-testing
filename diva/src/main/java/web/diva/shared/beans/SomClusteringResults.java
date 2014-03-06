@@ -5,28 +5,29 @@
 package web.diva.shared.beans;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import java.util.TreeMap;
+import java.util.HashMap;
 import web.diva.shared.Unit;
 
 /**
  *
  * @author Yehia Farag
  */
-public class SomClusteringResults implements IsSerializable{
+public class SomClusteringResults implements IsSerializable {
+
     private int height;
     private int datasetId;
-    private TreeMap<String,String>toolTips;
+    private HashMap<String, String> toolTips;
     private String[] geneNames;
-    private String[] colsNames;    
+    private String[] colsNames;
     private Unit sideTree;
     private String imgString;
-    private TreeMap<String,String>topToolTips;
+    private HashMap<String, String> topToolTips;
 
-    public TreeMap<String, String> getTopToolTips() {
+    public HashMap<String, String> getTopToolTips() {
         return topToolTips;
     }
 
-    public void setTopToolTips(TreeMap<String, String> topToolTips) {
+    public void setTopToolTips(HashMap<String, String> topToolTips) {
         this.topToolTips = topToolTips;
     }
 
@@ -63,11 +64,11 @@ public class SomClusteringResults implements IsSerializable{
         this.datasetId = datasetId;
     }
 
-    public TreeMap<String,String> getToolTips() {
+    public HashMap<String, String> getToolTips() {
         return toolTips;
     }
 
-    public void setToolTips(TreeMap<String,String> toolTips) {
+    public void setToolTips(HashMap<String, String> toolTips) {
         this.toolTips = toolTips;
     }
 
@@ -86,6 +87,7 @@ public class SomClusteringResults implements IsSerializable{
     public void setColsNames(String[] colsNames) {
         this.colsNames = colsNames;
     }
+
     public String getImgString() {
         return imgString;
     }
@@ -93,5 +95,5 @@ public class SomClusteringResults implements IsSerializable{
     public void setImgString(String imgString) {
         this.imgString = imgString;
     }
-    
+
 }

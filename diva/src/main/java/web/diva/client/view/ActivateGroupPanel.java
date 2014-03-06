@@ -21,9 +21,9 @@ import java.util.LinkedHashMap;
 
 /**
  *
- * @author Yehia
+ * @author Yehia Farag
  */
-public class ActivateGroupPanel extends Window {
+public final class ActivateGroupPanel extends Window {
 
     private final DynamicForm form;
     private final IButton okBtn;
@@ -71,14 +71,11 @@ public class ActivateGroupPanel extends Window {
         selectColGroups.setTitleAlign(Alignment.CENTER);
         selectColGroups.setMultiple(true);
         selectColGroups.setMultipleAppearance(MultipleAppearance.GRID);
-
-//                            if (datasetInfo != null) {
-       this.updataChartData(rowGroupsNamesMap, colGroupsNamesMap);
-//                            }
+        this.updataChartData(rowGroupsNamesMap, colGroupsNamesMap);
         form.setFields(selectRowGroups, selectColGroups);
         form.redraw();
         rowGroupsNamesMap = null;
-        colGroupsNamesMap =null;
+        colGroupsNamesMap = null;
         HLayout hlo = new HLayout();
         hlo.setWidth(380);
         hlo.setHeight(20);
@@ -108,10 +105,12 @@ public class ActivateGroupPanel extends Window {
         vlo.redraw();
 
     }
-    public void updataChartData(LinkedHashMap<String, String> rowGroupsNamesMap, LinkedHashMap<String, String> colGroupsNamesMap){
-     if(errorlabl != null)
+
+    public void updataChartData(LinkedHashMap<String, String> rowGroupsNamesMap, LinkedHashMap<String, String> colGroupsNamesMap) {
+        if (errorlabl != null) {
             errorlabl.setVisible(false);
-        if(form != null){
+        }
+        if (form != null) {
             form.clearErrors(true);
             form.clearValues();
             form.redraw();
@@ -139,5 +138,5 @@ public class ActivateGroupPanel extends Window {
     public HTML getErrorlabl() {
         return errorlabl;
     }
-    
+
 }

@@ -8,7 +8,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  *
- * @author Y.M
+ * @author Yehia Farag
  */
 public class RankResult implements IsSerializable{
     

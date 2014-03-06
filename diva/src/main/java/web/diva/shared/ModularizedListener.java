@@ -11,19 +11,12 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public abstract class ModularizedListener  implements SelectionChangeListener, IsSerializable {
 
     //NOTE: mode this variable protected (had default modifier originally)
-    protected java.util.Vector components = new java.util.Vector();
+    protected java.util.Vector components;
     //NOTE: made this variable protected (had default modifier originally)
     protected int datasetId=0;
     //NOTE: made this variable protected (had default modifier originally)
     protected int classtype = 0;
-//    boolean inProjectTree = false;
 
-    //1 genetable
-    //2 somClust
-    //3 lineChart
-    //4 PCA
-    //5 rank  table
-    //10 empty selection
     /**
      * Set the type of component.
      *
@@ -58,7 +51,7 @@ public abstract class ModularizedListener  implements SelectionChangeListener, I
     /**
      * Returns the class type.
      *
-     * @return classtype
+     * @return class type
      *
      */
     public int getClassType() {
@@ -71,6 +64,7 @@ public abstract class ModularizedListener  implements SelectionChangeListener, I
      * Creates new MainModule
      */
     public ModularizedListener() {
+        this.components = new java.util.Vector();
     }
 
    
@@ -115,48 +109,11 @@ public abstract class ModularizedListener  implements SelectionChangeListener, I
     }
 
     /**
-     * Remove this object from the dataset changelisteners list
+     * Remove this object from the dataset change listeners list
      *
      */
     public void disconnectData() {
-
-        /*
-
-         if(data!=null && data.getParent()!=null){
-
-         if(!inProjectTree)data.getParent().removeVChild(data);
-
-         //            data.removeChild();
-
-         }
-
-         */
-
-//        if(data!=null)data.removeDataListener(this);
-
-//        if(getClassType()==4) data.removeDataListener( ((dataListener)this) );
-
-        //if(getClassType()==2)  ((mainclust)this).FullDataSet.removeDataListener( ((mainclust)this) ) ;
-
-        if (getClassType() == 2) {
-//            if(data!=null)data.removeDataListener( ((mainclust)this) );
-            // mainclust cl = ((mainclust)this);
-            // cl.FullDataSet.removeDataListener( cl);
         }
-
-        if (getClassType() == 6) {
-//             ((mainGraph)this).stopDataListening(); //TODO
-        }
-
-//        if(getClassType()==3)  data.removeDataListener( ((mainSOM2)this) ) ; //TODO
-
-        // if(getClassType()==7)  data.removeDataListener( ((mainPCA3D2)this) ) ;
-
-
-
-
-
-    }
 
    
     /**

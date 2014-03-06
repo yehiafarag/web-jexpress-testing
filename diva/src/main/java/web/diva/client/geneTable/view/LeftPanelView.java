@@ -8,6 +8,7 @@ package web.diva.client.geneTable.view;
 
 import com.google.gwt.user.client.ui.RootPanel;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.ListGridFieldType;
 import com.smartgwt.client.types.MultipleAppearance;
 import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.types.TitleOrientation;
@@ -27,10 +28,10 @@ import web.diva.shared.model.core.model.dataset.DatasetInformation;
  * @author Yehia Farag
  */
 public class LeftPanelView extends SectionStack {
-
-    private  final ListGrid selectionTable;
-    private   final SelectItem  colSelectionTable;
-   
+    
+    private final ListGrid selectionTable;
+    private final SelectItem colSelectionTable;
+    
     public LeftPanelView(SelectionManager selectionManager, DatasetInformation datasetInfo) {
         this.setVisibilityMode(VisibilityMode.MUTEX);        
         
@@ -38,21 +39,17 @@ public class LeftPanelView extends SectionStack {
         this.setHeight(580);
         this.setScrollSectionIntoView(true);
         
-        
         SectionStackSection section1 = new SectionStackSection(datasetInfo.getDatasetInfo());
         section1.setExpanded(true);
-
-       GeneTable geneTable = new GeneTable(selectionManager, datasetInfo);      
-       section1.addItem(geneTable.getGwtTable());  
-       
-       
-       SectionStackSection section2 = new SectionStackSection("Row Selections");
-       section2.setExpanded(false);
-       selectionTable = initRowSelectionTable(datasetInfo);     
-       section2.addItem(selectionTable);         
-       geneTable.setSelectionTable(selectionTable);
-       
-      
+        
+        GeneTable geneTable = new GeneTable(selectionManager, datasetInfo);        
+        section1.addItem(geneTable.getGwtTable());        
+        
+        SectionStackSection section2 = new SectionStackSection("Row Selections");
+        section2.setExpanded(false);
+        selectionTable = initRowSelectionTable(datasetInfo);        
+        section2.addItem(selectionTable);        
+        geneTable.setSelectionTable(selectionTable);
         
         SectionStackSection section3 = new SectionStackSection("Column Selections");
         section3.setExpanded(false);
@@ -61,67 +58,80 @@ public class LeftPanelView extends SectionStack {
         form.setItems(colSelectionTable);
         form.setWidth((RootPanel.get("geneTable").getOffsetWidth()));
         form.setHeight(400);
-        section3.addItem(form); 
+        section3.addItem(form);        
         geneTable.setColSelectionTable(colSelectionTable);
         
-        this.addSection(section3); 
-        this.addSection(section2);  
+        this.addSection(section3);        
+        this.addSection(section2);        
         this.addSection(section1);        
         this.redraw();
         datasetInfo = null;
         
-        
     }
     
-    private ListGrid initRowSelectionTable(DatasetInformation datasetInfo){
-    ListGrid geneTable = new ListGrid();
-    geneTable.setShowRecordComponents(true);
+    private ListGrid initRowSelectionTable(DatasetInformation datasetInfo) {
+        ListGrid geneTable = new ListGrid();
+        geneTable.setShowRecordComponents(true);
         geneTable.setShowRecordComponentsByCell(true);
         geneTable.setCanRemoveRecords(false);
-        geneTable.setHeight("550px");
-        geneTable.setWidth(this.getWidth());
+        geneTable.setHeight("500px");
+        geneTable.setWidth("100%");
         geneTable.setShowAllRecords(false);
+        geneTable.setShowRollOver(false);
         ListGridField[] fields = new ListGridField[(3 + datasetInfo.getRowGroupsNumb())];
         ListGridField nameField = new ListGridField("gene", datasetInfo.getDatasetInfo());
-        nameField.setWidth("50%");
+        nameField.setWidth("30%");
+        nameField.setType(ListGridFieldType.TEXT);
         ListGridField indexField = new ListGridField("index", " ");
         indexField.setWidth("50px");
+        indexField.setType(ListGridFieldType.INTEGER);
+        
+        ListGridField allField = new ListGridField("all", "ALL");
+        allField.setWidth("8px");
+        allField.setIconVAlign("center");
+        
+        allField.setType(ListGridFieldType.ICON);
+        allField.setIcon("../images/b.png");
+        
         fields[0] = indexField;
         fields[1] = (nameField);
-        fields[2] = new ListGridField("all", "ALL");
+        fields[2] = allField;
         for (int z = 0; z < datasetInfo.getRowGroupsNumb(); z++) {
-            fields[z + 3] = (ListGridField) new ListGridField(datasetInfo.getRowGroupsNames()[z][0], datasetInfo.getRowGroupsNames()[z][0].toUpperCase());
+            ListGridField temLGF = new ListGridField(datasetInfo.getRowGroupsNames()[z][0], datasetInfo.getRowGroupsNames()[z][0].toUpperCase());
+            temLGF.setWidth("8px");
+            temLGF.setIconVAlign("center");
+            temLGF.setType(ListGridFieldType.IMAGE);
+            temLGF.setIcon(datasetInfo.getGeneTabelData()[z + 2][0]);
+            fields[z + 3] = temLGF;
         }
         geneTable.setFields(fields);
         geneTable.setCanResizeFields(true);
-         geneTable.setSelectionType(SelectionStyle.NONE);
+        geneTable.setCanSort(false);
+        geneTable.setSelectionType(SelectionStyle.NONE);
         geneTable.setLeaveScrollbarGap(false);
         geneTable.setCanDragSelect(false);
-//        geneTable.draw();
         return geneTable;
     }
     
-    private SelectItem initColSelectionTable( LinkedHashMap<String,String> colNamesMap){
-     SelectItem selectCols = new SelectItem();
+    private SelectItem initColSelectionTable(LinkedHashMap<String, String> colNamesMap) {
+        SelectItem selectCols = new SelectItem();
         selectCols.setTitle(" Selected Columns ");
         selectCols.setWidth(RootPanel.get("geneTable").getOffsetWidth());
         selectCols.setTextAlign(Alignment.CENTER);
         selectCols.setTitleAlign(Alignment.CENTER);
         selectCols.setTitleOrientation(TitleOrientation.TOP);
         selectCols.setMultiple(true);        
-        selectCols.setMultipleAppearance(MultipleAppearance.GRID);    
+        selectCols.setMultipleAppearance(MultipleAppearance.GRID);        
         selectCols.setValueMap(colNamesMap);
         selectCols.disable();
         
         return selectCols;
     }
     
-    
-
     public ListGrid getSelectionTable() {
         return selectionTable;
     }
-
+    
     public SelectItem getColSelectionTable() {
         return colSelectionTable;
     }

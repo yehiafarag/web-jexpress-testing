@@ -8,7 +8,6 @@ package web.jexpress.server.listeners;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import web.jexpress.server.dal.DB;
 
 /**
  *
@@ -18,8 +17,6 @@ public class ContexListener implements ServletContextListener{
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        DB database = new DB();
-        database.loadDatasets(sce.getServletContext().getInitParameter("fileFolder"));
     }
 
     @Override

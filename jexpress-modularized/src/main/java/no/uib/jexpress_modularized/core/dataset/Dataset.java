@@ -668,7 +668,7 @@ public class Dataset implements Serializable {
             allIndexes[i] = i;
         }
         Group gr = new Group("ALL", Color.BLACK, new Selection(Selection.TYPE.OF_ROWS, allIndexes));
-        gr.setActive(false);
+        gr.setActive(true);
         addRowGroup(gr);
         addNullColumnClass();
     }

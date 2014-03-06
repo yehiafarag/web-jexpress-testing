@@ -11,10 +11,11 @@ import java.util.List;
  *
  * @author Yehia Farag
  */
-public class Group implements IsSerializable{
+public class Group implements IsSerializable {
+
     private String type;
     private String color;
-    private List<Integer> indices; 
+    private List<Integer> indices;
     private List<String> geneList;
     private boolean active;
 
@@ -34,7 +35,6 @@ public class Group implements IsSerializable{
     public void setId(String id) {
         this.id = id;
     }
-  
 
     public String getType() {
         return type;
@@ -56,8 +56,8 @@ public class Group implements IsSerializable{
         this.color = color;
     }
 
-    public void setIndices(List<Integer> indices) {        
-        this.indices =indices;
+    public void setIndices(List<Integer> indices) {
+        this.indices = indices;
     }
 
     public boolean isActive() {
@@ -67,6 +67,5 @@ public class Group implements IsSerializable{
     public void setActive(boolean active) {
         this.active = active;
     }
-    
-    
+
 }
