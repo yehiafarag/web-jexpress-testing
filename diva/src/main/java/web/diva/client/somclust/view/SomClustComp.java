@@ -41,6 +41,8 @@ public class SomClustComp extends HLayout {
     }
 
     public SomClustComp(SomClusteringResults results, SelectionManager selectionManager) {
+        this.setShowDragPlaceHolder(false);
+        this.setBorder("2px solid blue");
         width = (RootPanel.get("SomClusteringResults").getOffsetWidth() - 50);
         this.setWidth(width);
         double topTreeHeight = Double.valueOf(results.getColsNames().length) * 4.0;
