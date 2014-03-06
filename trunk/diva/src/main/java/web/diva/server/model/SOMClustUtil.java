@@ -214,7 +214,7 @@ public class SOMClustUtil {
             parent.getChildernList().addAll(node.getChildernList());
             return unit;
         } else {
-            long localIndex = System.currentTimeMillis() + (long) (Math.random() * 1000000.0);
+            long localIndex = System.currentTimeMillis() * (long) (Math.random() * 1000000.0);
             node = new CustomNode();
             HashSet<String> newChildernList = new HashSet<String>();
             node.setChildernList(newChildernList);

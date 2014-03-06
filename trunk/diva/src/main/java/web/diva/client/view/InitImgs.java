@@ -38,7 +38,7 @@ public class InitImgs {
         
           hcImg = new Image("images/hc.png");
         hcImg.setHeight("580px");
-        hcImg.setWidth("" + RootPanel.get("SomClusteringResults").getOffsetWidth() + "px");
+        hcImg.setWidth("" + (RootPanel.get("SomClusteringResults").getOffsetWidth()-15) + "px");
 
     }
 
