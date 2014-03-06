@@ -24,11 +24,11 @@ public class InitImgs {
         gtImg.setHeight("580px");
         gtImg.setWidth("" + RootPanel.get("geneTable").getOffsetWidth() + "px");
 
-        lCImg = new Image("images/clear.jpg");
+        lCImg = new Image("images/clear1.png");
         lCImg.setHeight("300px");
         lCImg.setWidth("" + RootPanel.get("LineChartResults").getOffsetWidth() + "px");
 
-        pcaImg = new Image("images/clear.jpg");
+        pcaImg = new Image("images/clear2.png");
         pcaImg.setHeight("300px");
         pcaImg.setWidth("" + RootPanel.get("LineChartResults").getOffsetWidth() + "px");
 
