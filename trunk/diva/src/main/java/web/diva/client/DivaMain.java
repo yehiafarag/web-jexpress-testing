@@ -42,7 +42,7 @@ import web.diva.shared.beans.PCAImageResults;
  */
 public class DivaMain implements EntryPoint {
 
-    private  SelectionManager selectionManager ;
+    private SelectionManager selectionManager;
     private static final String SERVER_ERROR = "An error occurred while attempting to contact the server";
     private final Label errorLabel = new Label();
     private final Label rowLab = new Label();
@@ -52,11 +52,9 @@ public class DivaMain implements EntryPoint {
     private int datasetId;
     private final Map<String, Integer> datasetsNames = new TreeMap<String, Integer>();
     private LeftPanelView geneTable;
-    private SaveDatasetDialog saveDs ;
-//    private int[] selectedRows;
-//    private int[] selectedCol;
+    private SaveDatasetDialog saveDs;
     private final GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
-//    private List<String> indexer;
+
     private SomClustView hc;
     private InitImgs initImgs;
     private HeaderLayout header;
@@ -64,7 +62,7 @@ public class DivaMain implements EntryPoint {
     private PCAPanel pcaPanel;
     private DatasetPanel dsPanel;
     private ActivateGroupPanel activateGroupPanel;
-    private RankPanel rankPanel ;
+    private RankPanel rankPanel;
 
     @Override
     public void onModuleLoad() {
@@ -73,7 +71,7 @@ public class DivaMain implements EntryPoint {
     }
 
     private void initLayout() {
-        
+
         RootPanel.get("loaderImage").setVisible(false);
         RootPanel.get("errorLabelContainer").add(errorLabel);
         //init header components 
@@ -107,20 +105,20 @@ public class DivaMain implements EntryPoint {
                     btnMenue.getSomClustBtn().addClickHandler(new ClickHandler() {
                         @Override
                         public void onClick(ClickEvent event) {
-                            if(somClustPanel == null){
+                            if (somClustPanel == null) {
                                 somClustPanel = new SomClustPanel();
-                            somClustPanel.getOkBtn().addClickHandler(new ClickHandler() {
-                                @Override
-                                public void onClick(ClickEvent event) {
-                                    RootPanel.get("loaderImage").setVisible(true);
-                                    runSomClustering(datasetId, somClustPanel.getX(), somClustPanel.getY());
-                                    somClustPanel.hide();
-                                
-                                }
-                            });
+                                somClustPanel.getOkBtn().addClickHandler(new ClickHandler() {
+                                    @Override
+                                    public void onClick(ClickEvent event) {
+                                        RootPanel.get("loaderImage").setVisible(true);
+                                        runSomClustering(datasetId, somClustPanel.getX(), somClustPanel.getY());
+                                        somClustPanel.hide();
+
+                                    }
+                                });
                             }
                             somClustPanel.show();
-                            
+
                         }
                     });
 
@@ -178,23 +176,24 @@ public class DivaMain implements EntryPoint {
                     btnMenue.getSaveBtn().addClickHandler(new ClickHandler() {
                         @Override
                         public void onClick(ClickEvent event) {
-                            if(saveDs == null){
-                            saveDs = new SaveDatasetDialog();
-                            saveDs.getOkBtn().addClickHandler(new ClickHandler() {
-                                @Override
-                                public void onClick(ClickEvent event) {
-                                    String newName = saveDs.getName();
-                                    if (newName == null || newName.equals("")) {
-                                        saveDs.getErrorlabl().setVisible(true);
-                                        saveDs.getForm().validate();
-                                    } else {
-                                        saveDs.getErrorlabl().setVisible(false);
-                                        saveDataset(newName);
-                                        saveDs.hide();
+                            if (saveDs == null) {
+                                saveDs = new SaveDatasetDialog();
+                                saveDs.getOkBtn().addClickHandler(new ClickHandler() {
+                                    @Override
+                                    public void onClick(ClickEvent event) {
+                                        String newName = saveDs.getName();
+                                        if (newName == null || newName.equals("")) {
+                                            saveDs.getErrorlabl().setVisible(true);
+                                            saveDs.getForm().validate();
+                                        } else {
+                                            saveDs.getErrorlabl().setVisible(false);
+                                            saveDataset(newName);
+                                            saveDs.hide();
+                                        }
                                     }
-                                }
-                            });
-                            }saveDs.show();
+                                });
+                            }
+                            saveDs.show();
 
                         }
                     });
@@ -227,7 +226,7 @@ public class DivaMain implements EntryPoint {
         });
 
     }
-    
+
     private void loadDataset(int datasetId) {
         RootPanel.get("loaderImage").setVisible(true);
         greetingService.loadDataset(datasetId,
@@ -241,7 +240,7 @@ public class DivaMain implements EntryPoint {
 
                     @Override
                     public void onSuccess(DatasetInformation datasetInfos) {
-                      RootPanel.get("datasetInformation").setVisible(true);
+                        RootPanel.get("datasetInformation").setVisible(true);
                         errorLabel.setText("");
                         rowLab.setText("Rows : " + datasetInfos.getRowsNumb());
                         colLab.setText("Columns : " + datasetInfos.getColNumb());
@@ -257,7 +256,7 @@ public class DivaMain implements EntryPoint {
                 });
     }
 
-    private void runSomClustering(int datasetId, int linkage, int distanceMeasure) {       
+    private void runSomClustering(int datasetId, int linkage, int distanceMeasure) {
         RootPanel.get("loaderImage").setVisible(true);
         greetingService.computeSomClustering(datasetId, linkage, distanceMeasure,
                 new AsyncCallback<SomClusteringResults>() {
@@ -275,21 +274,20 @@ public class DivaMain implements EntryPoint {
                         hc = new SomClustView(result, selectionManager);
                         RootPanel.get("SomClusteringResults").clear();
                         RootPanel.get("SomClusteringResults").add(hc.asWidget());
-                        //RootPanel.get("loaderImage").setVisible(false);
-                        generateHeatMap(hc.getIndexer(),hc.getColIndexer());
+                        generateHeatMap(hc.getIndexer(), hc.getColIndexer());
                     }
                 });
 
     }
 
-    private void generateHeatMap(List<String> indexers,List<String> colIndexer) {
-         RootPanel.get("loaderImage").setVisible(true);
-        greetingService.computeHeatmap(datasetId, indexers,colIndexer,
+    private void generateHeatMap(List<String> indexers, List<String> colIndexer) {
+        RootPanel.get("loaderImage").setVisible(true);
+        greetingService.computeHeatmap(datasetId, indexers, colIndexer,
                 new AsyncCallback<HeatMapImgResult>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         errorLabel.setText(SERVER_ERROR);
-                         RootPanel.get("datasetInformation").setVisible(false);
+                        RootPanel.get("datasetInformation").setVisible(false);
                         RootPanel.get("loaderImage").setVisible(false);
                     }
 
@@ -318,7 +316,7 @@ public class DivaMain implements EntryPoint {
                     public void onSuccess(LineChartResults result) {
                         RootPanel.get("datasetInformation").setVisible(true);
                         errorLabel.setText("");
-                        LineChartComp linechart = new LineChartComp(result, selectionManager,greetingService);
+                        LineChartComp linechart = new LineChartComp(result, selectionManager, greetingService);
                         RootPanel.get("LineChartResults").clear();
                         RootPanel.get("LineChartResults").add(linechart.getLayout());
                         RootPanel.get("loaderImage").setVisible(false);
@@ -326,22 +324,22 @@ public class DivaMain implements EntryPoint {
                 });
     }
 
-    private void viewPCAChart(int datasetId,int pcaI,int pcaII) {
+    private void viewPCAChart(int datasetId, int pcaI, int pcaII) {
         RootPanel.get("loaderImage").setVisible(true);
-        greetingService.computePCA(datasetId,pcaI,pcaII,
+        greetingService.computePCA(datasetId, pcaI, pcaII,
                 new AsyncCallback<PCAImageResults>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         errorLabel.setText(SERVER_ERROR);
-                         RootPanel.get("datasetInformation").setVisible(false);
+                        RootPanel.get("datasetInformation").setVisible(false);
                         RootPanel.get("loaderImage").setVisible(false);
                     }
 
                     @Override
                     public void onSuccess(PCAImageResults result) {
                         errorLabel.setText("");
-                         RootPanel.get("datasetInformation").setVisible(true);
-                        PCAPlot pca = new PCAPlot(result,selectionManager,greetingService);
+                        RootPanel.get("datasetInformation").setVisible(true);
+                        PCAPlot pca = new PCAPlot(result, selectionManager, greetingService);
                         RootPanel.get("PCAChartResults").clear();
                         RootPanel.get("PCAChartResults").add(pca.getScatterPlotLayout());
                         RootPanel.get("loaderImage").setVisible(false);
@@ -349,9 +347,9 @@ public class DivaMain implements EntryPoint {
                 });
     }
 
-    private void viewRankTables(int datasetId,String perm,String seed,String[] colGropNames,String log2) {
+    private void viewRankTables(int datasetId, String perm, String seed, String[] colGropNames, String log2) {
         RootPanel.get("loaderImage").setVisible(true);
-        greetingService.computeRank(datasetId,perm,seed,colGropNames,log2,
+        greetingService.computeRank(datasetId, perm, seed, colGropNames, log2,
                 new AsyncCallback<RankResult>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -377,7 +375,7 @@ public class DivaMain implements EntryPoint {
         boolean test = false;
         if (rowGroups != null && rowGroups.length > 0) {
             for (String rowGroup1 : rowGroups) {
-                if (rowGroup1.startsWith("false,")) {                    
+                if (rowGroup1.startsWith("false,")) {
                     test = true;
                     break;
                 }
@@ -391,39 +389,36 @@ public class DivaMain implements EntryPoint {
                 }
             }
         }
-        if(test){
-        RootPanel.get("loaderImage").setVisible(true);
-        greetingService.activateGroups(datasetId,rowGroups, colGroups,
-                new AsyncCallback<DatasetInformation>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        errorLabel.setText(SERVER_ERROR);
-                        RootPanel.get("datasetInformation").setVisible(false);
-                        RootPanel.get("loaderImage").setVisible(false);
-                    }
+        if (test) {
+            RootPanel.get("loaderImage").setVisible(true);
+            greetingService.activateGroups(datasetId, rowGroups, colGroups,
+                    new AsyncCallback<DatasetInformation>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            errorLabel.setText(SERVER_ERROR);
+                            RootPanel.get("datasetInformation").setVisible(false);
+                            RootPanel.get("loaderImage").setVisible(false);
+                        }
 
-                    @Override
-                    public void onSuccess(DatasetInformation result) {
-                        RootPanel.get("datasetInformation").setVisible(true);
-//                        datasetInfo = result;
-                        errorLabel.setText("");
-                        geneTable = new LeftPanelView(selectionManager, result);
-                        RootPanel.get("geneTable").clear();
-                        RootPanel.get("geneTable").add(geneTable);                                
-                        RootPanel.get("LineChartResults").clear();                        
-                        RootPanel.get("PCAChartResults").clear();
-                        RootPanel.get("RankTablesResults").clear();
-                        RootPanel.get("loaderImage").setVisible(false);
-                        result = null;
-                    }
-                });
+                        @Override
+                        public void onSuccess(DatasetInformation result) {
+                            RootPanel.get("datasetInformation").setVisible(true);
+                            errorLabel.setText("");
+                            geneTable = new LeftPanelView(selectionManager, result);
+                            RootPanel.get("geneTable").clear();
+                            RootPanel.get("geneTable").add(geneTable);
+                            resetLayout();
+                            RootPanel.get("loaderImage").setVisible(false);
+                            result = null;
+                        }
+                    });
         }
 
-    }  
+    }
 
-    private void createRowGroup(final int datasetId, String name, String color,String type,int[] selectedRows) {
+    private void createRowGroup(final int datasetId, String name, String color, String type, int[] selectedRows) {
         RootPanel.get("loaderImage").setVisible(true);
-                greetingService.createRowGroup(datasetId, name, color, type, selectedRows,
+        greetingService.createRowGroup(datasetId, name, color, type, selectedRows,
                 new AsyncCallback<Boolean>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -443,8 +438,8 @@ public class DivaMain implements EntryPoint {
                 });
 
     }
-    
-    private void createColGroup(final int datasetId, String name, String color, String[] selection,String type) {
+
+    private void createColGroup(final int datasetId, String name, String color, String[] selection, String type) {
         RootPanel.get("loaderImage").setVisible(true);
         greetingService.createColGroup(datasetId, name, color, type, selection,
                 new AsyncCallback<Boolean>() {
@@ -465,9 +460,9 @@ public class DivaMain implements EntryPoint {
 
     }
 
-    private void saveDataset(String name){
+    private void saveDataset(String name) {
         RootPanel.get("loaderImage").setVisible(true);
-        greetingService.saveDataset(datasetId,name,
+        greetingService.saveDataset(datasetId, name,
                 new AsyncCallback<Integer>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -478,22 +473,17 @@ public class DivaMain implements EntryPoint {
 
                     @Override
                     public void onSuccess(Integer datasetId) {
-                        RootPanel.get("datasetInformation").setVisible(true);   
-                        Window.Location.reload();
-//                        resetLayout();
-//                        lb.clear();
-//                        getDatasetsList();                        
-//                        loadDataset(datasetId);    
+                        RootPanel.get("datasetInformation").setVisible(true);
+                        Window.Location.reload();   
                         RootPanel.get("loaderImage").setVisible(false);
                     }
                 });
-    
-    
+
     }
 
-    private void createSubDataset( String name,int[] selectedRows){   
-         RootPanel.get("loaderImage").setVisible(true);
-        greetingService.createSubDataset(name,selectedRows,
+    private void createSubDataset(String name, int[] selectedRows) {
+        RootPanel.get("loaderImage").setVisible(true);
+        greetingService.createSubDataset(name, selectedRows,
                 new AsyncCallback<Integer>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -504,19 +494,14 @@ public class DivaMain implements EntryPoint {
 
                     @Override
                     public void onSuccess(Integer datasetId) {
-                        RootPanel.get("datasetInformation").setVisible(true); 
-                        
-//                        lb.clear();
-//                        getDatasetsList();                        
-//                        loadDataset(datasetId);   
+                        RootPanel.get("datasetInformation").setVisible(true);
                         Window.Location.reload();
                         RootPanel.get("loaderImage").setVisible(false);
                     }
                 });
-    
-    
+
     }
-    
+
     private void updateApp(int datasetId) {
         RootPanel.get("loaderImage").setVisible(true);
         greetingService.updateDatasetInfo(datasetId,
@@ -531,7 +516,6 @@ public class DivaMain implements EntryPoint {
                     @Override
                     public void onSuccess(DatasetInformation datasetInfos) {
                         RootPanel.get("datasetInformation").setVisible(true);
-//                        datasetInfo = datasetInfos;
                         errorLabel.setText("");
                         rowLab.setText("Rows : " + datasetInfos.getRowsNumb());
                         colLab.setText("Columns : " + datasetInfos.getColNumb());
@@ -546,11 +530,10 @@ public class DivaMain implements EntryPoint {
                     }
                 });
     }
-    
-    private void initGroupsPanel(final int panelType)
-    {
-         RootPanel.get("loaderImage").setVisible(true);
-        greetingService.getGroupsPanelData(datasetId,new AsyncCallback<LinkedHashMap<String,String>[] >() {
+
+    private void initGroupsPanel(final int panelType) {
+        RootPanel.get("loaderImage").setVisible(true);
+        greetingService.getGroupsPanelData(datasetId, new AsyncCallback<LinkedHashMap<String, String>[]>() {
             @Override
             public void onFailure(Throwable caught) {
                 errorLabel.setText(SERVER_ERROR);
@@ -559,80 +542,76 @@ public class DivaMain implements EntryPoint {
             }
 
             @Override
-            public void onSuccess(LinkedHashMap<String,String>[] results) {
+            public void onSuccess(LinkedHashMap<String, String>[] results) {
                 errorLabel.setText("");
-                   if(panelType==1)//activateGroupPanel
-                   {
-                            if(activateGroupPanel == null){
-                            activateGroupPanel = new ActivateGroupPanel(results[0],results[1]);
-                            activateGroupPanel.getOkBtn().addClickHandler(new ClickHandler() {
-                                @Override
-                                public void onClick(ClickEvent event) {
-                                    try {
-                                        errorLabel.setVisible(false);
-                                        String[] rowValues = activateGroupPanel.getSelectRowGroups();
-                                        String[] colValues = activateGroupPanel.getSelectColGroups();
-                                        if (rowValues != null && rowValues.length > 2) {
-                                            activateGroupPanel.getErrorlabl().setVisible(true);
+                if (panelType == 1)//activateGroupPanel
+                {
+                    if (activateGroupPanel == null) {
+                        activateGroupPanel = new ActivateGroupPanel(results[0], results[1]);
+                        activateGroupPanel.getOkBtn().addClickHandler(new ClickHandler() {
+                            @Override
+                            public void onClick(ClickEvent event) {
+                                try {
+                                    errorLabel.setVisible(false);
+                                    String[] rowValues = activateGroupPanel.getSelectRowGroups();
+                                    String[] colValues = activateGroupPanel.getSelectColGroups();
+                                    if (rowValues != null && rowValues.length > 2) {
+                                        activateGroupPanel.getErrorlabl().setVisible(true);
 
-                                        } else if (colValues != null && colValues.length > 2) {
-                                           activateGroupPanel.getErrorlabl().setVisible(true);
+                                    } else if (colValues != null && colValues.length > 2) {
+                                        activateGroupPanel.getErrorlabl().setVisible(true);
 
-                                        } else {
-                                            activateGroups(datasetId, rowValues, colValues);
-                                            activateGroupPanel.hide();
-                                        }
-                                    } catch (Exception exp) {
+                                    } else {
+                                        activateGroups(datasetId, rowValues, colValues);
+                                        activateGroupPanel.hide();
                                     }
+                                } catch (Exception exp) {
+                                }
 
-                                }
-                            });
-                            }else{
-                                activateGroupPanel.updataChartData(results[0],results[1]);
                             }
-                            activateGroupPanel.show();
-                   }else if(panelType == 2){
-                   
-                       if(rankPanel == null){
-                        rankPanel =  new RankPanel(results[1]);
-                            rankPanel.getOkBtn().addClickHandler(new ClickHandler() {
-                                @Override
-                                public void onClick(ClickEvent event) {
-                                    rankPanel.getErrorlabl().setVisible(false);
-                                   String[] groups = rankPanel.getSelectColGroups();
-                                   String seed = rankPanel.getSeed();
-                                   String perm = rankPanel.getPermutation();
-                                   String log2 = rankPanel.getRadioGroupItem();
-                                   if(groups==null ||groups.length==0||groups.length>2||seed==null||seed.equals("")||perm==null||perm.equals(""))
-                                   {
-                                       rankPanel.getErrorlabl().setVisible(true);
-                                       rankPanel.getForm2().validate();
-                                   }
-                                   else{
-                                       viewRankTables(datasetId, perm, seed, groups, log2);
-                                       rankPanel.hide();
-                                        }
+                        });
+                    } else {
+                        activateGroupPanel.updataChartData(results[0], results[1]);
+                    }
+                    activateGroupPanel.show();
+                } else if (panelType == 2) {
+
+                    if (rankPanel == null) {
+                        rankPanel = new RankPanel(results[1]);
+                        rankPanel.getOkBtn().addClickHandler(new ClickHandler() {
+                            @Override
+                            public void onClick(ClickEvent event) {
+                                rankPanel.getErrorlabl().setVisible(false);
+                                String[] groups = rankPanel.getSelectColGroups();
+                                String seed = rankPanel.getSeed();
+                                String perm = rankPanel.getPermutation();
+                                String log2 = rankPanel.getRadioGroupItem();
+                                if (groups == null || groups.length == 0 || groups.length > 2 || seed == null || seed.equals("") || perm == null || perm.equals("")) {
+                                    rankPanel.getErrorlabl().setVisible(true);
+                                    rankPanel.getForm2().validate();
+                                } else {
+                                    viewRankTables(datasetId, perm, seed, groups, log2);
+                                    rankPanel.hide();
                                 }
-                            });
-                       }else{
-                           rankPanel.updateData(results[1]);
-                       }
-                       rankPanel.show();
-                   
-                   }
-                   results = null;
-                   RootPanel.get("loaderImage").setVisible(false);
+                            }
+                        });
+                    } else {
+                        rankPanel.updateData(results[1]);
+                    }
+                    rankPanel.show();
+
+                }
+                results = null;
+                RootPanel.get("loaderImage").setVisible(false);
             }
 
         });
-    
+
     }
-    
-    
-    private void initPcaPanel()
-    {
-         RootPanel.get("loaderImage").setVisible(true);
-        greetingService.getPcaColNames(datasetId,new AsyncCallback<String[]>() {
+
+    private void initPcaPanel() {
+        RootPanel.get("loaderImage").setVisible(true);
+        greetingService.getPcaColNames(datasetId, new AsyncCallback<String[]>() {
             @Override
             public void onFailure(Throwable caught) {
                 errorLabel.setText(SERVER_ERROR);
@@ -643,37 +622,37 @@ public class DivaMain implements EntryPoint {
             @Override
             public void onSuccess(String[] results) {
                 errorLabel.setText("");
-                if(pcaPanel == null){
-                        pcaPanel = new PCAPanel(results);                           
-                            pcaPanel.getOkBtn().addClickHandler(new ClickHandler() {
-                                @Override
-                                public void onClick(ClickEvent event) {
-                                    try {
-                                        int pcaI = pcaPanel.getPcaI();
-                                        int pcaII = pcaPanel.getPcaII();
-                                        viewPCAChart(datasetId,pcaI,pcaII);
-                                            pcaPanel.hide();
-                                        
-                                    } catch (Exception exp) {
-                                    }
+                if (pcaPanel == null) {
+                    pcaPanel = new PCAPanel(results);
+                    pcaPanel.getOkBtn().addClickHandler(new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            try {
+                                int pcaI = pcaPanel.getPcaI();
+                                int pcaII = pcaPanel.getPcaII();
+                                viewPCAChart(datasetId, pcaI, pcaII);
+                                pcaPanel.hide();
 
-                                }
-                            });
+                            } catch (Exception exp) {
+                            }
+
+                        }
+                    });
                 }
-                            pcaPanel.show();
-                            
-                   results = null;
-                   RootPanel.get("loaderImage").setVisible(false);
+                pcaPanel.show();
+
+                results = null;
+                RootPanel.get("loaderImage").setVisible(false);
             }
 
         });
-    
+
     }
-    
-    private void initDsPanel( final int[]selectedRows,final int[]selectedCol){
-    
-                RootPanel.get("loaderImage").setVisible(true);
-        greetingService.getColNamesMaps(datasetId,new AsyncCallback<LinkedHashMap<String,String>>() {
+
+    private void initDsPanel(final int[] selectedRows, final int[] selectedCol) {
+
+        RootPanel.get("loaderImage").setVisible(true);
+        greetingService.getColNamesMaps(datasetId, new AsyncCallback<LinkedHashMap<String, String>>() {
             @Override
             public void onFailure(Throwable caught) {
                 errorLabel.setText(SERVER_ERROR);
@@ -682,89 +661,76 @@ public class DivaMain implements EntryPoint {
             }
 
             @Override
-            public void onSuccess(LinkedHashMap<String,String> results) {
+            public void onSuccess(LinkedHashMap<String, String> results) {
                 errorLabel.setText("");
-                if(dsPanel == null){
-                         dsPanel = new DatasetPanel(results, selectedRows, selectedCol); 
-                         dsPanel.getOkBtn().addClickHandler(new ClickHandler() {
-                                @Override
-                                public void onClick(ClickEvent event) {
-                                     dsPanel.getOkBtn().disable();
-                                    dsPanel.getErrorlabl().setVisible(false);
-                                    String processType = dsPanel.getProcessType();
-                                    if (processType.equalsIgnoreCase("Groups")) {
-                                        String name = dsPanel.getName().getValueAsString();
-                                        String color = dsPanel.getColor();
-                                        String type = dsPanel.getRadioGroupItemValue();
-                                        if (name == null || name.equals("")) {
-                                            dsPanel.getErrorlabl().setVisible(true);
-                                            dsPanel.getForm().validate();
-                                        } else if(type.equalsIgnoreCase("COLUMN GROUPS")){
-                                            String[] selCol = dsPanel.getSelectColsValue();
-                                            if(selCol == null || selCol.length == 0){                                            
-                                                 dsPanel.getErrorlabl().setVisible(true);
-                                                 dsPanel.getForm().validate();
-                                            }
-                                            else{
-                                             dsPanel.getErrorlabl().setVisible(false);
-                                            createColGroup(datasetId, name, color, selCol, type);
-                                            dsPanel.hide();
-                                            }
-                                        }else{
-                                             dsPanel.getErrorlabl().setVisible(false);
-                                            
-                                            createRowGroup(datasetId, name, color, type,dsPanel.getRowSelection());
-                                            dsPanel.hide();                                   
-                                        
-                                        }
-
-                                    } else //save sub-dataset
-                                    {
-                                         String name = dsPanel.getDatasetName().getValueAsString();                                        
-                                        if (name == null || name.equals("")) {
-                                            dsPanel.getErrorlabl().setVisible(true);
-                                            dsPanel.getForm2().validate();
-                                        } 
-                                        else{
-                                            createSubDataset(name,selectedRows);
-                                            dsPanel.hide();
-                                        
-                                        }
-                                        
-
+                if (dsPanel == null) {
+                    dsPanel = new DatasetPanel(results, selectedRows, selectedCol);
+                    dsPanel.getOkBtn().addClickHandler(new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            dsPanel.getOkBtn().disable();
+                            dsPanel.getErrorlabl().setVisible(false);
+                            String processType = dsPanel.getProcessType();
+                            if (processType.equalsIgnoreCase("Groups")) {
+                                String name = dsPanel.getName().getValueAsString();
+                                String color = dsPanel.getColor();
+                                String type = dsPanel.getRadioGroupItemValue();
+                                if (name == null || name.equals("")) {
+                                    dsPanel.getErrorlabl().setVisible(true);
+                                    dsPanel.getForm().validate();
+                                } else if (type.equalsIgnoreCase("COLUMN GROUPS")) {
+                                    String[] selCol = dsPanel.getSelectColsValue();
+                                    if (selCol == null || selCol.length == 0) {
+                                        dsPanel.getErrorlabl().setVisible(true);
+                                        dsPanel.getForm().validate();
+                                    } else {
+                                        dsPanel.getErrorlabl().setVisible(false);
+                                        createColGroup(datasetId, name, color, selCol, type);
+                                        dsPanel.hide();
                                     }
+                                } else {
+                                    dsPanel.getErrorlabl().setVisible(false);
+
+                                    createRowGroup(datasetId, name, color, type, dsPanel.getRowSelection());
+                                    dsPanel.hide();
 
                                 }
-                            });
-               
-                }
-                else{
+
+                            } else //save sub-dataset
+                            {
+                                String name = dsPanel.getDatasetName().getValueAsString();
+                                if (name == null || name.equals("")) {
+                                    dsPanel.getErrorlabl().setVisible(true);
+                                    dsPanel.getForm2().validate();
+                                } else {
+                                    createSubDataset(name, selectedRows);
+                                    dsPanel.hide();
+
+                                }
+
+                            }
+
+                        }
+                    });
+
+                } else {
                     dsPanel.updateDataValues(selectedRows, selectedCol);
                 }
                 dsPanel.show();
-                results = null;                  
+                results = null;
                 RootPanel.get("loaderImage").setVisible(false);
             }
 
         });
-    
-    
-    
-        
-        
+
     }
-    
-    private void resetLayout(){
-         RootPanel.get("LineChartResults").clear();     
-         RootPanel.get("LineChartResults").add(initImgs.getlCImg());
-         RootPanel.get("PCAChartResults").clear();
-         RootPanel.get("PCAChartResults").add(initImgs.getPcaImg());
-         RootPanel.get("RankTablesResults").clear();
-         RootPanel.get("RankTablesResults").add(initImgs.getRtImg());
-         hc = null;
-         RootPanel.get("SomClusteringResults").clear();      
-         
-//          selectionManager.setSelectedColumns(datasetId, new Selection(Selection.TYPE.OF_COLUMNS,new int[]{}));
-//          selectionManager.setSelectedRows(datasetId, new Selection(Selection.TYPE.OF_ROWS,new int[]{}),10);
+
+    private void resetLayout() {
+        RootPanel.get("LineChartResults").clear();
+        RootPanel.get("LineChartResults").add(initImgs.getlCImg());
+        RootPanel.get("PCAChartResults").clear();
+        RootPanel.get("PCAChartResults").add(initImgs.getPcaImg());
+        if(hc !=null)
+            hc.clearSelection();
     }
 }

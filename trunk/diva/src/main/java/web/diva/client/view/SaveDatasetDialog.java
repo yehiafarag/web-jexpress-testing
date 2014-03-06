@@ -22,15 +22,15 @@ import com.smartgwt.client.widgets.layout.VLayout;
  *
  * @author Yehia
  */
-public class SaveDatasetDialog extends Window{
+public class SaveDatasetDialog extends Window {
 
     private final TextItem name;
-     private final IButton okBtn;
+    private final IButton okBtn;
 
     public DynamicForm getForm() {
         return form;
     }
-     private final DynamicForm form ;
+    private final DynamicForm form;
 
     public IButton getOkBtn() {
         return okBtn;
@@ -39,13 +39,14 @@ public class SaveDatasetDialog extends Window{
     public HTML getErrorlabl() {
         return errorlabl;
     }
-       private final HTML errorlabl;
+    private final HTML errorlabl;
 
     public String getName() {
         return name.getValueAsString();
     }
+
     public SaveDatasetDialog() {
-        
+
         this.setWidth(300);
         this.setHeight(150);
         this.setTitle("Save Dataset");
@@ -73,8 +74,8 @@ public class SaveDatasetDialog extends Window{
         name.setRequired(true);
         form.setFields(name);
         vlo.addMember(form);
-        
-         HLayout hlo = new HLayout();
+
+        HLayout hlo = new HLayout();
         hlo.setWidth("100%");
         hlo.setHeight("20%");
 
@@ -88,10 +89,10 @@ public class SaveDatasetDialog extends Window{
         errorlabl = new HTML("<h4 style='color:red;margin-left: 20px;height=20px;'>PLEASE CHECK YOUR DATA INPUT  </h4>");
         errorlabl.setVisible(false);
         errorlabl.setHeight("10%");
-       errorlabl.setWidth("100%");
+        errorlabl.setWidth("100%");
         vlo.addMember(errorlabl);
         vlo.redraw();
 
     }
-    
+
 }

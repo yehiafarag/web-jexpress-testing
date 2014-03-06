@@ -8,9 +8,10 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  *
- * @author Y.M
+ * @author Yehia Farag
  */
-public class PCAPoint implements IsSerializable{
+public class PCAPoint implements IsSerializable {
+
     private double x;
     private double y;
     private String geneName;
@@ -56,5 +57,5 @@ public class PCAPoint implements IsSerializable{
     public void setGeneIndex(int geneIndex) {
         this.geneIndex = geneIndex;
     }
-    
+
 }

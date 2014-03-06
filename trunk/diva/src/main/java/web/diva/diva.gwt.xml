@@ -13,7 +13,6 @@
 <!-- Other module inherits                                      -->
   <inherits name="com.smartgwt.SmartGwt"/>
   
-  <inherits name="org.moxieapps.gwt.highcharts.Highcharts"/>
   <!--<inherits name="com.github.gwtd3.D3"/>-->
   
   <inherits name="com.mogaleaf.SimpleColorPicker"/>

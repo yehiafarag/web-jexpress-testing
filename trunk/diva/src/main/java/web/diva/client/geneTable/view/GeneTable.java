@@ -4,7 +4,6 @@
  */
 package web.diva.client.geneTable.view;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.smartgwt.client.types.ListGridFieldType;
 import com.smartgwt.client.types.SelectionStyle;
@@ -25,7 +24,7 @@ import web.diva.shared.model.core.model.dataset.DatasetInformation;
 /**
  * @author Yehia Farag
  */
-public class GeneTable extends ModularizedListener implements SelectionChangedHandler, IsSerializable {
+public final class GeneTable extends ModularizedListener implements SelectionChangedHandler, IsSerializable {
 
     private final ListGrid geneTable;
     private ListGridRecord[] records;
@@ -49,12 +48,10 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
         this.classtype = 1;
         this.components.add(GeneTable.this);
         this.selectionManager.addSelectionChangeListener(datasetId, GeneTable.this);
-        
-        
-        
-        
-        selectionChanged(Selection.TYPE.OF_ROWS);
+
         datasetInfo = null;
+        selectionChanged(Selection.TYPE.OF_ROWS);
+
     }
 
     private void initGrid(DatasetInformation datasetInfo) {
@@ -77,10 +74,9 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
         ListGridField allField = new ListGridField("all", "ALL");
         allField.setWidth("8px");
         allField.setIconVAlign("center");
-      
+
         allField.setType(ListGridFieldType.ICON);
         allField.setIcon("../images/b.png");
-        
 
         fields[0] = indexField;
         fields[1] = (nameField);
@@ -89,12 +85,8 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
             ListGridField temLGF = new ListGridField(datasetInfo.getRowGroupsNames()[z][0], datasetInfo.getRowGroupsNames()[z][0].toUpperCase());
             temLGF.setWidth("8px");
             temLGF.setIconVAlign("center");
-
             temLGF.setType(ListGridFieldType.IMAGE);
-            temLGF.setIcon(datasetInfo.getGeneTabelData()[z + 2][0]);
-           // temLGF.setImageURLPrefix("");
-           // temLGF.setImageURLSuffix("");
-//            temLGF.setIcon("../images/b.png");
+            temLGF.setIcon(datasetInfo.getRowGroupsNames()[z][1]);
             fields[z + 3] = temLGF;
         }
         geneTable.setFields(fields);
@@ -126,15 +118,14 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
                 updateTableSelection(selectionRecord);
             }
         });
+        geneTable.setCanSort(false);
         records = null;
 
     }
 
     private void updateSelectionManager(int[] selectedIndices) {
-
         Selection selection = new Selection(Selection.TYPE.OF_ROWS, selectedIndices);
-        selectionManager.setSelectedRows(datasetId, selection,classtype);
-
+        selectionManager.setSelectedRows(datasetId, selection, classtype);
     }
 
     public ListGrid getGwtTable() {
@@ -147,21 +138,10 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
         for (int x = 0; x < recordsInit.length; x++) {
             ListGridRecord record = new ListGridRecord();
             record.setAttribute("gene", datasetInfo.getGeneTabelData()[0][x]);
-              for (int c = 0; c < datasetInfo.getRowGroupsNames().length; c++) {
-                  if(!datasetInfo.getGeneTabelData()[c + 2][x].equalsIgnoreCase("#FFFFFF")){
-                  
-//                      Image img = new Image(datasetInfo.getGeneTabelData()[c + 2][x]);
-                     
-                      record.setAttribute(datasetInfo.getRowGroupsNames()[c][0], datasetInfo.getGeneTabelData()[c + 2][x]);//  record.setAttribute(datasetInfo.getRowGroupsNames()[c], "b");// "<font color = " + datasetInfo.getGeneTabelData()[c + 2][x] + " >" + "&diams;" + "</font>");
-                
-                  }
-//                  else{
-//                      record.setAttribute("all", "../images/w.png");
-//                  }
-                      
-//                      else
-//                      record.setAttribute(datasetInfo.getRowGroupsNames()[c],"b");// "<font color = " + datasetInfo.getGeneTabelData()[c + 2][x] + " >" + "&diams;" + "</font>");
-
+            for (int c = 0; c < datasetInfo.getRowGroupsNames().length; c++) {
+                if (!datasetInfo.getGeneTabelData()[c + 2][x].equalsIgnoreCase("#FFFFFF")) {
+                    record.setAttribute(datasetInfo.getRowGroupsNames()[c][0], datasetInfo.getGeneTabelData()[c + 2][x]);//  record.setAttribute(datasetInfo.getRowGroupsNames()[c], "b");// "<font color = " + datasetInfo.getGeneTabelData()[c + 2][x] + " >" + "&diams;" + "</font>");
+                }
             }
             record.setAttribute("index", x);
             recordsInit[x] = record;
@@ -209,9 +189,6 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
                             selectionTable.setRecords(geneTable.getSelectedRecords());
                             selectionTable.redraw();
                         }
-                    } else {
-                        
-                        
                     }
                     geneTable.updateHover();
                     geneTable.scrollToRow(selectedRows[0]);
@@ -227,7 +204,7 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
                     for (int x = 0; x < selectedColumn.length; x++) {
                         values[x] = "" + selectedColumn[x];
                     }
-                    
+
                     colSelectionTable.setValues(values);
                     colSelectionTable.redraw();
                 }
@@ -237,6 +214,6 @@ public class GeneTable extends ModularizedListener implements SelectionChangedHa
 
     public void setColSelectionTable(SelectItem colSelectionTable) {
         this.colSelectionTable = colSelectionTable;
-          selectionChanged(Selection.TYPE.OF_COLUMNS);
+        selectionChanged(Selection.TYPE.OF_COLUMNS);
     }
 }

@@ -59,10 +59,15 @@ public class SomClustView extends ModularizedListener implements IsSerializable 
             if (sel != null) {
                 int[] selectedRows = sel.getMembers();
                 if (selectedRows != null) {
-                    somClustCom.clearSelection();
                 }
             }
         }
+    }
+
+    public void clearSelection() {
+
+        somClustCom.clearSelection();
+
     }
 
 }

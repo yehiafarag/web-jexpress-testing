@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package web.diva.client.view;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -13,8 +12,9 @@ import com.smartgwt.client.widgets.IButton;
  *
  * @author Yehia Farag
  */
-public class ButtonsMenu  extends HorizontalPanel{
-     final IButton somClustBtn,lineChartBtn,pcaBtn,rankBtn,createGroupBtn,actGroupBtn,exportGroupBtn,saveBtn;
+public class ButtonsMenu extends HorizontalPanel {
+
+    final IButton somClustBtn, lineChartBtn, pcaBtn, rankBtn, createGroupBtn, actGroupBtn, exportGroupBtn, saveBtn;
 
     public IButton getSaveBtn() {
         return saveBtn;
@@ -47,37 +47,38 @@ public class ButtonsMenu  extends HorizontalPanel{
     public IButton getExportGroupBtn() {
         return exportGroupBtn;
     }
-    public ButtonsMenu(){
-    setSpacing(5);
-    
-    somClustBtn = generateBtn("Hierarchical Clustering", 130);
-    this.add(somClustBtn);
-    
-    lineChartBtn = generateBtn("Line Chart",80);
-    this.add(lineChartBtn);
-    
-     pcaBtn = generateBtn("PCA",50);
-     this.add(pcaBtn);
-     
-    rankBtn = generateBtn("Rank Product",100);
-    this.add(rankBtn);
-    
-    createGroupBtn = generateBtn("Create Groups/Datasets ",150);
-    this.add(createGroupBtn);
-    
-    actGroupBtn = generateBtn("Activate/Deactivate Groups",150);
-     this.add(actGroupBtn);
-        
-    exportGroupBtn = generateBtn("Export",60);
-     this.add(exportGroupBtn);
-        
-    saveBtn = generateBtn("Save",50);
-     this.add(saveBtn);
-    
-        
+
+    public ButtonsMenu() {
+        setSpacing(5);
+
+        somClustBtn = generateBtn("Hierarchical Clustering", 130);
+        this.add(somClustBtn);
+
+        lineChartBtn = generateBtn("Line Chart", 80);
+        this.add(lineChartBtn);
+
+        pcaBtn = generateBtn("PCA", 50);
+        this.add(pcaBtn);
+
+        rankBtn = generateBtn("Rank Product", 100);
+        this.add(rankBtn);
+
+        createGroupBtn = generateBtn("Create Groups/Datasets ", 150);
+        this.add(createGroupBtn);
+
+        actGroupBtn = generateBtn("Activate/Deactivate Groups", 150);
+        this.add(actGroupBtn);
+
+        exportGroupBtn = generateBtn("Export", 60);
+        this.add(exportGroupBtn);
+
+        saveBtn = generateBtn("Save", 50);
+        this.add(saveBtn);
+
     }
-    private IButton generateBtn(String btnName,int width){
-    
+
+    private IButton generateBtn(String btnName, int width) {
+
         IButton btn = new IButton(btnName);
         btn.setWidth(width);
         btn.setShowRollOver(true);
@@ -85,19 +86,18 @@ public class ButtonsMenu  extends HorizontalPanel{
         btn.setShowDown(true);
         btn.setTitleStyle("stretchTitle");
         btn.disable();
-       return btn;
+        return btn;
     }
-    
-    public void activatMenue(){
-    
+
+    public void activatMenue() {
+
         somClustBtn.enable();
         lineChartBtn.enable();
         pcaBtn.enable();
         rankBtn.enable();
         createGroupBtn.enable();
         actGroupBtn.enable();
-//        exportGroupBtn.enable();
         saveBtn.enable();
     }
-    
+
 }

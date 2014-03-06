@@ -17,11 +17,11 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 /**
  *
- * @author Yehia
+ * @author Yehia Farag
  */
 public class PCAPanel extends Window {
 
-    private IButton okBtn;
+    private final IButton okBtn;
 
     public IButton getOkBtn() {
         return okBtn;
@@ -42,12 +42,12 @@ public class PCAPanel extends Window {
                 hide();
             }
         });
-        
+
         VLayout vp = new VLayout();
         vp.setWidth100();
         vp.setHeight100();
         this.addItem(vp);
-        
+
         HLayout hp1 = new HLayout();
         hp1.setWidth100();
         hp1.setHeight("20px");
@@ -62,7 +62,7 @@ public class PCAPanel extends Window {
         hp1.addMember(l1);
         hp1.addMember(pcaI);
         hp1.setMargin(5);
-        
+
         vp.addMember(hp1);
         hp1.setAlign(Alignment.LEFT);
 
@@ -85,31 +85,29 @@ public class PCAPanel extends Window {
         vp.addMember(hp2);
         hp2.setAlign(Alignment.LEFT);
 
-        
-            for (String str : colsNames) {
-                pcaI.addItem(str);
-                pcaII.addItem(str);
-            }
-            pcaI.setSelectedIndex(0);
-            pcaII.setSelectedIndex(1);
-        
+        for (String str : colsNames) {
+            pcaI.addItem(str);
+            pcaII.addItem(str);
+        }
+        pcaI.setSelectedIndex(0);
+        pcaII.setSelectedIndex(1);
+
         okBtn = new IButton("Start Process");
         okBtn.setWidth("200px");
         okBtn.setAlign(Alignment.CENTER);
         okBtn.setShowRollOver(true);
         okBtn.setShowDown(true);
         okBtn.setTitleStyle("stretchTitle");
-        
+
         HLayout btnLayout = new HLayout();
         btnLayout.setWidth100();
         btnLayout.setHeight("20px");
         btnLayout.addMember(okBtn);
         btnLayout.setAlign(Alignment.CENTER);
-                
 
         vp.addMember(btnLayout);
         vp.setTop(20);
-        vp.setMembersMargin(15);       
+        vp.setMembersMargin(15);
         colsNames = null;
 
     }

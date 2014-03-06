@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
+import java.util.HashMap;
 
 /**
  *
@@ -22,33 +22,22 @@ public class SelectionManager implements IsSerializable {
     /**
      * Column selections per dataset
      */
-    private final TreeMap<Integer, Selection> selectedColumns;
+    private final HashMap<Integer, Selection> selectedColumns;
     /**
      * Row selections per dataset
      */
-    private final TreeMap<Integer, Selection> selectedRows;
+    private final HashMap<Integer, Selection> selectedRows;
     /**
      * Registry of listeners for every dataset
      */
-    private final TreeMap<Integer, List<SelectionChangeListener>> selectionChangeListeners;
+    private final HashMap<Integer, List<SelectionChangeListener>> selectionChangeListeners;
 
     public SelectionManager() {
-        selectedColumns = new TreeMap<Integer, Selection>();
-        selectedRows = new TreeMap<Integer, Selection>();
-        selectionChangeListeners = new TreeMap<Integer, List<SelectionChangeListener>>();
+        selectedColumns = new HashMap<Integer, Selection>();
+        selectedRows = new HashMap<Integer, Selection>();
+        selectionChangeListeners = new HashMap<Integer, List<SelectionChangeListener>>();
     }
 
-    /**
-     * Get hold of the singleton instance of SelectionManager
-     *
-     * @return SelectionManager instance
-     */
-//    public static no.uib.jexpress_modularized.core.model.SelectionManager getSelectionManager() {
-//        if (instance == null) {
-//            instance = new no.uib.jexpress_modularized.core.model.SelectionManager();
-//        }
-//        return instance;
-//    }
     /**
      *
      * @param datasetId
@@ -67,8 +56,6 @@ public class SelectionManager implements IsSerializable {
      * @return selected rows, or null if no selection has been made
      */
     public Selection getSelectedRows(int datasetId) {
-        //would it perhaps be better to return an empty Selection rather than a null reference? That way there is a reduced chance
-        //of NullPointerException happening from using the reference that this method returns directly.
         if (!selectedRows.containsKey(datasetId)) {
             return null;
         }
@@ -91,15 +78,16 @@ public class SelectionManager implements IsSerializable {
         } else {
             selectedColumns.put(datasetId, s);
         }
-        selectionChangedEvent(datasetId, Selection.TYPE.OF_COLUMNS,selectedColumns.size());
+        selectionChangedEvent(datasetId, Selection.TYPE.OF_COLUMNS, selectedColumns.size());
     }
 
     /**
      *
      * @param datasetId - dataset id to set selection on
      * @param s - selection of rows, if null - no selection
+     * @param compType component that made the event
      */
-    public void setSelectedRows(int datasetId, Selection s,int compType) {
+    public void setSelectedRows(int datasetId, Selection s, int compType) {
         if (datasetId == 0) {
             Window.alert("dataset is 0");
             throw new IllegalArgumentException("Trying to select rows in a null DataSet");
@@ -111,68 +99,22 @@ public class SelectionManager implements IsSerializable {
             Window.alert("selection type is not rows");
             throw new IllegalArgumentException("Trying to select rows with an incorrect type of selection");
         } else {
-            //here we add update  indexis componant
-            switch(compType){
-                case 1: //geneTable no updates needed
-                    break;
-                case 5://SomClust 
-                    break;
-                case 10:
-                    break;
-                    
-            
-            }
-            
-            
+
             selectedRows.put(datasetId, s);
         }
-        selectionChangedEvent(datasetId, Selection.TYPE.OF_ROWS,selectedRows.size());
+        selectionChangedEvent(datasetId, Selection.TYPE.OF_ROWS, selectedRows.size());
     }
     private int selectionTimerIndex = 0;
     private Timer timer;
-//    /**
-//     * Mediate information about selection change on a dataset.
-//     *
-//     * @param datasetId - dataset that has changed selection
-//     * @param type - of the selection (on row/columns)
-//     * @param size 
-//     */   
-//    private void selectionChangedEvent(final int datasetId, final Selection.TYPE type,int size) {
-//        if (datasetId == 0 || !selectionChangeListeners.containsKey(datasetId)) {
-//            return;
-//        }
-//        selectionTimerIndex = 0;
-//        timer = new Timer() {
-//            @Override
-//            public void run() {
-//                if (selectionTimerIndex < selectionChangeListeners.get(datasetId).size()) {
-//                    SelectionChangeListener listener = selectionChangeListeners.get(datasetId).get(selectionTimerIndex);
-//                    listener.selectionChanged(type);
-//                    selectionTimerIndex++;
-//                } else {
-//                    timer.cancel();
-//                    RootPanel.get("loaderImage").setVisible(false);
-//                }
-//            }
-//        };
-//        RootPanel.get("loaderImage").setVisible(true);
-//        timer.scheduleRepeating(Math.min(100,size));
-////        for (SelectionChangeListener listener : selectionChangeListeners.get(datasetId)) {
-////            listener.selectionChanged(type);
-////        }
-//    }
-    
-    
-    /*                           updated part for testing                              */
-    
+
     /**
      * Mediate information about selection change on a dataset.
      *
      * @param datasetId - dataset that has changed selection
      * @param type - of the selection (on row/columns)
-     * @param size 
-     */   
-    private void selectionChangedEvent(final int datasetId, final Selection.TYPE type,int size) {
+     * @param size
+     */
+    private void selectionChangedEvent(final int datasetId, final Selection.TYPE type, int size) {
         if (datasetId == 0 || !selectionChangeListeners.containsKey(datasetId)) {
             return;
         }
@@ -191,24 +133,10 @@ public class SelectionManager implements IsSerializable {
             }
         };
         RootPanel.get("loaderImage").setVisible(true);
-        timer.scheduleRepeating(Math.min(100,size));
-//        for (SelectionChangeListener listener : selectionChangeListeners.get(datasetId)) {
-//            listener.selectionChanged(type);
-//        }
+        timer.scheduleRepeating(Math.min(100, size));
+
     }
 
-    
-    
-    /*                                end                                              */
-    
-    
-    
-
-    /*
-     *
-     * SelectionChangeListeners handling
-     *
-     */
     /**
      * Add SelectionChangeListener for dataset
      *

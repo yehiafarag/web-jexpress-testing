@@ -10,12 +10,11 @@ import web.diva.shared.beans.RankResult;
 
 /**
  *
- * @author Y.M
+ * @author Yehia Farag
  */
 public class RankUtil {
-    
-    public RankResult handelRankTable( ArrayList<RPResult> jResults)
-    {
+
+    public RankResult handelRankTable(ArrayList<RPResult> jResults) {
 
         RankResult results = new RankResult();
         results = this.initResults(results, jResults.get(0), 0);
@@ -57,9 +56,6 @@ public class RankUtil {
         }
 
         return res;
-
-
-
 
     }
 }

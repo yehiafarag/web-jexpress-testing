@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package web.diva.client.somclust.view;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import java.util.TreeMap;
+import java.util.HashMap;
 import org.thechiselgroup.choosel.protovis.client.PV;
 import org.thechiselgroup.choosel.protovis.client.PVClusterLayout;
 import org.thechiselgroup.choosel.protovis.client.PVDom;
@@ -39,19 +38,18 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
 
     private Unit root;
     private SelectionManager selectionManager;
-    private TreeMap<String, CustomNode> nodesMap;
-    private  List<String> indexers = new ArrayList<String>();
+    private HashMap<String, CustomNode> nodesMap;
+    private List<String> indexers = new ArrayList<String>();
     private boolean initIndexer = true;
     private double height;
     private double width;
-    private final int datasetId ;
-    
-    public void resize(double width,double height)
-    {
-        this.height =(int) height;
-        this.width =(int) width;
-        getPVPanel().render();   
-    
+    private final int datasetId;
+
+    public void resize(double width, double height) {
+        this.height = (int) height;
+        this.width = (int) width;
+        getPVPanel().render();
+
     }
 
     public List<String> getIndexers() {
@@ -67,13 +65,13 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
 
         this.datasetId = results.getDatasetId();
         this.root = results.getTopTree();
-        this.nodesMap = new TreeMap<String, CustomNode>();
+        this.nodesMap = new HashMap<String, CustomNode>();
         nodesMap.putAll(root.getNodesMap());
-        this.selectionManager = selectionManager;        
-        this.width = (width/3.0);
+        this.selectionManager = selectionManager;
+        this.width = (width / 3.0);
         this.height = height;
         results = null;
-      
+
     }
 
     @Override
@@ -83,8 +81,9 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
         createVisualization(root);
         getPVPanel().render();
         initIndexer = false;
-         root = null;
+        root = null;
     }
+
     @Override
     protected void onDetach() {
         super.onDetach(); //To change body of generated methods, choose Tools | Templates.
@@ -98,10 +97,11 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
         public void onEvent(com.google.gwt.user.client.Event e, String pvEventType, JsArgs args) {
             PVClusterLayout _this = args.getThis();
             PVDomNode d = args.getObject();
-            if (_this != null && d != null && (!d.nodeName().equalsIgnoreCase(clickNode))) {
+            if (_this != null && d != null && d.firstChild() != null && (!d.nodeName().equalsIgnoreCase(clickNode))) {
                 clickNode = d.nodeName();
                 clickedNode = nodesMap.get(clickNode);
                 vis.render();
+                clear = false;
                 updateSelectedList(clickedNode.getSelectedNodes());
             }
         }
@@ -121,10 +121,11 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
     private String clickNode = "";
     private String overNode = "";
     private CustomNode clickedNode;
+    private boolean clear = true;
 
     private void createVisualization(Unit root) {
         vis = getPVPanel().width(width).height(height).left(0).right(5)
-                .top(10).bottom(0);//.def("i", "-1").def("ii", "-1");
+                .top(10).bottom(0);
         PVClusterLayout layout = vis
                 .add(PV.Layout.Cluster())
                 .nodes(PVDom.create(root, new UnitDomAdapter())
@@ -145,16 +146,17 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
                     }
                 }
 
-                if (n.nodeName().equalsIgnoreCase(overNode)) {//(cNode != null && cNode.getName().equalsIgnoreCase/*getChildernList().contains*/(n.nodeName())) {//vis.getObject("i").toString().equalsIgnoreCase(n.nodeName())) {
+                if (n.nodeName().equalsIgnoreCase(overNode)) {
                     return 3.0;
                 }
                 return 1.0;
             }
         }).shape("square")
                 .fillStyle(new JsStringFunction() {
+                    @Override
                     public String f(JsArgs args) {
                         PVDomNode n = args.getObject();
-                        if (n.nodeName().equalsIgnoreCase(overNode)) {// if (cNode != null && cNode.getChildernList().contains(n.nodeName())) {//  if (vis.getObject("i").toString().equalsIgnoreCase(n.nodeName())) {
+                        if (n.nodeName().equalsIgnoreCase(overNode)) {
                             return "#FF4000";
                         }
                         return "#ccc";
@@ -165,8 +167,7 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
                             @Override
                             public String f(JsArgs args) {
                                 PVDomNode n = args.getObject();
-                                // CustomNode cNode = util.getCustomNode(n.nodeName());
-                                return n.firstChild() == null ? n.nodeName():"";//"kokowawaw";//n.firstChild() != null ? "Merged at "+cNode.getValue()+" Nodes : "+(cNode.getSelectedNodes().length) :"  ";
+                                return n.firstChild() == null ? n.nodeName() : "";
                             }
                         })
                 .events("all")
@@ -179,7 +180,7 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
             @Override
             public String f(JsArgs args) {
                 PVDomNode n = args.getObject();
-                if (clickedNode != null && clickedNode.getChildernList().contains(n.nodeName())) {// && (!cNode.getName().equalsIgnoreCase(n.nodeName()))) {//vis.getObject("i").toString().equalsIgnoreCase(n.nodeName())) {
+                if (clickedNode != null && clickedNode.getChildernList().contains(n.nodeName())) {
                     return "#FF4000";
                 }
                 return "#ccc";
@@ -193,8 +194,17 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
         selectionManager.setSelectedColumns(datasetId, selection);
 
     }
-    
-    public void clearIndexer(){
+
+    public void clearIndexer() {
         indexers = null;
+    }
+
+    public void clearSelection() {
+        if (!clear) {
+            clickedNode = null;
+            overNode = "";
+            clear = true;
+            vis.render();
+        }
     }
 }

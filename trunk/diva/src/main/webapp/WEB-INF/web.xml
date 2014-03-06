@@ -11,6 +11,9 @@
     <listener>
         <listener-class>web.diva.server.listeners.ContexListener</listener-class>        
     </listener>
+     <listener>
+        <listener-class>web.diva.server.listeners.DivaSessionListener</listener-class>        
+    </listener>
   <!-- Servlets -->
   <servlet>
     <servlet-name>greetServlet</servlet-name>

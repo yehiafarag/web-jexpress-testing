@@ -17,39 +17,42 @@ import web.diva.shared.model.core.model.dataset.DatasetInformation;
  */
 @RemoteServiceRelativePath("greet")
 public interface GreetingService extends RemoteService {
+
     //load dataset information
-    Map<Integer,String> getAvailableDatasets();
+    Map<Integer, String> getAvailableDatasets();
 
     DatasetInformation loadDataset(int datasetId);
 
     LineChartResults computeLineChart(int datasetId);
 
-    SomClusteringResults computeSomClustering(int datasetId,int linkage,int distanceMeasure) throws IllegalArgumentException;
-    HeatMapImgResult computeHeatmap(int datasetId,List<String>indexer,List<String>colIndexer);
-    
-    PCAImageResults computePCA(int datasetId,int comI,int comII);
-    
-    RankResult computeRank(int datasetId,String perm,String seed,String[] colGropNames,String log2);
-    
-    Boolean createRowGroup(int datasetId,String name,String color,String type,int[] selection);
-    Boolean createColGroup(int datasetId,String name,String color,String type,String[] selection);
+    SomClusteringResults computeSomClustering(int datasetId, int linkage, int distanceMeasure) throws IllegalArgumentException;
 
-    Integer createSubDataset(String name,int[] selection);
-    
+    HeatMapImgResult computeHeatmap(int datasetId, List<String> indexer, List<String> colIndexer);
+
+    PCAImageResults computePCA(int datasetId, int comI, int comII);
+
+    RankResult computeRank(int datasetId, String perm, String seed, String[] colGropNames, String log2);
+
+    Boolean createRowGroup(int datasetId, String name, String color, String type, int[] selection);
+
+    Boolean createColGroup(int datasetId, String name, String color, String type, String[] selection);
+
+    Integer createSubDataset(String name, int[] selection);
+
     DatasetInformation updateDatasetInfo(int datasetId);
-    
-    DatasetInformation activateGroups(int datasetId,String[] rowGroups,String[] colGroups);
-    
+
+    DatasetInformation activateGroups(int datasetId, String[] rowGroups, String[] colGroups);
+
     Integer saveDataset(int datasetId, String newName);
-    
+
     LinkedHashMap<String, String>[] getGroupsPanelData(int datasetId);
-    
+
     String[] getPcaColNames(int datasetId);
-    
-    LinkedHashMap<String,String> getColNamesMaps(int datasetId);
-    
-    String updateLineChartSelection(int datasetId,int[] selection);
-    
-    PCAImageResults updatePCASelection(int datasetId, int[] selection,boolean zoom,boolean selectAll);
-    
+
+    LinkedHashMap<String, String> getColNamesMaps(int datasetId);
+
+    String updateLineChartSelection(int datasetId, int[] selection);
+
+    PCAImageResults updatePCASelection(int datasetId, int[] selection, boolean zoom, boolean selectAll);
+
 }

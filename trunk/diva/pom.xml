@@ -34,6 +34,12 @@
             <version>1.0.1</version>
         </dependency>
         <dependency>
+   <groupId>commons-codec</groupId>
+   <artifactId>commons-codec</artifactId>
+   <version>1.6</version>
+</dependency>
+            
+        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>6.0</version>
@@ -72,11 +78,7 @@
             <artifactId>ProtovisGWT</artifactId>
             <version>0.4.1</version>
         </dependency>
-       <!-- <dependency>
-            <groupId>web.jexpress.jars</groupId>
-            <artifactId>jOpenChart</artifactId>
-            <version>0.94</version>
-        </dependency>-->
+
         <dependency>
 	<groupId>org.jfree</groupId>
 	<artifactId>jfreechart</artifactId>
@@ -94,11 +96,6 @@
             <artifactId>smartgwt</artifactId>
             <version>4.0</version> 
             
-        </dependency>        
-        <dependency>
-            <groupId>org.moxieapps.gwt</groupId>
-            <artifactId>org.moxieapps.gwt.highcharts</artifactId>
-            <version>1.5.0</version>
         </dependency>
                 
                 

@@ -5,10 +5,6 @@
  */
 package web.diva.client.view;
 
-//import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.mogaleaf.client.common.widgets.ColorHandler;
@@ -18,8 +14,8 @@ import com.smartgwt.client.types.MultipleAppearance;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.Window;
-//import com.smartgwt.client.widgets.events.ClickEvent;
-//import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.CloseClickEvent;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -36,19 +32,18 @@ import java.util.LinkedHashMap;
  *
  * @author Yehia
  */
-public class DatasetPanel extends Window {
+public final class DatasetPanel extends Window {
 
     private final RadioGroupItem radioGroupItem;
     private final RadioGroupItem processType;
     private final TextItem name, datasetName;
     private final IButton okBtn;
-    private  final SelectItem selectCols;
+    private final SelectItem selectCols;
     private final VLayout vlo;
 
     public String[] getSelectColsValue() {
         return selectCols.getValues();
     }
-    
 
     public String getRadioGroupItemValue() {
         return radioGroupItem.getValueAsString();
@@ -94,11 +89,8 @@ public class DatasetPanel extends Window {
     public int[] getColSelection() {
         return colSelection;
     }
-//    private final  ColorPickerItem colorPicker;//to do: add colour picker
-//    public String getColorPicker() {
-//        return colorPicker.getValueAsString();
-//    }
-    public DatasetPanel(LinkedHashMap<String,String> colNamesMap, int[] rowSelection, int[] colSelection) {
+
+    public DatasetPanel(LinkedHashMap<String, String> colNamesMap, int[] rowSelection, int[] colSelection) {
 
         this.setWidth(400);
         this.setHeight(500);
@@ -155,25 +147,27 @@ public class DatasetPanel extends Window {
         selectCols.setTitleAlign(Alignment.CENTER);
         selectCols.setMultiple(true);
         selectCols.setMultipleAppearance(MultipleAppearance.GRID);
-//        if (datasetInfo != null) {
-      
-            selectCols.setValueMap(colNamesMap);
-//        }
+        selectCols.setValueMap(colNamesMap);
         updateDataValues(rowSelection, colSelection);
-        
         colNamesMap = null;
-       
         name.setTitle("Group Name");
         name.setRequired(true);
-      
+
         final SimpleColorPicker picker = new SimpleColorPicker();
-        final Button button = new Button();
+        final IButton button = new IButton("Select Color");
+        HLayout hloCol = new HLayout();
+        hloCol.setWidth(380);
+        hloCol.setHeight(20);
+
+        hloCol.addMember(button);
+        hloCol.setMargin(10);
+        hloCol.setMembersMargin(20);
+        hloCol.setAlign(Alignment.CENTER);
         picker.addListner(new ColorHandler() {
 
             @Override
             public void newColorSelected(String colour) {
                 color = colour;
-                // What you want to do with the color here
             }
         });
         button.addClickHandler(new ClickHandler() {
@@ -183,19 +177,14 @@ public class DatasetPanel extends Window {
                 picker.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
                     @Override
                     public void setPosition(int offsetWidth, int offsetHeight) {
-                        int left = button.getAbsoluteLeft() - offsetWidth + button.getOffsetWidth();
-                        int top = button.getAbsoluteTop() + button.getOffsetHeight();
+                        int left = button.getAbsoluteLeft() - offsetWidth + button.getOffsetWidth() + 200;
+                        int top = button.getAbsoluteTop() + button.getOffsetHeight() - 70;
                         picker.setPopupPosition(left, top);
                     }
                 });
             }
         });
-//        colorPicker = new ColorPickerItem(); //       
-//        colorPicker.setTitle("Color Picker");  
-//        colorPicker.setWidth(85); 
-//        
-
-        form.setFields(radioGroupItem, selectCols, name);//,colorPicker);
+        form.setFields(radioGroupItem, selectCols, name);
         form2 = new DynamicForm();
         form2.setGroupTitle("Create Sub-Dataset");
         form2.setIsGroup(true);
@@ -206,7 +195,7 @@ public class DatasetPanel extends Window {
         form2.setFields(datasetName);
         form2.disable();
         vlo.addMember(form);
-        vlo.addMember(picker);
+        vlo.addMember(hloCol);
         vlo.addMember(form2);
 
         HLayout hlo = new HLayout();
@@ -221,8 +210,8 @@ public class DatasetPanel extends Window {
         vlo.addMember(hlo);
 
         errorlabl = new HTML("<h4 style='color:red;margin-left: 20px;height=20px;'>PLEASE CHECK YOUR DATA INPUT  </h4>");
-       errorlabl.setHeight("25px");
-       errorlabl.setWidth("380px");
+        errorlabl.setHeight("25px");
+        errorlabl.setWidth("380px");
         errorlabl.setVisible(false);
         vlo.addMember(errorlabl);
 
@@ -245,30 +234,34 @@ public class DatasetPanel extends Window {
                 }
             }
         });
-        rowSelection = null;colSelection = null;
+        rowSelection = null;
+        colSelection = null;
 
     }
-    
-    
-    public void updateDataValues(int[] rowSelection, int[] colSelection){
+
+    public void updateDataValues(int[] rowSelection, int[] colSelection) {
         this.rowSelection = rowSelection;
         this.colSelection = colSelection;
-        if(errorlabl != null)
+        if (errorlabl != null) {
             errorlabl.setVisible(false);
-        if(form != null){
+        }
+        if (form != null) {
             form.clearErrors(true);
             form.clearValues();
             form.redraw();
         }
-        if(okBtn != null){
+        if (okBtn != null) {
             okBtn.enable();
         }
-        if(form2 != null)
+        if (form2 != null) {
             form2.clearErrors(true);
-        if(name != null)
+        }
+        if (name != null) {
             name.setValue("");
-        if(datasetName != null)
+        }
+        if (datasetName != null) {
             datasetName.setValue("");
+        }
         if (colSelection != null && colSelection.length > 0) {
             String[] values = new String[colSelection.length];
             for (int x = 0; x < colSelection.length; x++) {
@@ -276,21 +269,20 @@ public class DatasetPanel extends Window {
             }
             selectCols.setValues(values);
             selectCols.redraw();
-            selectCols.disable(); 
+            selectCols.disable();
         }
-               
-         if (rowSelection == null || rowSelection.length == 0) {
+
+        if (rowSelection == null || rowSelection.length == 0) {
             radioGroupItem.setValue("COLUMN GROUPS");
             selectCols.enable();
             radioGroupItem.disable();
             processType.disable();
         } else {
-             radioGroupItem.setValue("ROW GROUPS");
-             processType.enable();
-             radioGroupItem.enable();
-             selectCols.disable();
-             
-             
+            radioGroupItem.setValue("ROW GROUPS");
+            processType.enable();
+            radioGroupItem.enable();
+            selectCols.disable();
+
             radioGroupItem.addChangedHandler(new ChangedHandler() {
                 @Override
                 public void onChanged(ChangedEvent event) {
@@ -304,8 +296,6 @@ public class DatasetPanel extends Window {
 
         }
 
-    
-    
     }
 
     public String getColor() {

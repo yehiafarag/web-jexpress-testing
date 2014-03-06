@@ -7,42 +7,41 @@
 package web.diva.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import java.util.TreeMap;
+import java.util.HashMap;
 
 /**
  *
  * @author Yehia Farag
  */
-public class Unit implements IsSerializable{
-    
-     public Unit[] children;
+public class Unit implements IsSerializable {
 
-        public double value;
+    public Unit[] children;
 
-        public String name;
-        
-        private TreeMap<String, CustomNode> nodesMap;
-        
-         public Unit() {
-        }
+    public double value;
 
-        public Unit(String name, double value) {
-            this.value = value;
-            this.name = name;
-        }
+    public String name;
 
-        public Unit(String name, Unit... children) {
-            this.children = children;
-            this.name = name;
-        }
+    private HashMap<String, CustomNode> nodesMap;
 
-    public TreeMap<String, CustomNode> getNodesMap() {
+    public Unit() {
+    }
+
+    public Unit(String name, double value) {
+        this.value = value;
+        this.name = name;
+    }
+
+    public Unit(String name, Unit... children) {
+        this.children = children;
+        this.name = name;
+    }
+
+    public HashMap<String, CustomNode> getNodesMap() {
         return nodesMap;
     }
 
-    public void setNodesMap(TreeMap<String, CustomNode> nodesMap) {
+    public void setNodesMap(HashMap<String, CustomNode> nodesMap) {
         this.nodesMap = nodesMap;
     }
-    
-}
 
+}
