@@ -17,7 +17,7 @@ public class InitImgs {
     public Image getGtImg() {
         return gtImg;
     }
-    private final Image gtImg, rtImg, pcaImg, lCImg;
+    private final Image gtImg, rtImg, pcaImg, lCImg,hcImg;
 
     public InitImgs() {
         gtImg = new Image("images/gt.png");
@@ -35,8 +35,17 @@ public class InitImgs {
         rtImg = new Image("images/rt.png");
         rtImg.setHeight("270px");
         rtImg.setWidth("" + RootPanel.get("RankTablesResults").getOffsetWidth() + "px");
+        
+          hcImg = new Image("images/hc.png");
+        hcImg.setHeight("580px");
+        hcImg.setWidth("" + RootPanel.get("SomClusteringResults").getOffsetWidth() + "px");
 
     }
+
+    public Image getHcImg() {
+        return hcImg;
+    }
+    
 
     public Image getRtImg() {
         return rtImg;

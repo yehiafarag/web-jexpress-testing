@@ -90,6 +90,7 @@ public class DivaMain implements EntryPoint {
         RootPanel.get("LineChartResults").add(initImgs.getlCImg());
         RootPanel.get("PCAChartResults").add(initImgs.getPcaImg());
         RootPanel.get("RankTablesResults").add(initImgs.getRtImg());
+         RootPanel.get("SomClusteringResults").add(initImgs.getHcImg());
 
         header.getLb().addChangeHandler(new ChangeHandler() {
             @Override
@@ -730,7 +731,9 @@ public class DivaMain implements EntryPoint {
         RootPanel.get("LineChartResults").add(initImgs.getlCImg());
         RootPanel.get("PCAChartResults").clear();
         RootPanel.get("PCAChartResults").add(initImgs.getPcaImg());
-        if(hc !=null)
-            hc.clearSelection();
+        
+        RootPanel.get("SomClusteringResults").clear();
+         RootPanel.get("SomClusteringResults").add(initImgs.getHcImg());
+            hc=null;
     }
 }
