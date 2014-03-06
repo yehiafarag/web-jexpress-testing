@@ -73,11 +73,11 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     public Map<Integer, String> getAvailableDatasets() {
         if(initSession){
          HttpSession httpSession = getThreadLocalRequest().getSession();
-         httpSession = this.getThreadLocalRequest().getSession();
          httpSession.setAttribute("imgColorName", imgColorName);
          httpSession.setAttribute("lineChartImage", lineChartImage);
          httpSession.setAttribute("pcaChartImage", pcaChartImage);
          httpSession.setAttribute("hmImage", hmImage);
+         System.out.println("id --- >> "+httpSession.getId());
          initSession = false;
         }
         
