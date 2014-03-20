@@ -6,12 +6,13 @@ package web.diva.server.model;
 
 import java.util.HashMap;
 import java.util.TreeMap;
-import no.uib.jexpress_modularized.core.dataset.Dataset;
+import no.uib.jexpress_modularized.core.dataset.Group;
 import no.uib.jexpress_modularized.pca.computation.PcaCompute;
+import web.diva.server.model.beans.DivaDataset;
 import web.diva.shared.beans.PCAImageResults;
 import web.diva.shared.beans.PCAPoint;
 import web.diva.shared.beans.PCAResults;
-import web.diva.shared.model.core.model.dataset.Group;
+//import web.diva.shared.model.core.model.dataset.Group;
 
 /**
  *
@@ -19,12 +20,12 @@ import web.diva.shared.model.core.model.dataset.Group;
  */
 public class PCAUtil {
 
-    public PCAResults getPCAResults(Dataset jDataset, web.diva.shared.model.core.model.dataset.Dataset dataset, int pcx, int pcy) {
-        PcaCompute pcaCompute = new PcaCompute(jDataset);
+    public PCAResults getPCAResults(DivaDataset divaDataset, int pcx, int pcy) {
+        PcaCompute pcaCompute = new PcaCompute(divaDataset);
         no.uib.jexpress_modularized.pca.computation.PcaResults jResults = pcaCompute.createPCA();
         TreeMap<Integer, PCAPoint> pointList = new TreeMap<Integer, PCAPoint>();
-        for (Group g : dataset.getRowGroups()) {
-            if (g.getId().equalsIgnoreCase("ALL")) {
+        for (Group g : divaDataset.getRowGroups()) {
+            if (g.getName().equalsIgnoreCase("ALL")) {
 
                 for (int i = 0; i < g.getIndices().size(); i++) {
                     PCAPoint point = new PCAPoint();
@@ -32,7 +33,7 @@ public class PCAUtil {
                     point.setY(jResults.ElementAt(g.getIndices().get(i), pcy));
                     point.setGeneIndex(g.getIndices().get(i));
                     point.setGeneName(g.getGeneList().get(i));
-                    point.setColor(g.getColor());
+                    point.setColor(g.getHashColor());
                     pointList.put(point.getGeneIndex(), point);
                 }
                 continue;
@@ -46,7 +47,7 @@ public class PCAUtil {
                 point.setY(jResults.ElementAt(g.getIndices().get(i), pcy));
                 point.setGeneIndex(g.getIndices().get(i));
                 point.setGeneName(g.getGeneList().get(i));
-                point.setColor(g.getColor());
+                point.setColor(g.getHashColor());
                 if (!(pointList.containsKey(point.getGeneIndex()) && point.getColor().equalsIgnoreCase("#000000"))) {
                     pointList.remove(point.getGeneIndex());
                     pointList.put(point.getGeneIndex(), point);
@@ -60,7 +61,7 @@ public class PCAUtil {
         res.setPoints(pointList);
         res.setPcai(pcx);
         res.setPcaii(pcy);
-        res.setHeader(dataset.getInfoHeaders()[0]);
+        res.setHeader(divaDataset.getInfoHeaders()[0]);
         return res;
     }
 

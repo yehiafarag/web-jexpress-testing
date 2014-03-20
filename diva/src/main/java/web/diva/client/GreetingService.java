@@ -23,7 +23,7 @@ public interface GreetingService extends RemoteService {
 
     DatasetInformation loadDataset(int datasetId);
 
-    LineChartResults computeLineChart(int datasetId);
+    LineChartResults computeLineChart(int datasetId,double w,double h);
 
     SomClusteringResults computeSomClustering(int datasetId, int linkage, int distanceMeasure) throws IllegalArgumentException;
 
@@ -51,8 +51,8 @@ public interface GreetingService extends RemoteService {
 
     LinkedHashMap<String, String> getColNamesMaps(int datasetId);
 
-    String updateLineChartSelection(int datasetId, int[] selection);
+    String updateLineChartSelection(int datasetId, int[] selection,double w,double h);
 
-    PCAImageResults updatePCASelection(int datasetId, int[] selection, boolean zoom, boolean selectAll);
+    PCAImageResults updatePCASelection(int datasetId, int[] selection, boolean zoom, boolean selectAll,double w,double h);
 
 }

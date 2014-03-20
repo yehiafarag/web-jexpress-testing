@@ -15,7 +15,7 @@ import no.uib.jexpress_modularized.core.dataset.Dataset;
 
 /**
  *
- * @author Y.M
+ * @author Yehia Farag
  */
 public class FilesReader implements Serializable{
     

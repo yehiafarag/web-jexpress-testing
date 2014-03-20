@@ -162,7 +162,7 @@ public class SOMClustUtil {
             return null;
         }
         if (root.left == null && root.right == null) {
-            long localIndex = System.currentTimeMillis() + (long) (Math.random() * 1000000.0);
+            long localIndex = System.currentTimeMillis() * (long) (Math.random() * 90000000.0);
             unit = new Unit("" + root.nme, 1000);
             node = new CustomNode();
             node.setValue(root.getval());
@@ -176,7 +176,7 @@ public class SOMClustUtil {
             parent.getChildernList().addAll(node.getChildernList());
             return unit;
         } else {
-            long localIndex = System.currentTimeMillis() + (long) (Math.random() * 1000000.0);
+            long localIndex = System.currentTimeMillis() * (long) (Math.random() * 90000000.0);
             node = new CustomNode();
             HashSet<String> newChildernList = new HashSet<String>();
             node.setChildernList(newChildernList);
@@ -200,7 +200,7 @@ public class SOMClustUtil {
             return null;
         }
         if (root.left == null && root.right == null) {
-            long localIndex = System.currentTimeMillis() + (long) (Math.random() * 1000000.0);
+            long localIndex = System.currentTimeMillis() * (long) (Math.random() * 90000000.0);
             unit = new Unit("" + root.nme, 1000);//"gene " +localIndex, 1000);
             node = new CustomNode();
             node.setValue(root.getval());
@@ -214,7 +214,7 @@ public class SOMClustUtil {
             parent.getChildernList().addAll(node.getChildernList());
             return unit;
         } else {
-            long localIndex = System.currentTimeMillis() * (long) (Math.random() * 1000000.0);
+            long localIndex = System.currentTimeMillis() * (long) (Math.random() * 9000000.0);
             node = new CustomNode();
             HashSet<String> newChildernList = new HashSet<String>();
             node.setChildernList(newChildernList);

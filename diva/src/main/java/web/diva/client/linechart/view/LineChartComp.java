@@ -61,7 +61,7 @@ public class LineChartComp extends ModularizedListener {
                 int[] selectedRows = sel.getMembers();
                 this.updateSelection(selectedRows);
             }else{
-                initImage(results.getImageString());
+               //initImage(results.getImageString());
             }            
             
         } catch (Exception exp) {
@@ -72,7 +72,7 @@ public class LineChartComp extends ModularizedListener {
     
     private void updateSelection(int[] selection) {
         if (selection != null && selection.length > 0) {            
-             greetingService.updateLineChartSelection(datasetId, selection,new AsyncCallback<String>() {
+             greetingService.updateLineChartSelection(datasetId,selection,RootPanel.get("LineChartResults").getOffsetWidth(),300.0, new AsyncCallback<String>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         RootPanel.get("loaderImage").setVisible(false);

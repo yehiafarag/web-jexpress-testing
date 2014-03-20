@@ -170,7 +170,7 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
     }
 
     private void updateSelection(int[] selection) {
-        greetingService.updatePCASelection(datasetId, selection, zoom, selectAll, new AsyncCallback<PCAImageResults>() {
+        greetingService.updatePCASelection(datasetId, selection, zoom, selectAll,RootPanel.get("PCAChartResults").getOffsetWidth() ,300.0, new AsyncCallback<PCAImageResults>() {
             @Override
             public void onFailure(Throwable caught) {
                 RootPanel.get("loaderImage").setVisible(false);

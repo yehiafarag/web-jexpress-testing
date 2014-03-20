@@ -23,13 +23,11 @@ public interface GreetingServiceAsync {
 
     public void loadDataset(int datasetId, AsyncCallback<DatasetInformation> asyncCallback);
 
-    public void computeLineChart(int datasetId, AsyncCallback<LineChartResults> asyncCallback);
+    public void computeLineChart(int datasetId,double w,double h, AsyncCallback<LineChartResults> asyncCallback);
 
     public void computeSomClustering(int datasetId, int linkage, int distanceMeasure, AsyncCallback<SomClusteringResults> asyncCallback);
 
     public void computeHeatmap(int datasetId, List<String> indexer, List<String> colIndexer, AsyncCallback<HeatMapImgResult> asyncCallback);
-
-    public void computePCA(int datasetId, int comI, int comII, AsyncCallback<PCAImageResults> asyncCallback);
 
     public void computeRank(int datasetId, String perm, String seed, String[] colGropNames, String log2, AsyncCallback<RankResult> asyncCallback);
 
@@ -51,8 +49,10 @@ public interface GreetingServiceAsync {
 
     public void getColNamesMaps(int datasetId, AsyncCallback<LinkedHashMap<String, String>> asyncCallback);
 
-    public void updateLineChartSelection(int datasetId, int[] selection, AsyncCallback<String> asyncCallback);
+    public void updateLineChartSelection(int datasetId, int[] selection,double w,double h, AsyncCallback<String> asyncCallback);
 
-    public void updatePCASelection(int datasetId, int[] selection, boolean zoom, boolean selectAll, AsyncCallback<PCAImageResults> asyncCallback);
+    public void updatePCASelection(int datasetId, int[] selection, boolean zoom, boolean selectAll,double w,double h, AsyncCallback<PCAImageResults> asyncCallback);
+
+    public void computePCA(int datasetId, int comI, int comII, AsyncCallback<PCAImageResults> asyncCallback);
 
 }

@@ -15,6 +15,8 @@ import java.io.OutputStream;
 import java.util.Map;
 import java.util.TreeMap;
 import no.uib.jexpress_modularized.core.dataset.Dataset;
+import web.diva.server.model.JexpressUtil;
+import web.diva.server.model.beans.DivaDataset;
 
 /**
  *
@@ -25,14 +27,13 @@ public class DB {
     private final Util databaseUtil = new Util();
     private Map<Integer, String> datasetsNameMap;
     private String path;
+    private final JexpressUtil util = new JexpressUtil();
 
-    public void loadDatasets(String fileFolderPath) {
+   
+
+    public TreeMap<Integer, String> getAvailableDatasets(String fileFolderPath) {
         path = fileFolderPath;
         datasetsNameMap = databaseUtil.getDatasetsNameMap(fileFolderPath);
-
-    }
-
-    public TreeMap<Integer, String> getAvailableDatasets() {
         TreeMap<Integer, String> datasetsTitleMap = new TreeMap<Integer, String>();
         for (int key : datasetsNameMap.keySet()) {
             String name = datasetsNameMap.get(key);
@@ -42,9 +43,23 @@ public class DB {
         return datasetsTitleMap;
     }
 
-    public Dataset getDataset(int datasetId) {
+//    public Dataset getDataset(int datasetId) {
+//        Dataset jDataset = databaseUtil.getDataset(datasetsNameMap.get(datasetId), path);
+//        Dataset newDS = new Dataset(jDataset.getData(), jDataset.getRowIds(), jDataset.getColumnIds());
+//        newDS.setColumnIds(jDataset.getColumnIds());
+//        newDS.setMissingMeasurements(jDataset.getMissingMeasurements());
+//        newDS.setRowIds(jDataset.getRowIds());
+//        newDS.getColumnGroups().clear();
+//        newDS.addRowAnnotationNameInUse(jDataset.getInfoHeaders()[0]);
+//        newDS.getColumnGroups().addAll(jDataset.getColumnGroups());
+//        newDS.getRowGroups().clear();
+//        newDS.getRowGroups().addAll(jDataset.getRowGroups());
+//        newDS.setName(jDataset.getName());
+//        return newDS;
+//    }
+    public DivaDataset getDataset(int datasetId) {
         Dataset jDataset = databaseUtil.getDataset(datasetsNameMap.get(datasetId), path);
-        Dataset newDS = new Dataset(jDataset.getData(), jDataset.getRowIds(), jDataset.getColumnIds());
+        DivaDataset newDS = new DivaDataset(jDataset.getData(), jDataset.getRowIds(), jDataset.getColumnIds());
         newDS.setColumnIds(jDataset.getColumnIds());
         newDS.setMissingMeasurements(jDataset.getMissingMeasurements());
         newDS.setRowIds(jDataset.getRowIds());
@@ -54,6 +69,9 @@ public class DB {
         newDS.getRowGroups().clear();
         newDS.getRowGroups().addAll(jDataset.getRowGroups());
         newDS.setName(jDataset.getName());
+        newDS = util.initDivaDs(newDS, datasetId);
+         String[] geneNamesArr = util.initGeneNamesArr(newDS.getGeneIndexNameMap());
+        newDS.setGeneNamesArr(geneNamesArr);
         return newDS;
     }
 
