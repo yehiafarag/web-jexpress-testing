@@ -14,9 +14,7 @@
      <listener>
         <listener-class>web.diva.server.listeners.DivaSessionListener</listener-class>        
     </listener>
-    <session-config>
-        <session-timeout>10</session-timeout>
-    </session-config>
+  
   <!-- Servlets -->
   <servlet>
     <servlet-name>greetServlet</servlet-name>

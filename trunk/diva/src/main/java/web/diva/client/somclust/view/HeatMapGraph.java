@@ -57,7 +57,7 @@ public class HeatMapGraph extends VerticalPanel {
         this.add(this.image);
         HTML scale = new HTML();
         scale.setWidth(this.width);
-        String scaleCode = "<div align='center'><b><font  color = " + imageResult.getMinColour() + " > " + (int) imageResult.getMinValue() + " &#8592; SC</font>A<font color = " + imageResult.getMaxColour() + " >LE &#8594; " + (int) imageResult.getMaxValue() + "</font></b> </div>";
+        String scaleCode = "<div align='center' ><b><font  color = " + imageResult.getMinColour() + " >" + (int) imageResult.getMinValue() + " &#8592; SC</font>A<font color = " + imageResult.getMaxColour() + " >LE &#8594;" + (int) imageResult.getMaxValue() + "</font></b> </div>";
         scale.setHTML(scaleCode);
         this.add(scale);
 

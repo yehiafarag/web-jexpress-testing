@@ -304,7 +304,7 @@ public class DivaMain implements EntryPoint {
 
     private void viewLineChart(int datasetId) {
         RootPanel.get("loaderImage").setVisible(true);
-        greetingService.computeLineChart(datasetId,
+        greetingService.computeLineChart(datasetId,RootPanel.get("LineChartResults").getOffsetWidth(),300.0,
                 new AsyncCallback<LineChartResults>() {
                     @Override
                     public void onFailure(Throwable caught) {

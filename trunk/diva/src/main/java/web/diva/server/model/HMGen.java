@@ -99,16 +99,28 @@ public class HMGen {
         map.setShowYAxisValues(false);
         map.setShowXAxisValues(false);
 
+        
         map.setHighValueColour(new Color(0, 255, 0));//(255,154,154));
         map.setColourScale(1.0);
         map.setLowValueColour(new Color(255, 0, 0));//(56,73,187));
-        map.setBackgroundColour(Color.WHITE);
+        map.setBackgroundColour(Color.gray);
         map.setAxisThickness(0);
         map.setChartMargin(0);
+        
         // Step 3: Output the chart to a file.
         results.setColNum(dataset.getDataWidth());
         results.setMaxColour("#00FF00");//"#FF0000");//("#FF9A9A");
         results.setMinColour("#FF0000");//"#3849BB");
+        
+        if(map.getLowValue() >= 0.0){
+        //only positive value
+             results.setMinColour("#d3d3d3");
+              map.setLowValueColour(Color.LIGHT_GRAY);
+        }
+        else if(map.getHighValue() <= 0.0){
+        results.setMaxColour("#d3d3d3");
+              map.setHighValueColour(Color.LIGHT_GRAY);
+        }
         results.setMaxValue(map.getHighValue());
         results.setMinValue(map.getLowValue());
         results.setRowNum(data.length);
