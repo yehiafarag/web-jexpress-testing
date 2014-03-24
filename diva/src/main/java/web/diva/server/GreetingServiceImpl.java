@@ -2,6 +2,7 @@ package web.diva.server;
 
 import web.diva.client.GreetingService;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -54,7 +55,10 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
             httpSession.setAttribute("hmImage", hmImage);
             initSession = false;
         }
-
+//        try{
+//        File f = new File(this.getServletContext().getResource("images").getPath(),"b.png");
+//        System.out.println(" folder "+f.getName()+ "   path  -->> "+this.getServletContext().getResource("/").getPath());
+//        }catch(Exception e){e.printStackTrace();}
         path = this.getServletContext().getInitParameter("fileFolder");
         TreeMap<Integer, String> datasetsMap = compute.getAvailableDatasetsMap(path);
         return datasetsMap;
@@ -64,6 +68,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     public DatasetInformation loadDataset(int datasetId) {
         try {
             divaDataset = compute.getDataset(datasetId);
+            compute.saveTxtDataset(datasetId, divaDataset);
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }

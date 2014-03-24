@@ -72,6 +72,8 @@ public class DB {
         newDS = util.initDivaDs(newDS, datasetId);
          String[] geneNamesArr = util.initGeneNamesArr(newDS.getGeneIndexNameMap());
         newDS.setGeneNamesArr(geneNamesArr);
+        
+        
         return newDS;
     }
 
@@ -81,6 +83,8 @@ public class DB {
             if (!dbFile.exists()) {
                 dbFile.createNewFile();
             }
+            else
+                return;
             OutputStream file = new FileOutputStream(dbFile);
             OutputStream buffer = new BufferedOutputStream(file);
             ObjectOutput output = new ObjectOutputStream(buffer);
