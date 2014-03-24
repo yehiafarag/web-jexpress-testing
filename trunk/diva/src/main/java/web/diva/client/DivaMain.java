@@ -10,6 +10,7 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -35,6 +36,7 @@ import web.diva.shared.Selection;
 import web.diva.client.view.ButtonsMenu;
 import web.diva.client.view.HeaderLayout;
 import web.diva.client.view.InitImgs;
+import web.diva.shared.ModularizedListener;
 import web.diva.shared.beans.PCAImageResults;
 
 /**
@@ -54,6 +56,7 @@ public class DivaMain implements EntryPoint {
     private LeftPanelView geneTable;
     private SaveDatasetDialog saveDs;
     private final GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
+    private final ModularizedListener[]  compponents = new ModularizedListener[2];
 
     private SomClustView hc;
     private InitImgs initImgs;
@@ -63,6 +66,8 @@ public class DivaMain implements EntryPoint {
     private DatasetPanel dsPanel;
     private ActivateGroupPanel activateGroupPanel;
     private RankPanel rankPanel;
+    private int pcaI = 0;
+    private int pcaII = 1;
 
     @Override
     public void onModuleLoad() {
@@ -317,7 +322,8 @@ public class DivaMain implements EntryPoint {
                     public void onSuccess(LineChartResults result) {
                         RootPanel.get("datasetInformation").setVisible(true);
                         errorLabel.setText("");
-                        LineChartComp linechart = new LineChartComp(result, selectionManager, greetingService);
+                        LineChartComp linechart = new LineChartComp(result, selectionManager, greetingService,initImgs.getlCImg());
+                        compponents[0] = linechart;
                         RootPanel.get("LineChartResults").clear();
                         RootPanel.get("LineChartResults").add(linechart.getLayout());
                         RootPanel.get("loaderImage").setVisible(false);
@@ -326,6 +332,8 @@ public class DivaMain implements EntryPoint {
     }
 
     private void viewPCAChart(int datasetId, int pcaI, int pcaII) {
+        this.pcaI = pcaI;
+        this.pcaII = pcaII;
         RootPanel.get("loaderImage").setVisible(true);
         greetingService.computePCA(datasetId, pcaI, pcaII,
                 new AsyncCallback<PCAImageResults>() {
@@ -341,6 +349,7 @@ public class DivaMain implements EntryPoint {
                         errorLabel.setText("");
                         RootPanel.get("datasetInformation").setVisible(true);
                         PCAPlot pca = new PCAPlot(result, selectionManager, greetingService);
+                        compponents[1] = (pca);
                         RootPanel.get("PCAChartResults").clear();
                         RootPanel.get("PCAChartResults").add(pca.getScatterPlotLayout());
                         RootPanel.get("loaderImage").setVisible(false);
@@ -408,9 +417,11 @@ public class DivaMain implements EntryPoint {
                             geneTable = new LeftPanelView(selectionManager, result);
                             RootPanel.get("geneTable").clear();
                             RootPanel.get("geneTable").add(geneTable);
-                            resetLayout();
+                            updateRowGroups();
+//                            resetLayout();
                             RootPanel.get("loaderImage").setVisible(false);
                             result = null;
+                            
                         }
                     });
         }
@@ -434,6 +445,7 @@ public class DivaMain implements EntryPoint {
                         errorLabel.setText("");
                         RootPanel.get("datasetInformation").setVisible(true);
                         updateApp(datasetId);
+//                        updateRowGroups();
                         dsPanel.getOkBtn().enable();
                     }
                 });
@@ -525,9 +537,10 @@ public class DivaMain implements EntryPoint {
                         geneTable = new LeftPanelView(selectionManager, datasetInfos);
                         RootPanel.get("geneTable").clear();
                         RootPanel.get("geneTable").add(geneTable);
-                        resetLayout();
+//                        resetLayout();
                         RootPanel.get("loaderImage").setVisible(false);
                         datasetInfos = null;
+                        updateRowGroups();
                     }
                 });
     }
@@ -725,15 +738,34 @@ public class DivaMain implements EntryPoint {
         });
 
     }
-
+/*in case of changing datasets only*/
     private void resetLayout() {
         RootPanel.get("LineChartResults").clear();
         RootPanel.get("LineChartResults").add(initImgs.getlCImg());
         RootPanel.get("PCAChartResults").clear();
-        RootPanel.get("PCAChartResults").add(initImgs.getPcaImg());
-        
+        RootPanel.get("PCAChartResults").add(initImgs.getPcaImg());        
         RootPanel.get("SomClusteringResults").clear();
          RootPanel.get("SomClusteringResults").add(initImgs.getHcImg());
             hc=null;
+            compponents[0]= null;
+            compponents[1]=null;
+             RootPanel.get("RankTablesResults").clear();
+         RootPanel.get("RankTablesResults").add(initImgs.getRtImg());
+    }
+    
+    /*on activate or create new row groups*/
+    private void updateRowGroups() {
+        for (ModularizedListener o : compponents) {
+            if(o == null)
+                continue;
+            if (o instanceof LineChartComp) {
+                viewLineChart(datasetId);
+
+            }
+            else{
+                viewPCAChart(datasetId, pcaI,pcaII);            
+            }
+        }
+
     }
 }

@@ -39,8 +39,9 @@ public class LineChartComp extends ModularizedListener {
     private VerticalPanel layout;
      private Image image;
      private final GreetingServiceAsync greetingService;
+     private int height = 300;
     
-    public LineChartComp(LineChartResults results, SelectionManager selectionManager,GreetingServiceAsync greetingService) {
+    public LineChartComp(LineChartResults results, SelectionManager selectionManager,GreetingServiceAsync greetingService,Image img) {
         this.greetingService =  greetingService;
         try {
             
@@ -51,7 +52,10 @@ public class LineChartComp extends ModularizedListener {
             this.selectionManager.addSelectionChangeListener(datasetId, LineChartComp.this);
             
             layout = new VerticalPanel();
-            layout.setHeight("300px");
+            
+            if(300.0 < RootPanel.get("LineChartResults").getOffsetHeight())
+                height = RootPanel.get("LineChartResults").getOffsetHeight();
+            layout.setHeight("" + height + "px");
             layout.setWidth("" + RootPanel.get("LineChartResults").getOffsetWidth() + "px");
             layout.setBorderWidth(1);
           
@@ -61,8 +65,11 @@ public class LineChartComp extends ModularizedListener {
                 int[] selectedRows = sel.getMembers();
                 this.updateSelection(selectedRows);
             }else{
-               //initImage(results.getImageString());
-            }            
+                this.image = img;
+                layout.add(image);
+            
+            }
+           
             
         } catch (Exception exp) {
             Window.alert(exp.getMessage());
@@ -71,8 +78,10 @@ public class LineChartComp extends ModularizedListener {
     }
     
     private void updateSelection(int[] selection) {
-        if (selection != null && selection.length > 0) {            
-             greetingService.updateLineChartSelection(datasetId,selection,RootPanel.get("LineChartResults").getOffsetWidth(),300.0, new AsyncCallback<String>() {
+        if ((selection != null && selection.length > 0 )) {       
+            if(300.0 < RootPanel.get("LineChartResults").getOffsetHeight())
+                height = RootPanel.get("LineChartResults").getOffsetHeight();
+             greetingService.updateLineChartSelection(datasetId,selection,RootPanel.get("LineChartResults").getOffsetWidth(),height, new AsyncCallback<String>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         RootPanel.get("loaderImage").setVisible(false);
@@ -98,11 +107,17 @@ public class LineChartComp extends ModularizedListener {
         image = null;
         }
         image = new Image(url);
-        image.setHeight("300px");
+         if(300.0 < RootPanel.get("LineChartResults").getOffsetHeight())
+                height = RootPanel.get("LineChartResults").getOffsetHeight();
+        image.setHeight(""+height+"px");
         image.setWidth(RootPanel.get("LineChartResults").getOffsetWidth()+"px");
         layout.add(image);
         layout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         layout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
     
     }
+
+    
+    
+    
 }

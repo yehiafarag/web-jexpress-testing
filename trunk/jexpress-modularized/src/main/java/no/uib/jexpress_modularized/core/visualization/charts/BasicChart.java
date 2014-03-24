@@ -24,10 +24,10 @@ import java.util.*;
  * @author bjarte
  *
  */
-public class BasicChart extends JPanel implements Serializable{
+public class BasicChart extends JPanel implements Serializable {
 
-    public Axis xaxis, 
-                   yaxis;
+    public Axis xaxis,
+            yaxis;
     //double[][] values={{0.0003,0.0005},{0.00042,0.00035},{-0.000275,0.000334},{0.00034,0.00023},{0.00042,0.000126},{0.00079,0.00023},{0.00023,0.00057},{0.00026,0.00024}};
     // public double[] Rx = new double[]{4,3.6,12.1,10.0}; //Raw X
     // public double[] Ry = new double[]{4,3.6,-12.1,10.0}; //Raw Y
@@ -53,15 +53,11 @@ public class BasicChart extends JPanel implements Serializable{
 
     public void transferValues(int method, boolean X, double[][] source, int index) {
 
-
-
         if (method == 0) {
 
             Rx = new double[source.length];
 
             Ry = new double[source.length];
-
-
 
             if (X) {
 
@@ -114,17 +110,11 @@ public class BasicChart extends JPanel implements Serializable{
 
         yaxis.correctForCloseValues = false;
 
-
-
         xaxis.gridcolor = new Color(220, 220, 220);
 
         yaxis.gridcolor = new Color(220, 220, 220);
 
-
-
         yaxis.dropFirstGridLine = true;
-
-
 
         setXaxisLabel("X-Axis");
 
@@ -144,25 +134,17 @@ public class BasicChart extends JPanel implements Serializable{
 
         setPreferredSize(new Dimension(300, 350));
 
-
-
         xaxis = new Axis(Rx, 0, this);
 
         yaxis = new Axis(Ry, 1, this);
 
         yaxis.correctForCloseValues = false;
 
-
-
         xaxis.gridcolor = new Color(220, 220, 220);
 
         yaxis.gridcolor = new Color(220, 220, 220);
 
-
-
         yaxis.dropFirstGridLine = true;
-
-
 
         setXaxisLabel("X-Axis");
 
@@ -193,9 +175,6 @@ public class BasicChart extends JPanel implements Serializable{
          * });
          *
          */
-
-
-
     }
 
     public int Height() {
@@ -213,65 +192,33 @@ public class BasicChart extends JPanel implements Serializable{
 
         int HTitlePos = Width() / 2 - (topText.getWidth(g) / 2);
 
-
-
-
-
         g.setColor(getBackground());
 
         g.fillRect(0, 0, Width(), Height());
-
-
 
         g.setColor(Color.black);
 
         topText.draw(g, HTitlePos, top);
 
-
-
-
-
         if (PaintLegend) {
             LegendWidth = paintLegend(g);
         }
-
-
 
         xaxis.positionAxis(left, Width() - right - LegendWidth, Height() - bottom, Height() - bottom);
 
         yaxis.positionAxis(left, left, top + TitleHeight, Height() - bottom);
 
-
-
         xaxis.data_window.setSize(10, Height() - bottom - top - TitleHeight);
 
         yaxis.data_window.setSize(Width() - left - right - LegendWidth, 10);
 
-
-
         // if(xaxis!=null) xaxis.drawAxis(g);   
-
         // if(yaxis!=null) yaxis.drawAxis(g);   
-
-
-
-
-
         // int[] x = getXValues();
-
         // int[] y = getYValues();
-
-
-
         // g.setColor(new Color(255,255,255));
-
         // g.fillRect(left+1,top+1,Width()-left-right-LegendWidth-1,Height()-top-bottom-topText.getHeight(g)-1);
-
-
-
         g.setColor(Color.black);
-
-
 
         if (xaxis != null) {
             xaxis.drawAxis(g);
@@ -281,25 +228,13 @@ public class BasicChart extends JPanel implements Serializable{
             yaxis.drawAxis(g);
         }
 
-
-
         Nx = getXValues();
 
         Ny = getYValues();
 
-
-
-
-
-
-
         g.drawLine(left + 1, top + TitleHeight, Width() - right - LegendWidth, top + TitleHeight);
 
         g.drawLine(Width() - right - LegendWidth, top + TitleHeight, Width() - right - LegendWidth, Height() - bottom);
-
-
-
-
 
         g.setColor(Color.red);
 
@@ -311,8 +246,6 @@ public class BasicChart extends JPanel implements Serializable{
 
             g.setColor(Color.red);
 
-
-
             g.fillOval(Nx[i] - (dotsize / 2), Ny[i] - (dotsize / 2), dotsize, dotsize);
 
             g.setColor(Color.black);
@@ -321,21 +254,9 @@ public class BasicChart extends JPanel implements Serializable{
 
         }
 
-
-
-
-
-
-
-
-
-
-
     }
 
     public int paintLegend(Graphics g) {
-
-
 
         Color bf = g.getColor();
 
@@ -346,10 +267,6 @@ public class BasicChart extends JPanel implements Serializable{
         int maxwidth = -1;
 
         int height = 0;
-
-
-
-
 
         for (int i = 0; i < legend.length; i++) {
 
@@ -365,11 +282,7 @@ public class BasicChart extends JPanel implements Serializable{
 
         maxwidth += 8;
 
-
-
         int top = (Height() / 2) - (height / 2);
-
-
 
         for (int i = 0; i < legend.length; i++) {
 
@@ -380,16 +293,10 @@ public class BasicChart extends JPanel implements Serializable{
         }
 
         // g.setColor(Color.black);
-
         // g.drawRect(Width()-maxwidth,top-tf.getHeight(g),maxwidth-2,(legend.length*tf.getHeight(g)));
-
-
-
         g.setColor(bf);
 
         return maxwidth;
-
-
 
     }
 
@@ -398,8 +305,6 @@ public class BasicChart extends JPanel implements Serializable{
         if (xaxis == null || Rx == null) {
             return null;
         }
-
-
 
         int[] ret = new int[Rx.length];
 
@@ -419,8 +324,6 @@ public class BasicChart extends JPanel implements Serializable{
             return null;
         }
 
-
-
         int[] ret = new int[Ry.length];
 
         for (int i = 0; i < Ry.length; i++) {
@@ -435,22 +338,17 @@ public class BasicChart extends JPanel implements Serializable{
 
     public static void main(String[] args) {
 
-
         BasicChart c = new BasicChart();
 
         JFrame f = new JFrame();
 
         f.setDefaultCloseOperation(f.EXIT_ON_CLOSE);
 
-
-
         f.getContentPane().add("Center", c);
 
         f.pack();
 
         f.setVisible(true);
-
-
 
     }
 }
