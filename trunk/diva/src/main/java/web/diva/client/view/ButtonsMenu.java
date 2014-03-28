@@ -99,5 +99,15 @@ public class ButtonsMenu extends HorizontalPanel {
         actGroupBtn.enable();
         saveBtn.enable();
     }
+    public void deactivatMenue() {
+
+        somClustBtn.disable();
+        lineChartBtn.disable();
+        pcaBtn.disable();
+        rankBtn.disable();
+        createGroupBtn.disable();
+        actGroupBtn.disable();
+        saveBtn.disable();
+    }
 
 }

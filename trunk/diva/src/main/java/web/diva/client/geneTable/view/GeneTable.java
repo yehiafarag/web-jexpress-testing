@@ -8,6 +8,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import com.smartgwt.client.types.ListGridFieldType;
 import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.DragStartEvent;
+import com.smartgwt.client.widgets.events.DragStartHandler;
 import com.smartgwt.client.widgets.events.DragStopEvent;
 import com.smartgwt.client.widgets.events.DragStopHandler;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
@@ -32,6 +34,7 @@ public final class GeneTable extends ModularizedListener implements SelectionCha
     private final SelectionManager selectionManager;
     private ListGrid selectionTable;
     private SelectItem colSelectionTable;
+    private boolean mouseSelection = false;
 
     public void setSelectionTable(ListGrid selectionTable) {
         this.selectionTable = selectionTable;
@@ -106,20 +109,34 @@ public final class GeneTable extends ModularizedListener implements SelectionCha
                 updateTableSelection(selectionRecord);
             }
         });
+        geneTable.addDragStartHandler(new DragStartHandler() {
+
+            @Override
+            public void onDragStart(DragStartEvent event) {
+             mouseSelection = true;   
+            }
+        });
 
         geneTable.addDragStopHandler(new DragStopHandler() {
             @Override
-            public void onDragStop(DragStopEvent event) {
+            public void onDragStop(DragStopEvent event) {               
                 ListGridRecord[] selectionRecord = geneTable.getSelectedRecords();
                 if (selectionTable != null) {
                     selectionTable.setRecords(selectionRecord);
                     selectionTable.redraw();
                 }
                 updateTableSelection(selectionRecord);
+                mouseSelection = false;
             }
         });
+//        geneTable.addSelectionChangedHandler(this);
         geneTable.setCanSort(false);
         records = null;
+        
+        
+        
+       
+       
 
     }
 
@@ -149,9 +166,13 @@ public final class GeneTable extends ModularizedListener implements SelectionCha
         return recordsInit;
     }
 
+    
     @Override
     public void onSelectionChanged(SelectionEvent event) {
-        ListGridRecord[] selectionRecord = event.getSelection();
+        if(mouseSelection)//|| event.isCtrlKeyDown() || EventHandler.shiftKeyDown())
+                return;
+       
+        ListGridRecord[] selectionRecord = geneTable.getSelectedRecords();
         if (selectionRecord.length > 0) {
             int[] selectedIndices = new int[selectionRecord.length];
             for (int index = 0; index < selectionRecord.length; index++) {

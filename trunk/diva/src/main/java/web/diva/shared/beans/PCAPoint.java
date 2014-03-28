@@ -5,12 +5,13 @@
 package web.diva.shared.beans;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
 /**
  *
  * @author Yehia Farag
  */
-public class PCAPoint implements IsSerializable {
+public class PCAPoint implements IsSerializable,Serializable {
 
     private double x;
     private double y;

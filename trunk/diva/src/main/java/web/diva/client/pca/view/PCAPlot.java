@@ -42,17 +42,20 @@ import web.diva.shared.beans.PCAPoint;
 public class PCAPlot extends ModularizedListener implements IsSerializable {
 
     private final SelectionManager selectionManager;
-    private boolean zoom = false,zoomed=false;
+    private boolean zoom = false;//, zoomed = false;
     private boolean selectAll = false;
     private final GreetingServiceAsync greetingService;
     private final IButton resetPlotBtn;
+    private boolean enable = true;
+    private int[] currentDataSet; 
+    private  int[] selectedRows ;
 
     @Override
     public void selectionChanged(Selection.TYPE type) {
         if (type == Selection.TYPE.OF_ROWS) {
             Selection sel = selectionManager.getSelectedRows(datasetId);
-            if (sel != null && !zoom && !selectAll && !zoomed) {
-                int[] selectedRows = sel.getMembers();
+            if (sel != null && !zoom && !selectAll ){//&& !zoomed) {
+                 selectedRows = sel.getMembers();
                 if (selectedRows != null && selectedRows.length != 0) {
                     updateSelection(selectedRows);
                 }
@@ -76,15 +79,16 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
         this.selectionManager = selectionManager;
         this.selectionManager.addSelectionChangeListener(results.getDatasetId(), PCAPlot.this);
         layout = new VerticalPanel();
-        if(290.0 < RootPanel.get("PCAChartResults").getOffsetHeight())
-            height = RootPanel.get("PCAChartResults").getOffsetHeight()-10;
-        layout.setHeight(height+"px");
+        if (290.0 < RootPanel.get("PCAChartResults").getOffsetHeight()) {
+            height = RootPanel.get("PCAChartResults").getOffsetHeight() - 10;
+        }
+        layout.setHeight(height + "px");
         layout.setWidth("" + RootPanel.get("PCAChartResults").getOffsetWidth() + "px");
         layout.setBorderWidth(1);
         RootPanel.get("tooltip").add(toolTip);
         imgLayout = new VerticalPanel();
-        
-        imgLayout.setHeight((height-25.0) + "px");
+
+        imgLayout.setHeight((height - 25.0) + "px");
         imgLayout.setWidth(RootPanel.get("PCAChartResults").getOffsetWidth() + "px");
 
         buttonsLayout = new HorizontalPanel();
@@ -96,8 +100,7 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
         CheckBox cb = new CheckBox("Zoom");
         resetPlotBtn = new IButton("Reset");
         resetPlotBtn.setTooltip("Reset the Plot");
-        resetPlotBtn.setSize("40px","20px");
-
+        resetPlotBtn.setSize("40px", "20px");
         cb.setChecked(false);    // Hook up a handler to find out when it's clicked.
         cb.addClickHandler(new ClickHandler() {
             @Override
@@ -106,11 +109,9 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
                 if (!zoom) {
 //                    updateWithSelection();
                 }
-                    
-
             }
         });
-     
+
         buttonsLayout.add(cb);
 
         CheckBox cb2 = new CheckBox("Show All");
@@ -124,31 +125,27 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
                 } else {
                     updateSelection(null);
                 }
-
             }
         });
         buttonsLayout.setBorderWidth(1);
         buttonsLayout.add(cb2);
-        
-        
 
         resetPlotBtn.disable();
         resetPlotBtn.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
             @Override
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                if(!zoom){
-                resetPlotBtn.disable();
-                zoomed = false;
-                updateWithSelection();   
+                if (!zoom) {
+                    resetPlotBtn.disable();
+//                    zoomed = false;
+                    currentDataSet = null;
+                    updateWithSelection();
                 }
-                
             }
         }
         );
         buttonsLayout.add(resetPlotBtn);
 
-        
         buttonsLayout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         buttonsLayout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
@@ -201,31 +198,33 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
     }
 
     private void updateSelection(int[] selection) {
-        if(zoom)
-            zoomed = true;
-        greetingService.updatePCASelection(datasetId, selection, zoom, selectAll,RootPanel.get("PCAChartResults").getOffsetWidth() ,(height-25.0) , new AsyncCallback<PCAImageResults>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                RootPanel.get("loaderImage").setVisible(false);
+        if (enable) {
+            if (zoom) {
+//                zoomed = true;
+                currentDataSet = selection;
             }
-
-            @Override
-            public void onSuccess(PCAImageResults result) {
-                if (chart != null) {
-                    imgLayout.remove(chart);
-                    chart = null;
-
+            greetingService.updatePCASelection(datasetId, currentDataSet,selectedRows, zoom, selectAll, RootPanel.get("PCAChartResults").getOffsetWidth(), (height - 25.0), new AsyncCallback<PCAImageResults>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    RootPanel.get("loaderImage").setVisible(false);
                 }
-                chart = new Image(result.getImgString());
-                chart.setHeight((height-25.0) + "px");
-                chart.setWidth(RootPanel.get("PCAChartResults").getOffsetWidth() + "px");
-                imgLayout.add(chart);
-                selectionIndexMap = result.getIndexeMap();
-                initChartImage(result.getXyName());
-                RootPanel.get("loaderImage").setVisible(false);
-            }
-        });
+                @Override
+                public void onSuccess(PCAImageResults result) {
+                    if (chart != null) {
+                        imgLayout.remove(chart);
+                        chart = null;
+                    }
+                    chart = new Image(result.getImgString());
+                    chart.setHeight((height - 25.0) + "px");
+                    chart.setWidth(RootPanel.get("PCAChartResults").getOffsetWidth() + "px");
+                    imgLayout.add(chart);
+                    selectionIndexMap = result.getIndexeMap();
+                    initChartImage(result.getXyName());
+                    RootPanel.get("loaderImage").setVisible(false);
+                }
+            });
 
+        }
     }
 
     private MouseMoveHandler mouseMoveHandler;
@@ -236,8 +235,9 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
     private int endY;
 
     private void initChartImage(final HashMap<String, String> tooltips) {
-        if(zoom)
+        if (zoom) {
             resetPlotBtn.enable();
+        }
 
         mouseMoveHandler = new MouseMoveHandler() {
             @Override
@@ -253,16 +253,16 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
                 String key3 = x + "," + (y + 1);
                 String key4 = x + "," + (y - 1);
                 if (tooltips.containsKey(key)) {
-                    updateToolTip(tooltips.get(key));                 
-                   
+                    updateToolTip(tooltips.get(key));
+
                 } else if (tooltips.containsKey(key1)) {
-                     updateToolTip(tooltips.get(key1));  
+                    updateToolTip(tooltips.get(key1));
                 } else if (tooltips.containsKey(key2)) {
-                    updateToolTip(tooltips.get(key2));  
+                    updateToolTip(tooltips.get(key2));
                 } else if (tooltips.containsKey(key3)) {
-                     updateToolTip(tooltips.get(key3));  
+                    updateToolTip(tooltips.get(key3));
                 } else if (tooltips.containsKey(key4)) {
-                     updateToolTip(tooltips.get(key4));  
+                    updateToolTip(tooltips.get(key4));
                 } else {
                     toolTip.setText("");
                     toolTip.setVisible(false);
@@ -286,7 +286,6 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
             public void onMouseUp(MouseUpEvent event) {
                 endX = event.getX();
                 endY = event.getY();
-//                chart.setVisibleRect(startX, startY, endX-startX, endY-startY);
                 //update 
                 int[] selection = getSelection(endX, startX, endY, startY);
                 if (selection != null && !zoom) {
@@ -297,7 +296,7 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
                 }
             }
         });
-      
+
         chart.addMouseDownHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
@@ -309,30 +308,32 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
         });
 
     }
-    
-    private void updateToolTip(String lable){
-     String nString = "";
-         if(lable.length() >= 30){        
-         String row = "";
-         for(String str:lable.split(","))
-         {
-            nString = nString+str+",";
-            row = row+str+",";
-            if(row.length() >= 30){
-                nString = nString+"<br/>";
-                row ="";
+
+    private void updateToolTip(String lable) {
+        String nString = "";
+        if (lable.length() >= 30) {
+            String row = "";
+            for (String str : lable.split(",")) {
+                nString = nString + str + ",";
+                row = row + str + ",";
+                if (row.length() >= 30) {
+                    nString = nString + "<br/>";
+                    row = "";
+                }
+
             }
-                    
-         }
-         
-         }
-         else
-             nString = lable;
-             
-         toolTip.setHTML("<p style='height:55px;font-weight: bold; color:white;font-size: 10px;background: #819FF7; border-style:double;'>" +nString+ "</p>");
-             toolTip.setVisible(true);
+
+        } else {
+            nString = lable;
+        }
+
+        toolTip.setHTML("<p style='height:55px;font-weight: bold; color:white;font-size: 10px;background: #819FF7; border-style:double;'>" + nString + "</p>");
+        toolTip.setVisible(true);
     }
 
-    
-    
+    public void enable(boolean enabel) {
+        this.enable = enabel;
+
+    }
+
 }

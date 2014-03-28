@@ -7,13 +7,14 @@
 package web.diva.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  *
  * @author Yehia Farag
  */
-public class Unit implements IsSerializable {
+public class Unit implements IsSerializable,Serializable {
 
     public Unit[] children;
 

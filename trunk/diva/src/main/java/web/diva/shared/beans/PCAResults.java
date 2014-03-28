@@ -5,6 +5,7 @@
 package web.diva.shared.beans;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -12,7 +13,7 @@ import java.util.TreeMap;
  *
  * @author Yehia Farag
  */
-public class PCAResults implements IsSerializable {
+public class PCAResults implements IsSerializable,Serializable {
 
     private TreeMap<Integer, PCAPoint> points;
     private int datasetId;

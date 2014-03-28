@@ -17,6 +17,9 @@ import web.diva.shared.beans.RankResult;
  * @author Yehia Farag
  */
 public class RankTablesView extends HorizontalPanel {
+    
+    private final RankTable posRankTable;
+    private final RankTable negRankTable;
 
     public RankTablesView(SelectionManager selectionManager, RankResult results) {
         this.setBorderWidth(1);
@@ -26,7 +29,7 @@ public class RankTablesView extends HorizontalPanel {
         secStackI.setVisibilityMode(VisibilityMode.MULTIPLE);
         secStackI.setWidth((RootPanel.get("RankTablesResults").getOffsetWidth() / 2));
         secStackI.setHeight(270);
-        RankTable posRankTable = new RankTable(selectionManager, results.getDatasetId(), results.getPosTableHeader(), results.getPosTableData(), results.getPosRankToIndex(), results.getPosIndexToRank());
+        posRankTable = new RankTable(selectionManager, results.getDatasetId(), results.getPosTableHeader(), results.getPosTableData(), results.getPosRankToIndex(), results.getPosIndexToRank());
         SectionStackSection section1 = new SectionStackSection("Positive Score");
         section1.setExpanded(true);
         section1.addItem(posRankTable.getTable());
@@ -37,7 +40,7 @@ public class RankTablesView extends HorizontalPanel {
         secStackII.setVisibilityMode(VisibilityMode.MULTIPLE);
         secStackII.setWidth((RootPanel.get("RankTablesResults").getOffsetWidth() / 2));
         secStackII.setHeight(270);
-        RankTable negRankTable = new RankTable(selectionManager, results.getDatasetId(), results.getNegTableHeader(), results.getNegTableData(), results.getNegRankToIndex(), results.getNegIndexToRank());
+        negRankTable = new RankTable(selectionManager, results.getDatasetId(), results.getNegTableHeader(), results.getNegTableData(), results.getNegRankToIndex(), results.getNegIndexToRank());
 
         SectionStackSection section11 = new SectionStackSection("Negative Score");
         section11.setExpanded(true);
@@ -46,6 +49,16 @@ public class RankTablesView extends HorizontalPanel {
         this.add(secStackII);
         results = null;
 
+    }
+    public  void enable() {
+        posRankTable.getTable().enable();
+        negRankTable.getTable().enable();
+        
+    }
+     public  void disable() {
+        posRankTable.getTable().disable();
+        negRankTable.getTable().disable();
+        
     }
 
 }

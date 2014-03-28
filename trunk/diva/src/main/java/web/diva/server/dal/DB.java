@@ -13,10 +13,14 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import no.uib.jexpress_modularized.core.dataset.Dataset;
 import web.diva.server.model.JexpressUtil;
 import web.diva.server.model.beans.DivaDataset;
+import web.diva.shared.beans.PCAResults;
+import web.diva.shared.beans.RankResult;
+import web.diva.shared.beans.SomClusteringResults;
 
 /**
  *
@@ -29,7 +33,18 @@ public class DB {
     private String path;
     private final JexpressUtil util = new JexpressUtil();
 
+   public void initDivaDatasets(String fileFolderPath){
+       path = fileFolderPath;
+         File appFolder = new File(path);
+        for (File datasetFile : appFolder.listFiles()) {
+            if (datasetFile.getName().endsWith(".txt")) {
+                DivaDataset divaDs = this.getDataset(0,datasetFile.getName());
+                this.setDataset(divaDs, 0);
+
+            }
+        }
    
+   }
 
     public TreeMap<Integer, String> getAvailableDatasets(String fileFolderPath) {
         path = fileFolderPath;
@@ -41,6 +56,11 @@ public class DB {
             datasetsTitleMap.put(key, name);
         }
         return datasetsTitleMap;
+    }
+     public Set<String> getAvailableComputingFileList(String fileFolderPath) {
+       
+        Set<String> computingFileList = databaseUtil.getAvailableComputingFileList(fileFolderPath);        
+        return computingFileList;
     }
 
 //    public Dataset getDataset(int datasetId) {
@@ -57,8 +77,10 @@ public class DB {
 //        newDS.setName(jDataset.getName());
 //        return newDS;
 //    }
-    public DivaDataset getDataset(int datasetId) {
-        Dataset jDataset = databaseUtil.getDataset(datasetsNameMap.get(datasetId), path);
+    private DivaDataset getDataset(int datasetId,String datasetName) {
+        if(datasetName == null)
+            datasetName = datasetsNameMap.get(datasetId);
+        Dataset jDataset = databaseUtil.getJexpressDataset(datasetName, path);
         DivaDataset newDS = new DivaDataset(jDataset.getData(), jDataset.getRowIds(), jDataset.getColumnIds());
         newDS.setColumnIds(jDataset.getColumnIds());
         newDS.setMissingMeasurements(jDataset.getMissingMeasurements());
@@ -76,8 +98,14 @@ public class DB {
         
         return newDS;
     }
+    
+    public DivaDataset getDivaDataset(int datasetId){
+    DivaDataset divaDS =  databaseUtil.getDivaDataset(datasetsNameMap.get(datasetId), path);
+    divaDS.setId(datasetId);
+    return divaDS;
+    }
 
-    public void setDataset(Dataset ds, int id) {
+    public void setDataset(DivaDataset ds, int id) {
         try {
             File dbFile = new File(path, ds.getName() + ".ser");
             if (!dbFile.exists()) {
@@ -94,7 +122,83 @@ public class DB {
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
         }
-        datasetsNameMap.put(id, ds.getName() + ".ser");
+        if(datasetsNameMap != null)
+            datasetsNameMap.put(id, ds.getName() + ".ser");
 
     }
+    
+    public void saveSomClustResult(String id, SomClusteringResults results){
+    
+         try {
+            File dbFile = new File(path+"/computing", id);
+            if (!dbFile.exists()) {
+                dbFile.createNewFile();
+            }
+            else
+                return;
+            OutputStream file = new FileOutputStream(dbFile);
+            OutputStream buffer = new BufferedOutputStream(file);
+            ObjectOutput output = new ObjectOutputStream(buffer);
+            output.writeObject(results);
+            output.flush();
+            output.close();
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+    
+    }
+      public SomClusteringResults getSomClustResult(String id){
+         SomClusteringResults results = databaseUtil.deSerializeSomClustResult(id, path+"/computing");
+         return results;
+     }
+      
+       public void savePCAResult(String id, PCAResults results){
+    
+         try {
+            File dbFile = new File(path+"/computing", id);
+            if (!dbFile.exists()) {
+                dbFile.createNewFile();
+            }
+            else
+                return;
+            OutputStream file = new FileOutputStream(dbFile);
+            OutputStream buffer = new BufferedOutputStream(file);
+            ObjectOutput output = new ObjectOutputStream(buffer);
+            output.writeObject(results);
+            output.flush();
+            output.close();
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+    
+    }
+      public PCAResults getPCAResult(String id){
+         PCAResults results = databaseUtil.deSerializePCAResult(id, path+"/computing");
+         return results;
+     }
+      
+      public void saveRankResult(String id, RankResult results){
+    
+         try {
+            File dbFile = new File(path+"/computing", id);
+            if (!dbFile.exists()) {
+                dbFile.createNewFile();
+            }
+            else
+                return;
+            OutputStream file = new FileOutputStream(dbFile);
+            OutputStream buffer = new BufferedOutputStream(file);
+            ObjectOutput output = new ObjectOutputStream(buffer);
+            output.writeObject(results);
+            output.flush();
+            output.close();
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+    
+    }
+      public RankResult getRankResult(String id){
+         RankResult results = databaseUtil.deSerializeRankResult(id, path+"/computing");
+         return results;
+     }
 }

@@ -5,13 +5,14 @@
 package web.diva.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 import java.util.HashSet;
 
 /**
  *
  * @author Yehia Farag
  */
-public class CustomNode implements IsSerializable{
+public class CustomNode implements IsSerializable,Serializable{
     private String name;
     private long index;
     private HashSet<String> childernList;

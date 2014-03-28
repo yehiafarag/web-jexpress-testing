@@ -7,8 +7,6 @@ package web.diva.client.view;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.mogaleaf.client.common.widgets.ColorHandler;
-import com.mogaleaf.client.common.widgets.SimpleColorPicker;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.MultipleAppearance;
 import com.smartgwt.client.types.VerticalAlignment;
@@ -18,7 +16,10 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.CloseClickEvent;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
+import com.smartgwt.client.widgets.form.ColorPicker;
 import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.events.ColorSelectedEvent;
+import com.smartgwt.client.widgets.form.events.ColorSelectedHandler;
 import com.smartgwt.client.widgets.form.fields.RadioGroupItem;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
@@ -40,6 +41,8 @@ public final class DatasetPanel extends Window {
     private final IButton okBtn;
     private final SelectItem selectCols;
     private final VLayout vlo;
+    private  final HTML colorLable = new HTML("<p style='height:10px;width:10px;font-weight: bold; color:white;font-size: 10px;background: #ffffff; border-style:double;'></p>");
+          
 
     public String[] getSelectColsValue() {
         return selectCols.getValues();
@@ -153,38 +156,71 @@ public final class DatasetPanel extends Window {
         name.setTitle("Group Name");
         name.setRequired(true);
 
-        final SimpleColorPicker picker = new SimpleColorPicker();
-        final IButton button = new IButton("Select Color");
+//        final SimpleColorPicker picker = new SimpleColorPicker();
+          final ColorPicker picker = new ColorPicker(); 
+          final IButton button = new IButton("Select Color");
+          picker.setVisible(false);
+          picker.setAllowComplexMode(false);
+          picker.setWidth("179px");
+          picker.setHeight("156px");
+            picker.addColorSelectedHandler(new ColorSelectedHandler() {
+
+            @Override
+            public void onColorSelected(ColorSelectedEvent event) {
+               color = event.getColor(); //To change body of generated methods, choose Tools | Templates.
+                getColorLable().setHTML("<p style='height:10px;width:10px;font-weight: bold; color:white;font-size: 10px;background:"+ color+"; border-style:double;'></p>");
+                colorLable.setVisible(true);
+            }
+            
+        });
+       
         HLayout hloCol = new HLayout();
         hloCol.setWidth(380);
-        hloCol.setHeight(20);
-
+        hloCol.setHeight(50);
+       
+//
         hloCol.addMember(button);
+        hloCol.addMember(colorLable);
         hloCol.setMargin(10);
         hloCol.setMembersMargin(20);
         hloCol.setAlign(Alignment.CENTER);
-        picker.addListner(new ColorHandler() {
-
-            @Override
-            public void newColorSelected(String colour) {
-                color = colour;
-            }
-        });
+//        hloCol.addMember(picker);
+      
+//        picker.addListner(new ColorHandler() {
+//
+//            @Override
+//            public void newColorSelected(String colour) {
+//                color = colour;
+//            }
+//        });
         button.addClickHandler(new ClickHandler() {
 
             @Override
             public void onClick(ClickEvent event) {
-                picker.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
-                    @Override
-                    public void setPosition(int offsetWidth, int offsetHeight) {
-                        int left = button.getAbsoluteLeft() - offsetWidth + button.getOffsetWidth() + 200;
-                        int top = button.getAbsoluteTop() + button.getOffsetHeight() - 70;
-                        picker.setPopupPosition(left, top);
-                    }
-                });
+               colorLable.setVisible(false);
+               picker.setVisible(true);
+               
+                
+//                picker.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
+//                    @Override
+//                    public void setPosition(int offsetWidth, int offsetHeight) {
+//                        int left = button.getAbsoluteLeft() - offsetWidth + button.getOffsetWidth() - 305;
+//                        int top = button.getAbsoluteTop() + button.getOffsetHeight() - 70;
+//                        picker.setPopupPosition(left, top);
+//                    }
+//                });
             }
         });
+        hloCol.addMember(picker);
+      
+       
+//        DynamicForm df = new DynamicForm();
+//        df.setFields(startColorColorPicker);
+//        df.draw();
+         
+        
         form.setFields(radioGroupItem, selectCols, name);
+        form.draw();
         form2 = new DynamicForm();
         form2.setGroupTitle("Create Sub-Dataset");
         form2.setIsGroup(true);
@@ -242,6 +278,9 @@ public final class DatasetPanel extends Window {
     public void updateDataValues(int[] rowSelection, int[] colSelection) {
         this.rowSelection = rowSelection;
         this.colSelection = colSelection;
+        this.colorLable.setHTML("<p style='height:10px;width:10px;font-weight: bold; color:white;font-size: 10px;background:#ffffff; border-style:double;'></p>");
+             
+        
         if (errorlabl != null) {
             errorlabl.setVisible(false);
         }
@@ -300,6 +339,10 @@ public final class DatasetPanel extends Window {
 
     public String getColor() {
         return color;
+    }
+
+    public HTML getColorLable() {
+        return colorLable;
     }
 
 }
