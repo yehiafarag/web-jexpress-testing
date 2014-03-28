@@ -13,8 +13,14 @@ import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import no.uib.jexpress_modularized.core.dataset.Dataset;
+import web.diva.server.model.beans.DivaDataset;
+import web.diva.shared.beans.PCAResults;
+import web.diva.shared.beans.RankResult;
+import web.diva.shared.beans.SomClusteringResults;
 
 /**
  *
@@ -28,9 +34,9 @@ public class Util {
         Map<Integer, String> datasetsMap = new HashMap<Integer, String>();
         File appFolder = new File(path);
         int index = 1;
-        for (File f2 : appFolder.listFiles()) {
-            if (f2.getName().endsWith(".txt") || f2.getName().endsWith(".ser")) {
-                datasetsMap.put(index, f2.getName());
+        for (File datasetFile : appFolder.listFiles()) {
+            if (datasetFile.getName().endsWith(".ser")) {
+                datasetsMap.put(index, datasetFile.getName());
                 index++;
 
             }
@@ -38,25 +44,54 @@ public class Util {
         return datasetsMap;
 
     }
+     public Set<String> getAvailableComputingFileList(String fileFolderPath) {
+        Set<String> computingFileList = new HashSet<String>();
+        File appFolder = new File(fileFolderPath+"/computing");
+        for (File datasetFile : appFolder.listFiles()) {
+            if (datasetFile.getName().endsWith(".ser")) {
+                computingFileList.add(datasetFile.getName());
 
-    public Dataset getDataset(String name, String path) {
+            }
+        }
+        return computingFileList;
+    }
+
+    public Dataset getJexpressDataset(String name, String path) {
         File appFolder = new File(path);
         Dataset ds = null;
         for (File f2 : appFolder.listFiles()) {
             if (f2.getName().equalsIgnoreCase(name)) {
                 if (name.endsWith(".txt")) {
                     ds = reader.readDatasetFile(f2);
-                } else { //deserialise the file
+                }
+//                else { //deserialise the file
+//                    ds = deSerializeDataset(name, path);
+//
+//                }
+            }
+        }
+        return ds;
+
+    }
+      public DivaDataset getDivaDataset(String name, String path) {
+        File appFolder = new File(path);
+        DivaDataset ds = null;
+        for (File f2 : appFolder.listFiles()) {
+            if (f2.getName().equalsIgnoreCase(name)) {
+//                if (name.endsWith(".txt")) {
+//                    ds = reader.readDatasetFile(f2);
+//                } else { //deserialise the file
                     ds = deSerializeDataset(name, path);
 
-                }
+//                }
             }
         }
         return ds;
 
     }
 
-    private Dataset deSerializeDataset(String name, String path) {
+
+    private DivaDataset deSerializeDataset(String name, String path) {
 
         try {
             File dbFile = new File(path, name);
@@ -68,7 +103,7 @@ public class Util {
             InputStream buffer = new BufferedInputStream(file);
             ObjectInput input = new ObjectInputStream(buffer);
             //deserialize the List
-            Dataset serDataset = (Dataset) input.readObject();
+            DivaDataset serDataset = (DivaDataset) input.readObject();
             return serDataset;
 
         } catch (ClassNotFoundException ex) {
@@ -78,5 +113,74 @@ public class Util {
         }
         return null;
     }
+    public SomClusteringResults deSerializeSomClustResult(String name, String path) {
+
+        try {
+            File dbFile = new File(path, name);
+            if (!dbFile.exists()) {
+                System.out.println("cant find the file");
+                return null;
+            }
+            InputStream file = new FileInputStream(dbFile);
+            InputStream buffer = new BufferedInputStream(file);
+            ObjectInput input = new ObjectInputStream(buffer);
+            //deserialize the List
+            SomClusteringResults serResult = (SomClusteringResults) input.readObject();
+            return serResult;
+
+        } catch (ClassNotFoundException ex) {
+            System.err.println(ex.getMessage());
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return null;
+    }
+    
+     public PCAResults deSerializePCAResult(String name, String path) {
+
+        try {
+            File dbFile = new File(path, name);
+            if (!dbFile.exists()) {
+                System.out.println("cant find the file");
+                return null;
+            }
+            InputStream file = new FileInputStream(dbFile);
+            InputStream buffer = new BufferedInputStream(file);
+            ObjectInput input = new ObjectInputStream(buffer);
+            //deserialize the List
+            PCAResults serResult = (PCAResults) input.readObject();
+            return serResult;
+
+        } catch (ClassNotFoundException ex) {
+            System.err.println(ex.getMessage());
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return null;
+    }
+    
+      public RankResult deSerializeRankResult(String name, String path) {
+
+        try {
+            File dbFile = new File(path, name);
+            if (!dbFile.exists()) {
+                System.out.println("cant find the file");
+                return null;
+            }
+            InputStream file = new FileInputStream(dbFile);
+            InputStream buffer = new BufferedInputStream(file);
+            ObjectInput input = new ObjectInputStream(buffer);
+            //deserialize the List
+            RankResult serResult = (RankResult) input.readObject();
+            return serResult;
+
+        } catch (ClassNotFoundException ex) {
+            System.err.println(ex.getMessage());
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return null;
+    }
+    
 
 }

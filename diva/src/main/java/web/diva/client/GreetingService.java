@@ -53,6 +53,6 @@ public interface GreetingService extends RemoteService {
 
     String updateLineChartSelection(int datasetId, int[] selection,double w,double h);
 
-    PCAImageResults updatePCASelection(int datasetId, int[] selection, boolean zoom, boolean selectAll,double w,double h);
+    PCAImageResults updatePCASelection(int datasetId,int[]subSelectionData, int[] selection, boolean zoom, boolean selectAll,double w,double h);
 
 }

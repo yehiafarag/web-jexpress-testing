@@ -10,7 +10,6 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -52,13 +51,15 @@ public class DivaMain implements EntryPoint {
     private final Label rowGroup = new Label();
     private final Label colGroup = new Label();
     private int datasetId;
+    private ButtonsMenu btnMenue;
     private final Map<String, Integer> datasetsNames = new TreeMap<String, Integer>();
     private LeftPanelView geneTable;
     private SaveDatasetDialog saveDs;
     private final GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
-    private final ModularizedListener[]  compponents = new ModularizedListener[2];
+    private final ModularizedListener[] compponents = new ModularizedListener[2];
 
     private SomClustView hc;
+    private RankTablesView rankTables;
     private InitImgs initImgs;
     private HeaderLayout header;
     private SomClustPanel somClustPanel;
@@ -68,6 +69,7 @@ public class DivaMain implements EntryPoint {
     private RankPanel rankPanel;
     private int pcaI = 0;
     private int pcaII = 1;
+    private PCAPlot pca;
 
     @Override
     public void onModuleLoad() {
@@ -88,14 +90,14 @@ public class DivaMain implements EntryPoint {
         RootPanel.get("rowGroups").add(rowGroup);
         RootPanel.get("colGroups").add(colGroup);
 
-        final ButtonsMenu btnMenue = new ButtonsMenu();
+        btnMenue = new ButtonsMenu();
         RootPanel.get("menubuttons").add(btnMenue);
         initImgs = new InitImgs();
         RootPanel.get("geneTable").add(initImgs.getGtImg());
         RootPanel.get("LineChartResults").add(initImgs.getlCImg());
         RootPanel.get("PCAChartResults").add(initImgs.getPcaImg());
         RootPanel.get("RankTablesResults").add(initImgs.getRtImg());
-         RootPanel.get("SomClusteringResults").add(initImgs.getHcImg());
+        RootPanel.get("SomClusteringResults").add(initImgs.getHcImg());
 
         header.getLb().addChangeHandler(new ChangeHandler() {
             @Override
@@ -107,7 +109,7 @@ public class DivaMain implements EntryPoint {
                     } catch (Exception e) {
                         Window.alert("exp " + e.getMessage());
                     }
-                    btnMenue.activatMenue();
+                    //btnMenue.activatMenue();
                     btnMenue.getSomClustBtn().addClickHandler(new ClickHandler() {
                         @Override
                         public void onClick(ClickEvent event) {
@@ -116,7 +118,7 @@ public class DivaMain implements EntryPoint {
                                 somClustPanel.getOkBtn().addClickHandler(new ClickHandler() {
                                     @Override
                                     public void onClick(ClickEvent event) {
-                                        RootPanel.get("loaderImage").setVisible(true);
+//                                        RootPanel.get("loaderImage").setVisible(true);
                                         runSomClustering(datasetId, somClustPanel.getX(), somClustPanel.getY());
                                         somClustPanel.hide();
 
@@ -210,6 +212,7 @@ public class DivaMain implements EntryPoint {
 
     private void getDatasetsList() {
         RootPanel.get("loaderImage").setVisible(true);
+//        busyTask(true);
         greetingService.getAvailableDatasets(new AsyncCallback<Map<Integer, String>>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -234,7 +237,8 @@ public class DivaMain implements EntryPoint {
     }
 
     private void loadDataset(int datasetId) {
-        RootPanel.get("loaderImage").setVisible(true);
+//        RootPanel.get("loaderImage").setVisible(true);
+        busyTask(true);
         greetingService.loadDataset(datasetId,
                 new AsyncCallback<DatasetInformation>() {
                     @Override
@@ -257,20 +261,23 @@ public class DivaMain implements EntryPoint {
                         RootPanel.get("geneTable").add(geneTable);
                         resetLayout();
                         datasetInfos = null;
-                        RootPanel.get("loaderImage").setVisible(false);
+                        busyTask(false);
+//                        RootPanel.get("loaderImage").setVisible(false);
                     }
                 });
     }
 
     private void runSomClustering(int datasetId, int linkage, int distanceMeasure) {
-        RootPanel.get("loaderImage").setVisible(true);
+//        RootPanel.get("loaderImage").setVisible(true);
+        busyTask(true);
         greetingService.computeSomClustering(datasetId, linkage, distanceMeasure,
                 new AsyncCallback<SomClusteringResults>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         errorLabel.setText(SERVER_ERROR);
                         RootPanel.get("datasetInformation").setVisible(false);
-                        RootPanel.get("loaderImage").setVisible(false);
+//                        RootPanel.get("loaderImage").setVisible(false);
+                        busyTask(false);
                     }
 
                     @Override
@@ -287,14 +294,15 @@ public class DivaMain implements EntryPoint {
     }
 
     private void generateHeatMap(List<String> indexers, List<String> colIndexer) {
-        RootPanel.get("loaderImage").setVisible(true);
+//        RootPanel.get("loaderImage").setVisible(true);
         greetingService.computeHeatmap(datasetId, indexers, colIndexer,
                 new AsyncCallback<HeatMapImgResult>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         errorLabel.setText(SERVER_ERROR);
                         RootPanel.get("datasetInformation").setVisible(false);
-                        RootPanel.get("loaderImage").setVisible(false);
+//                        RootPanel.get("loaderImage").setVisible(false);
+                        busyTask(false);
                     }
 
                     @Override
@@ -302,31 +310,35 @@ public class DivaMain implements EntryPoint {
                         RootPanel.get("datasetInformation").setVisible(true);
                         errorLabel.setText("");
                         hc.setImge(result);
-                        RootPanel.get("loaderImage").setVisible(false);
+//                        RootPanel.get("loaderImage").setVisible(false);
+                        busyTask(false);
                     }
                 });
     }
 
     private void viewLineChart(int datasetId) {
-        RootPanel.get("loaderImage").setVisible(true);
-        greetingService.computeLineChart(datasetId,RootPanel.get("LineChartResults").getOffsetWidth(),300.0,
+//        RootPanel.get("loaderImage").setVisible(true);
+        busyTask(true);
+        greetingService.computeLineChart(datasetId, RootPanel.get("LineChartResults").getOffsetWidth(), 300.0,
                 new AsyncCallback<LineChartResults>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         errorLabel.setText(SERVER_ERROR);
                         RootPanel.get("datasetInformation").setVisible(false);
-                        RootPanel.get("loaderImage").setVisible(false);
+//                        RootPanel.get("loaderImage").setVisible(false);
+                        busyTask(false);
                     }
 
                     @Override
                     public void onSuccess(LineChartResults result) {
                         RootPanel.get("datasetInformation").setVisible(true);
                         errorLabel.setText("");
-                        LineChartComp linechart = new LineChartComp(result, selectionManager, greetingService,initImgs.getlCImg());
+                        LineChartComp linechart = new LineChartComp(result, selectionManager, greetingService, initImgs.getlCImg());
                         compponents[0] = linechart;
                         RootPanel.get("LineChartResults").clear();
                         RootPanel.get("LineChartResults").add(linechart.getLayout());
-                        RootPanel.get("loaderImage").setVisible(false);
+//                        RootPanel.get("loaderImage").setVisible(false);
+                        busyTask(false);
                     }
                 });
     }
@@ -334,25 +346,28 @@ public class DivaMain implements EntryPoint {
     private void viewPCAChart(int datasetId, int pcaI, int pcaII) {
         this.pcaI = pcaI;
         this.pcaII = pcaII;
-        RootPanel.get("loaderImage").setVisible(true);
+//        RootPanel.get("loaderImage").setVisible(true);
+        busyTask(true);
         greetingService.computePCA(datasetId, pcaI, pcaII,
                 new AsyncCallback<PCAImageResults>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         errorLabel.setText(SERVER_ERROR);
                         RootPanel.get("datasetInformation").setVisible(false);
-                        RootPanel.get("loaderImage").setVisible(false);
+//                        RootPanel.get("loaderImage").setVisible(false);
+                        busyTask(false);
                     }
 
                     @Override
                     public void onSuccess(PCAImageResults result) {
                         errorLabel.setText("");
                         RootPanel.get("datasetInformation").setVisible(true);
-                        PCAPlot pca = new PCAPlot(result, selectionManager, greetingService);
+                        pca = new PCAPlot(result, selectionManager, greetingService);
                         compponents[1] = (pca);
                         RootPanel.get("PCAChartResults").clear();
                         RootPanel.get("PCAChartResults").add(pca.getScatterPlotLayout());
-                        RootPanel.get("loaderImage").setVisible(false);
+//                        RootPanel.get("loaderImage").setVisible(false);
+                        busyTask(false);
                     }
                 });
     }
@@ -372,7 +387,7 @@ public class DivaMain implements EntryPoint {
                     public void onSuccess(RankResult result) {
                         RootPanel.get("datasetInformation").setVisible(true);
                         errorLabel.setText("");
-                        RankTablesView rankTables = new RankTablesView(selectionManager, result);
+                        rankTables = new RankTablesView(selectionManager, result);
                         RootPanel.get("RankTablesResults").clear();
                         RootPanel.get("RankTablesResults").add(rankTables);
                         RootPanel.get("loaderImage").setVisible(false);
@@ -400,14 +415,16 @@ public class DivaMain implements EntryPoint {
             }
         }
         if (test) {
-            RootPanel.get("loaderImage").setVisible(true);
+//            RootPanel.get("loaderImage").setVisible(true);
+            busyTask(true);
             greetingService.activateGroups(datasetId, rowGroups, colGroups,
                     new AsyncCallback<DatasetInformation>() {
                         @Override
                         public void onFailure(Throwable caught) {
                             errorLabel.setText(SERVER_ERROR);
                             RootPanel.get("datasetInformation").setVisible(false);
-                            RootPanel.get("loaderImage").setVisible(false);
+//                            RootPanel.get("loaderImage").setVisible(false);
+                            busyTask(false);
                         }
 
                         @Override
@@ -419,9 +436,10 @@ public class DivaMain implements EntryPoint {
                             RootPanel.get("geneTable").add(geneTable);
                             updateRowGroups();
 //                            resetLayout();
-                            RootPanel.get("loaderImage").setVisible(false);
+//                            RootPanel.get("loaderImage").setVisible(false);
+                            busyTask(false);
                             result = null;
-                            
+
                         }
                     });
         }
@@ -429,14 +447,16 @@ public class DivaMain implements EntryPoint {
     }
 
     private void createRowGroup(final int datasetId, String name, String color, String type, int[] selectedRows) {
-        RootPanel.get("loaderImage").setVisible(true);
+//        RootPanel.get("loaderImage").setVisible(true);
+        busyTask(true);
         greetingService.createRowGroup(datasetId, name, color, type, selectedRows,
                 new AsyncCallback<Boolean>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         errorLabel.setText(SERVER_ERROR);
                         RootPanel.get("datasetInformation").setVisible(false);
-                        RootPanel.get("loaderImage").setVisible(false);
+//                        RootPanel.get("loaderImage").setVisible(false);
+                        busyTask(false);
                         dsPanel.getOkBtn().enable();
                     }
 
@@ -453,14 +473,16 @@ public class DivaMain implements EntryPoint {
     }
 
     private void createColGroup(final int datasetId, String name, String color, String[] selection, String type) {
-        RootPanel.get("loaderImage").setVisible(true);
+//        RootPanel.get("loaderImage").setVisible(true);
+        busyTask(true);
         greetingService.createColGroup(datasetId, name, color, type, selection,
                 new AsyncCallback<Boolean>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         errorLabel.setText(SERVER_ERROR);
                         RootPanel.get("datasetInformation").setVisible(false);
-                        RootPanel.get("loaderImage").setVisible(false);
+//                        RootPanel.get("loaderImage").setVisible(false);
+                        busyTask(false);
                     }
 
                     @Override
@@ -474,56 +496,62 @@ public class DivaMain implements EntryPoint {
     }
 
     private void saveDataset(String name) {
-        RootPanel.get("loaderImage").setVisible(true);
+//        RootPanel.get("loaderImage").setVisible(true);
+        busyTask(true);
         greetingService.saveDataset(datasetId, name,
                 new AsyncCallback<Integer>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         RootPanel.get("datasetInformation").setVisible(false);
                         errorLabel.setText(SERVER_ERROR);
-                        RootPanel.get("loaderImage").setVisible(false);
-                    }
-
-                    @Override
-                    public void onSuccess(Integer datasetId) {
-                        RootPanel.get("datasetInformation").setVisible(true);
-                        Window.Location.reload();   
-                        RootPanel.get("loaderImage").setVisible(false);
-                    }
-                });
-
-    }
-
-    private void createSubDataset(String name, int[] selectedRows) {
-        RootPanel.get("loaderImage").setVisible(true);
-        greetingService.createSubDataset(name, selectedRows,
-                new AsyncCallback<Integer>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        RootPanel.get("datasetInformation").setVisible(false);
-                        errorLabel.setText(SERVER_ERROR);
-                        RootPanel.get("loaderImage").setVisible(false);
+//                        RootPanel.get("loaderImage").setVisible(false);
+                        busyTask(false);
                     }
 
                     @Override
                     public void onSuccess(Integer datasetId) {
                         RootPanel.get("datasetInformation").setVisible(true);
                         Window.Location.reload();
-                        RootPanel.get("loaderImage").setVisible(false);
+//                        RootPanel.get("loaderImage").setVisible(false);
+                    }
+                });
+
+    }
+
+    private void createSubDataset(String name, int[] selectedRows) {
+//        RootPanel.get("loaderImage").setVisible(true);
+        busyTask(true);
+        greetingService.createSubDataset(name, selectedRows,
+                new AsyncCallback<Integer>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        RootPanel.get("datasetInformation").setVisible(false);
+                        errorLabel.setText(SERVER_ERROR);
+//                        RootPanel.get("loaderImage").setVisible(false);
+                        busyTask(false);
+                    }
+
+                    @Override
+                    public void onSuccess(Integer datasetId) {
+                        RootPanel.get("datasetInformation").setVisible(true);
+                        Window.Location.reload();
+//                        RootPanel.get("loaderImage").setVisible(false);
                     }
                 });
 
     }
 
     private void updateApp(int datasetId) {
-        RootPanel.get("loaderImage").setVisible(true);
+////        RootPanel.get("loaderImage").setVisible(true);
+        busyTask(true);
         greetingService.updateDatasetInfo(datasetId,
                 new AsyncCallback<DatasetInformation>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         RootPanel.get("datasetInformation").setVisible(false);
                         errorLabel.setText(SERVER_ERROR);
-                        RootPanel.get("loaderImage").setVisible(false);
+//                        RootPanel.get("loaderImage").setVisible(false);
+                        busyTask(false);
                     }
 
                     @Override
@@ -537,8 +565,8 @@ public class DivaMain implements EntryPoint {
                         geneTable = new LeftPanelView(selectionManager, datasetInfos);
                         RootPanel.get("geneTable").clear();
                         RootPanel.get("geneTable").add(geneTable);
-//                        resetLayout();
-                        RootPanel.get("loaderImage").setVisible(false);
+//                        RootPanel.get("loaderImage").setVisible(false);
+                        busyTask(false);
                         datasetInfos = null;
                         updateRowGroups();
                     }
@@ -730,6 +758,8 @@ public class DivaMain implements EntryPoint {
                 } else {
                     dsPanel.updateDataValues(selectedRows, selectedCol);
                 }
+                dsPanel.getColorLable().setHTML("<p style='height:10px;width:10px;font-weight: bold; color:white;font-size: 10px;background:#ffffff; border-style:double;'></p>");
+
                 dsPanel.show();
                 results = null;
                 RootPanel.get("loaderImage").setVisible(false);
@@ -738,34 +768,85 @@ public class DivaMain implements EntryPoint {
         });
 
     }
-/*in case of changing datasets only*/
+    /*in case of changing datasets only*/
+
     private void resetLayout() {
         RootPanel.get("LineChartResults").clear();
         RootPanel.get("LineChartResults").add(initImgs.getlCImg());
         RootPanel.get("PCAChartResults").clear();
-        RootPanel.get("PCAChartResults").add(initImgs.getPcaImg());        
+        RootPanel.get("PCAChartResults").add(initImgs.getPcaImg());
         RootPanel.get("SomClusteringResults").clear();
-         RootPanel.get("SomClusteringResults").add(initImgs.getHcImg());
-            hc=null;
-            compponents[0]= null;
-            compponents[1]=null;
-             RootPanel.get("RankTablesResults").clear();
-         RootPanel.get("RankTablesResults").add(initImgs.getRtImg());
+        RootPanel.get("SomClusteringResults").add(initImgs.getHcImg());
+        hc = null;
+        compponents[0] = null;
+        compponents[1] = null;
+        RootPanel.get("RankTablesResults").clear();
+        RootPanel.get("RankTablesResults").add(initImgs.getRtImg());
     }
-    
+
     /*on activate or create new row groups*/
     private void updateRowGroups() {
         for (ModularizedListener o : compponents) {
-            if(o == null)
+            if (o == null) {
                 continue;
+            }
             if (o instanceof LineChartComp) {
                 viewLineChart(datasetId);
 
-            }
-            else{
-                viewPCAChart(datasetId, pcaI,pcaII);            
+            } else {
+                viewPCAChart(datasetId, pcaI, pcaII);
             }
         }
+
+    }
+
+    private void busyTask(boolean busy) {
+        if (busy) {
+            if (btnMenue != null) {
+                btnMenue.deactivatMenue();
+            }
+
+            header.getLb().setEnabled(false);
+
+            if (geneTable != null) {
+                geneTable.disable();
+            }
+
+            if (rankTables != null) {
+                rankTables.disable();
+            }
+
+            if (pca != null) {
+                pca.enable(false);
+            }
+
+            if (hc != null) {
+                hc.asWidget().disable();
+            }
+
+        } else {
+            if (btnMenue != null) {
+                btnMenue.activatMenue();
+            }
+
+            header.getLb().setEnabled(true);
+
+            if (geneTable != null) {
+                geneTable.enable();
+            }
+
+            if (rankTables != null) {
+                rankTables.enable();
+            }
+            if (pca != null) {
+                pca.enable(true);
+            }
+            if (hc != null) {
+                hc.asWidget().enable();
+            }
+
+        }
+        RootPanel.get("loaderImage").setVisible(busy);
 
     }
 }

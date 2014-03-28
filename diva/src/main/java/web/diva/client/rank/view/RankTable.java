@@ -7,6 +7,8 @@ package web.diva.client.rank.view;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.DragStartEvent;
+import com.smartgwt.client.widgets.events.DragStartHandler;
 import com.smartgwt.client.widgets.events.DragStopEvent;
 import com.smartgwt.client.widgets.events.DragStopHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
@@ -24,6 +26,7 @@ import web.diva.shared.SelectionManager;
  */
 public final class RankTable extends ModularizedListener implements SelectionChangedHandler, IsSerializable {
 
+    private boolean mouseSelection = false;
     @Override
     public void selectionChanged(Selection.TYPE type) {
         if (type == Selection.TYPE.OF_ROWS) {
@@ -52,7 +55,11 @@ public final class RankTable extends ModularizedListener implements SelectionCha
 
     @Override
     public void onSelectionChanged(SelectionEvent event) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+          if(mouseSelection)
+                return;
+        ListGridRecord[] selectionRecord = table.getSelectedRecords();
+        updateTableSelection(selectionRecord);
+       
     }
 
     private final ListGrid table;
@@ -75,6 +82,7 @@ public final class RankTable extends ModularizedListener implements SelectionCha
         headers = null;
         tableData = null;
         selectionChanged(Selection.TYPE.OF_ROWS);
+//        table.addSelectionChangedHandler(this);
 
     }
 
@@ -109,11 +117,19 @@ public final class RankTable extends ModularizedListener implements SelectionCha
                 updateTableSelection(selectionRecord);
             }
         });
+        table.addDragStartHandler(new DragStartHandler() {
+
+            @Override
+            public void onDragStart(DragStartEvent event) {
+             mouseSelection = true;   
+            }
+        });
         table.addDragStopHandler(new DragStopHandler() {
             @Override
             public void onDragStop(DragStopEvent event) {
                 ListGridRecord[] selectionRecord = table.getSelectedRecords();
                 updateTableSelection(selectionRecord);
+                mouseSelection = false;
             }
         });
     }

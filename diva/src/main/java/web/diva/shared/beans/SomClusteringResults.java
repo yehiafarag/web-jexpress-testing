@@ -5,6 +5,7 @@
 package web.diva.shared.beans;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 import java.util.HashMap;
 import web.diva.shared.Unit;
 
@@ -12,7 +13,7 @@ import web.diva.shared.Unit;
  *
  * @author Yehia Farag
  */
-public class SomClusteringResults implements IsSerializable {
+public class SomClusteringResults implements Serializable,IsSerializable {
 
     private int height;
     private int datasetId;

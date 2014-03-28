@@ -5,12 +5,13 @@
 package web.diva.shared.beans;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
 /**
  *
  * @author Yehia Farag
  */
-public class RankResult implements IsSerializable{
+public class RankResult implements IsSerializable,Serializable{
     
     private String[] posTableData[];
     private String[] negTableData[];

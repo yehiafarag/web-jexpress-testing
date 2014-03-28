@@ -5,12 +5,13 @@
 package web.diva.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 import org.thechiselgroup.choosel.protovis.client.PVDomAdapter;
 
 /**
  * @author Yehia Farag
  */
-public class UnitDomAdapter implements IsSerializable, PVDomAdapter<Unit> {
+public class UnitDomAdapter implements IsSerializable,Serializable, PVDomAdapter<Unit> {
 
     @Override
     public Unit[] getChildren(Unit t) {

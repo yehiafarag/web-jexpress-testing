@@ -9,6 +9,7 @@ package web.diva.server.listeners;
 import java.io.File;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import web.diva.server.model.Computing;
 
 /**
  *
@@ -18,6 +19,9 @@ public class ContexListener implements ServletContextListener{
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        Computing comp = new Computing();
+        String path = sce.getServletContext().getInitParameter("fileFolder");
+        comp.initDivaDatasets(path);
     }
 
     @Override

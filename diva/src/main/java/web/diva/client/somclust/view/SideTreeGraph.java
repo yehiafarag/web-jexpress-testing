@@ -8,7 +8,6 @@ import com.google.gwt.user.client.ui.Widget;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
 import java.util.HashMap;
 import org.thechiselgroup.choosel.protovis.client.PV;
 import org.thechiselgroup.choosel.protovis.client.PVClusterLayout;
@@ -27,7 +26,6 @@ import web.diva.shared.CustomNode;
 import web.diva.shared.Unit;
 import web.diva.shared.UnitDomAdapter;
 import web.diva.shared.beans.SomClusteringResults;
-
 /**
  *
  * @author Yehia Farag
@@ -45,7 +43,8 @@ public final class SideTreeGraph extends ProtovisWidget {
     private double width;
     private final double top;
     private final int datasetId;
-    private boolean clear= true;
+    private int somClustAction= 0;
+    
     
     public void resize(double width,double height)
     {
@@ -94,7 +93,7 @@ public final class SideTreeGraph extends ProtovisWidget {
         root = null;
         nodesMap = null;
         selectionManager = null;
-        vis = null;
+//        vis = null;
     }
     PVEventHandler nodeMouseClickHandler = new PVEventHandler() {
         @Override
@@ -104,8 +103,7 @@ public final class SideTreeGraph extends ProtovisWidget {
             if (_this != null && d != null && d.firstChild()!= null &&(!d.nodeName().equalsIgnoreCase(clickNode))) {
                 clickNode = d.nodeName();
                 clickedNode = nodesMap.get(clickNode);
-                clear = false;
-                vis.render();
+                getPVPanel().render();
                 updateSelectedList(clickedNode.getSelectedNodes());
             }
         }
@@ -117,17 +115,17 @@ public final class SideTreeGraph extends ProtovisWidget {
             PVDomNode d = args.getObject();
             if (_this != null && d != null) {
                 overNode = d.nodeName();
-                vis.render();
+                getPVPanel().render();
             }
         }
     };
-    private PVPanel vis;
+//    private PVPanel vis;
     private String clickNode = "";
     private String overNode = "";
     private CustomNode clickedNode;
 
     private void createVisualization(Unit root) {
-        vis = getPVPanel().width(width).height(height).left(10).right(5)
+       PVPanel vis = getPVPanel().width(width).height(height).left(10).right(5)
                 .top(top).bottom(0);
         PVClusterLayout layout = vis
                 .add(PV.Layout.Cluster())
@@ -193,10 +191,11 @@ public final class SideTreeGraph extends ProtovisWidget {
     }
 
     private void updateSelectedList(int[] selIndex) {
-       
+        somClustAction = 1;
         Selection selection = new Selection(Selection.TYPE.OF_ROWS, selIndex);
         selectionManager.setSelectedRows(datasetId, selection,2);
         selection = null;
+        
        
 
     }
@@ -206,11 +205,17 @@ public final class SideTreeGraph extends ProtovisWidget {
     }
     public void clearSelection(){
     
-    if (!clear) {
-            clickedNode = null;
-            overNode = "";
-            clear = true;
-            vis.render();
+    if (somClustAction == 1) {
+            somClustAction = 2;
         }
+    else if(somClustAction == 2){
+        clickedNode = null;
+            overNode = "";
+            somClustAction = 0;
+            getPVPanel().render();
     }
+    
+    }
+  
+
 }

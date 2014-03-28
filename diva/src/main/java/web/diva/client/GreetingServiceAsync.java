@@ -51,7 +51,7 @@ public interface GreetingServiceAsync {
 
     public void updateLineChartSelection(int datasetId, int[] selection,double w,double h, AsyncCallback<String> asyncCallback);
 
-    public void updatePCASelection(int datasetId, int[] selection, boolean zoom, boolean selectAll,double w,double h, AsyncCallback<PCAImageResults> asyncCallback);
+    public void updatePCASelection(int datasetId,int[]subSelectionData, int[] selection, boolean zoom, boolean selectAll,double w,double h, AsyncCallback<PCAImageResults> asyncCallback);
 
     public void computePCA(int datasetId, int comI, int comII, AsyncCallback<PCAImageResults> asyncCallback);
 
