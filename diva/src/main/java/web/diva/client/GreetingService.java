@@ -42,6 +42,7 @@ public interface GreetingService extends RemoteService {
     DatasetInformation updateDatasetInfo(int datasetId);
 
     DatasetInformation activateGroups(int datasetId, String[] rowGroups, String[] colGroups);
+    String exportData(int datasetId, String rowGroups);
 
     Integer saveDataset(int datasetId, String newName);
 

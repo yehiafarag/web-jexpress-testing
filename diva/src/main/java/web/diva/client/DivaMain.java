@@ -66,6 +66,7 @@ public class DivaMain implements EntryPoint {
     private PCAPanel pcaPanel;
     private DatasetPanel dsPanel;
     private ActivateGroupPanel activateGroupPanel;
+    private ActivateGroupPanel exportGroupPanel;
     private RankPanel rankPanel;
     private int pcaI = 0;
     private int pcaII = 1;
@@ -178,6 +179,13 @@ public class DivaMain implements EntryPoint {
                         @Override
                         public void onClick(ClickEvent event) {
                             initGroupsPanel(1);
+                        }
+                    });
+
+                    btnMenue.getExportGroupBtn().addClickHandler(new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            initExportPanel();
                         }
                     });
 
@@ -446,6 +454,32 @@ public class DivaMain implements EntryPoint {
 
     }
 
+    private void exportData(final int datasetId, String rowGroup) {
+        busyTask(true);
+        greetingService.exportData(datasetId, rowGroup,
+                new AsyncCallback<String>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        errorLabel.setText(SERVER_ERROR);
+                        RootPanel.get("datasetInformation").setVisible(false);
+//                            RootPanel.get("loaderImage").setVisible(false);
+                        busyTask(false);
+                    }
+
+                    @Override
+                    public void onSuccess(String result) {
+                        RootPanel.get("datasetInformation").setVisible(true);
+                        errorLabel.setText("");
+                        Window.open(result, "downlodwindow", "status=0,toolbar=0,menubar=0,location=0");
+
+                        busyTask(false);
+                        result = null;
+
+                    }
+                });
+
+    }
+
     private void createRowGroup(final int datasetId, String name, String color, String type, int[] selectedRows) {
 //        RootPanel.get("loaderImage").setVisible(true);
         busyTask(true);
@@ -649,6 +683,53 @@ public class DivaMain implements EntryPoint {
 
         });
 
+    }
+
+    private void initExportPanel() {
+        RootPanel.get("loaderImage").setVisible(true);
+        greetingService.getGroupsPanelData(datasetId, new AsyncCallback<LinkedHashMap<String, String>[]>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                errorLabel.setText(SERVER_ERROR);
+                RootPanel.get("datasetInformation").setVisible(false);
+                RootPanel.get("loaderImage").setVisible(false);
+            }
+
+            @Override
+            public void onSuccess(LinkedHashMap<String, String>[] results) {
+                errorLabel.setText("");
+                if (exportGroupPanel == null) {
+                    exportGroupPanel = new ActivateGroupPanel(results[0], null);
+                    exportGroupPanel.getOkBtn().addClickHandler(new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            try {
+                                errorLabel.setVisible(false);
+                                String[] rowValues = exportGroupPanel.getSelectRowGroups();
+                                //String[] colValues = exportGroupPanel.getSelectColGroups();
+                                if (rowValues != null && rowValues.length != 1) {
+                                    exportGroupPanel.getErrorlabl().setVisible(true);
+
+                                } else {
+                                    exportData(datasetId, rowValues[0]);
+                                    exportGroupPanel.hide();
+                                }
+                            } catch (Exception exp) {
+                                Window.alert(exp.getLocalizedMessage());
+                            }
+
+                        }
+                    });
+                } else {
+                    exportGroupPanel.updataChartData(results[0], null);
+                }
+                exportGroupPanel.show();
+
+                results = null;
+                RootPanel.get("loaderImage").setVisible(false);
+
+            }
+        });
     }
 
     private void initPcaPanel() {

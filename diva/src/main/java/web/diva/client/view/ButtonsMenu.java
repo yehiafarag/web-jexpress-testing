@@ -98,6 +98,7 @@ public class ButtonsMenu extends HorizontalPanel {
         createGroupBtn.enable();
         actGroupBtn.enable();
         saveBtn.enable();
+        exportGroupBtn.enable();
     }
     public void deactivatMenue() {
 
@@ -108,6 +109,7 @@ public class ButtonsMenu extends HorizontalPanel {
         createGroupBtn.disable();
         actGroupBtn.disable();
         saveBtn.disable();
+        exportGroupBtn.disable();
     }
 
 }

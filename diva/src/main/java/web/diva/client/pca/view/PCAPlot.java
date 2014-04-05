@@ -47,15 +47,15 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
     private final GreetingServiceAsync greetingService;
     private final IButton resetPlotBtn;
     private boolean enable = true;
-    private int[] currentDataSet; 
-    private  int[] selectedRows ;
+    private int[] currentDataSet;
+    private int[] selectedRows;
 
     @Override
     public void selectionChanged(Selection.TYPE type) {
         if (type == Selection.TYPE.OF_ROWS) {
             Selection sel = selectionManager.getSelectedRows(datasetId);
-            if (sel != null && !zoom && !selectAll ){//&& !zoomed) {
-                 selectedRows = sel.getMembers();
+            if (sel != null && !zoom && !selectAll) {//&& !zoomed) {
+                selectedRows = sel.getMembers();
                 if (selectedRows != null && selectedRows.length != 0) {
                     updateSelection(selectedRows);
                 }
@@ -159,7 +159,7 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
     private void updateWithSelection() {
         Selection sel = selectionManager.getSelectedRows(datasetId);
         if (sel != null) {
-            int[] selectedRows = sel.getMembers();
+            selectedRows = sel.getMembers();
             this.updateSelection(selectedRows);
         } else {
             this.updateSelection(null);
@@ -203,11 +203,12 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
 //                zoomed = true;
                 currentDataSet = selection;
             }
-            greetingService.updatePCASelection(datasetId, currentDataSet,selectedRows, zoom, selectAll, RootPanel.get("PCAChartResults").getOffsetWidth(), (height - 25.0), new AsyncCallback<PCAImageResults>() {
+            greetingService.updatePCASelection(datasetId, currentDataSet, selectedRows, zoom, selectAll, RootPanel.get("PCAChartResults").getOffsetWidth(), (height - 25.0), new AsyncCallback<PCAImageResults>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     RootPanel.get("loaderImage").setVisible(false);
                 }
+
                 @Override
                 public void onSuccess(PCAImageResults result) {
                     if (chart != null) {

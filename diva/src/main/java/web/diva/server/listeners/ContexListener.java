@@ -34,6 +34,14 @@ public class ContexListener implements ServletContextListener{
             }
                 
         }
+         String apppath = sce.getServletContext().getRealPath("/");
+          File warFolder = new File(apppath);
+        for (File f : warFolder.listFiles()) {
+            if (f.getName().endsWith(".txt")) {             
+                f.delete();
+            }
+                
+        }
         System.out.println("good bye :-)");
     }
     

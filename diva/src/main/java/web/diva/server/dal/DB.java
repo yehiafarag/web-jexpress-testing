@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import no.uib.jexpress_modularized.core.dataset.Dataset;
-import web.diva.server.model.JexpressUtil;
+import web.diva.server.model.DivaUtil;
 import web.diva.server.model.beans.DivaDataset;
 import web.diva.shared.beans.PCAResults;
 import web.diva.shared.beans.RankResult;
@@ -31,7 +31,7 @@ public class DB {
     private final Util databaseUtil = new Util();
     private Map<Integer, String> datasetsNameMap;
     private String path;
-    private final JexpressUtil util = new JexpressUtil();
+    private final DivaUtil util = new DivaUtil();
 
    public void initDivaDatasets(String fileFolderPath){
        path = fileFolderPath;
@@ -119,6 +119,7 @@ public class DB {
             output.writeObject(ds);
             output.flush();
             output.close();
+             System.gc();
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
         }
@@ -142,6 +143,7 @@ public class DB {
             output.writeObject(results);
             output.flush();
             output.close();
+             System.gc();
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
         }
@@ -167,6 +169,7 @@ public class DB {
             output.writeObject(results);
             output.flush();
             output.close();
+             System.gc();
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
         }
@@ -192,6 +195,7 @@ public class DB {
             output.writeObject(results);
             output.flush();
             output.close();
+             System.gc();
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
         }

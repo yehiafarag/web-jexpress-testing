@@ -24,18 +24,17 @@ import java.util.LinkedHashMap;
  * @author Yehia Farag
  */
 public final class ActivateGroupPanel extends Window {
-
+    
     private final DynamicForm form;
     private final IButton okBtn;
-    private final SelectItem selectRowGroups, selectColGroups;
+    private final SelectItem selectRowGroups;
+    private SelectItem selectColGroups;
     private final HTML errorlabl;
-
+    
     public ActivateGroupPanel(LinkedHashMap<String, String> rowGroupsNamesMap, LinkedHashMap<String, String> colGroupsNamesMap) {
-
-        this.setWidth(400);
-        this.setHeight(500);
-        this.setTitle("SELECT ACTIVE GROUPS");
+        
         this.setShowMinimizeButton(false);
+        this.setWidth(400);
         this.setIsModal(false);
         this.centerInPage();
         this.addCloseClickHandler(new CloseClickHandler() {
@@ -44,42 +43,29 @@ public final class ActivateGroupPanel extends Window {
                 hide();
             }
         });
-
+        
         final VLayout vlo = new VLayout();
-        vlo.setWidth(380);
-        vlo.setHeight(450);
+        vlo.setWidth(380);        
         this.addItem(vlo);
-
+        
         form = new DynamicForm();
-        form.setHeight(240);
+        
         form.setWidth(380);
-        form.setPadding(5);
-        form.setGroupTitle("Select Groups to Activate");
+        form.setPadding(5);        
         form.setIsGroup(true);
         form.setLayoutAlign(VerticalAlignment.BOTTOM);
-
+        
         selectRowGroups = new SelectItem();
         selectRowGroups.setTitle("ROW GROUPS (MAX 2)");
         selectRowGroups.setTextAlign(Alignment.CENTER);
         selectRowGroups.setTitleAlign(Alignment.CENTER);
         selectRowGroups.setMultiple(true);
         selectRowGroups.setMultipleAppearance(MultipleAppearance.GRID);
-
-        selectColGroups = new SelectItem();
-        selectColGroups.setTitle("COLUMN GROUPS (MAX 2)");
-        selectColGroups.setTextAlign(Alignment.CENTER);
-        selectColGroups.setTitleAlign(Alignment.CENTER);
-        selectColGroups.setMultiple(true);
-        selectColGroups.setMultipleAppearance(MultipleAppearance.GRID);
-        this.updataChartData(rowGroupsNamesMap, colGroupsNamesMap);
-        form.setFields(selectRowGroups, selectColGroups);
-        form.redraw();
-        rowGroupsNamesMap = null;
-        colGroupsNamesMap = null;
+        
         HLayout hlo = new HLayout();
         hlo.setWidth(380);
         hlo.setHeight(20);
-
+        
         okBtn = new IButton("Activate");
         okBtn.setAlign(Alignment.CENTER);
         okBtn.setShowRollOver(true);
@@ -89,7 +75,7 @@ public final class ActivateGroupPanel extends Window {
         hlo.setMargin(10);
         hlo.setMembersMargin(20);
         hlo.setAlign(Alignment.CENTER);
-
+        
         HTML infolable = new HTML("<h4 style='color:blue;margin-left: 20px;margin-top: 20px;height=30px;'>*SELECT (ALL GROUP) WILL DEACTIVATE THE REST OF THE GROUPS</h4>");
         errorlabl = new HTML("<h4 style='color:red;margin-left: 20px;height=30px;'>YOU CAN NOT SELECT MORE THAN 2 GROUPS</h4>");
         errorlabl.setWidth("380px");
@@ -97,15 +83,51 @@ public final class ActivateGroupPanel extends Window {
         errorlabl.setVisible(false);
         vlo.addMember(form);
         vlo.addMember(hlo);
-        vlo.addMember(infolable);
-        vlo.addMember(errorlabl);
+        
         vlo.setAlign(Alignment.CENTER);
         vlo.setMembersMargin(5);
-
+        if (colGroupsNamesMap == null) { //for export data panel
+            this.setHeight("200px");
+            this.setTitle("Export Data");
+            vlo.setHeight("150px");
+            form.setHeight("120px");
+            form.setGroupTitle("Select Export Group ");
+            selectRowGroups.setTitle("ROW GROUPS (MAX 1)");
+            selectRowGroups.setAllowEmptyValue(false);
+//            selectRowGroups.setMultiple(true);
+//            selectRowGroups.setMultipleAppearance(MultipleAppearance.GRID);
+            okBtn.setTitle("Export");
+            this.updataChartData(rowGroupsNamesMap, null);
+            errorlabl.setHTML("<h4 style='color:red;margin-left: 20px;height=30px;'>YOU CAN NOT EXPORT MORE THAN 1 GROUPS</h4>");
+            form.setFields(selectRowGroups);
+            
+        } else {
+            this.setHeight(500);
+            this.setTitle("SELECT ACTIVE GROUPS");
+            
+            vlo.setHeight(450);
+            form.setHeight(240);
+            form.setGroupTitle("Select Groups to Activate");
+            selectColGroups = new SelectItem();
+            selectColGroups.setTitle("COLUMN GROUPS (MAX 2)");
+            selectColGroups.setTextAlign(Alignment.CENTER);
+            selectColGroups.setTitleAlign(Alignment.CENTER);
+            this.updataChartData(rowGroupsNamesMap, colGroupsNamesMap);
+            
+            selectColGroups.setMultiple(true);
+            selectColGroups.setMultipleAppearance(MultipleAppearance.GRID);
+            form.setFields(selectRowGroups, selectColGroups);
+            vlo.addMember(infolable);
+            vlo.addMember(errorlabl);
+            
+        }
+        form.redraw();
+        rowGroupsNamesMap = null;
+        colGroupsNamesMap = null;
         vlo.redraw();
-
+        
     }
-
+    
     public void updataChartData(LinkedHashMap<String, String> rowGroupsNamesMap, LinkedHashMap<String, String> colGroupsNamesMap) {
         if (errorlabl != null) {
             errorlabl.setVisible(false);
@@ -115,28 +137,32 @@ public final class ActivateGroupPanel extends Window {
             form.clearValues();
             form.redraw();
         }
-        selectRowGroups.setValueMap(rowGroupsNamesMap);
-        selectColGroups.setValueMap(colGroupsNamesMap);
+        if (rowGroupsNamesMap != null) {
+            selectRowGroups.setValueMap(rowGroupsNamesMap);
+        }
+        if (colGroupsNamesMap != null) {
+            selectColGroups.setValueMap(colGroupsNamesMap);
+        }
     }
-
+    
     public DynamicForm getForm() {
         return form;
     }
-
+    
     public IButton getOkBtn() {
         return okBtn;
     }
-
+    
     public String[] getSelectRowGroups() {
         return selectRowGroups.getValues();
     }
-
+    
     public String[] getSelectColGroups() {
         return selectColGroups.getValues();
     }
-
+    
     public HTML getErrorlabl() {
         return errorlabl;
     }
-
+    
 }

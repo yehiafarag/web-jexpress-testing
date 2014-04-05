@@ -41,8 +41,10 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
     private final String pcaChartImage = "pcachart " + dateFormat.format(cal.getTime()).replace(":", " ");
     private final String hmImage = "heatMapImg" + dateFormat.format(cal.getTime()).replace(":", " ");
+
+    private final String textFile = "Export Data" + dateFormat.format(cal.getTime()).replace(":", " ");
     private boolean initSession = true;
-    private Set<String>computingDataList ;
+    private Set<String> computingDataList;
 
     private final Computing compute = new Computing();
 
@@ -54,14 +56,11 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
             httpSession.setAttribute("lineChartImage", lineChartImage);
             httpSession.setAttribute("pcaChartImage", pcaChartImage);
             httpSession.setAttribute("hmImage", hmImage);
+            httpSession.setAttribute("textFile", textFile);
+            String url = this.getThreadLocalRequest().getRequestURL().toString();
             initSession = false;
-            
+
         }
-        System.out.println(""+this.getThreadLocalRequest().getRemoteHost()+"   "+this.getThreadLocalRequest().getRequestedSessionId());
-//        try{
-//        File f = new File(this.getServletContext().getResource("images").getPath(),"b.png");
-//        System.out.println(" folder "+f.getName()+ "   path  -->> "+this.getServletContext().getResource("/").getPath());
-//        }catch(Exception e){e.printStackTrace();}
         path = this.getServletContext().getInitParameter("fileFolder");
         TreeMap<Integer, String> datasetsMap = compute.getAvailableDatasetsMap(path);
         computingDataList = compute.getAvailableComputingFileList(path);
@@ -71,9 +70,10 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     @Override
     public DatasetInformation loadDataset(int datasetId) {
         try {
-            if(this.getThreadLocalRequest().getRequestedSessionId() == null)
+            if (this.getThreadLocalRequest().getRequestedSessionId() == null) {
                 getThreadLocalRequest().getSession().setMaxInactiveInterval(0);
-            
+            }
+
             divaDataset = compute.getDivaDataset(datasetId);
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -98,7 +98,6 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
     @Override
     public SomClusteringResults computeSomClustering(int datasetId, int linkage, int distanceMeasure) throws IllegalArgumentException {
-        System.out.println(datasetId + " this is incoming dataset id   vs   " + divaDataset.getId());
         if (datasetId != divaDataset.getId()) {
             getThreadLocalRequest().getSession().setMaxInactiveInterval(0);
         }
@@ -115,33 +114,32 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
         }
 
-      
-        
     }
 
     @Override
     public HeatMapImgResult computeHeatmap(int datasetId, List<String> indexer, List<String> colIndexer) {
-        if(datasetId != divaDataset.getId())
-             getThreadLocalRequest().getSession().setMaxInactiveInterval(0);
+        if (datasetId != divaDataset.getId()) {
+            getThreadLocalRequest().getSession().setMaxInactiveInterval(0);
+        }
         HeatMapImgResult imge = compute.computeHeatmap(datasetId, indexer, colIndexer, divaDataset, path, hmImage);//hmGenerator.getHeatMapResults();
         return imge;
     }
 
     @Override
     public PCAImageResults computePCA(int datasetId, int comI, int comII) {
-        if(datasetId != divaDataset.getId())
-             getThreadLocalRequest().getSession().setMaxInactiveInterval(0);
-         String key = divaDataset.getName() + "_PCA_" + comI + "_" + comII + ".ser";
+        if (datasetId != divaDataset.getId()) {
+            getThreadLocalRequest().getSession().setMaxInactiveInterval(0);
+        }
+        String key = divaDataset.getName() + "_PCA_" + comI + "_" + comII + ".ser";
         if (computingDataList.contains(key)) {
             PCAResult = compute.getPCAResult(key);
-            
+
         } else {
             PCAResult = compute.computePCA(datasetId, comI, comII, divaDataset);
-           compute.savePCAResult(key, PCAResult);
+            compute.savePCAResult(key, PCAResult);
             computingDataList.add(key);
-            }
-        
-        
+        }
+
         PCAImageResults pcaImgResults = new PCAImageResults();
         pcaImgResults.setDatasetId(datasetId);
         pcaImgResults.setXyName(PCAResult.getXyName());
@@ -149,51 +147,56 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     }
 
     @Override
-    public PCAImageResults updatePCASelection(int datasetId,int[]subSelectionData, int[] selection, boolean zoom, boolean selectAll, double w, double h) {
-        if(datasetId != divaDataset.getId())
-             getThreadLocalRequest().getSession().setMaxInactiveInterval(0);
-        PCAImageResults pcaImgResults = compute.updatePCASelection(datasetId,subSelectionData, selection, zoom, selectAll, w, h, divaDataset, PCAResult, path, pcaChartImage);
+    public PCAImageResults updatePCASelection(int datasetId, int[] subSelectionData, int[] selection, boolean zoom, boolean selectAll, double w, double h) {
+        if (datasetId != divaDataset.getId()) {
+            getThreadLocalRequest().getSession().setMaxInactiveInterval(0);
+        }
+        PCAImageResults pcaImgResults = compute.updatePCASelection(datasetId, subSelectionData, selection, zoom, selectAll, w, h, divaDataset, PCAResult, path, pcaChartImage);
         return pcaImgResults;
 
     }
 
     @Override
     public RankResult computeRank(int datasetId, String perm, String seed, String[] colGropNames, String log2) {
-       if(datasetId != divaDataset.getId())
-             getThreadLocalRequest().getSession().invalidate();
-       String colGroupName = "";
-          RankResult rankResults = null;
-       for(String str:colGropNames)
-           colGroupName = colGroupName+str+"_";
-        String key = divaDataset.getName() + "_RANK_" +colGroupName+"_"+log2+ ".ser";
+        if (datasetId != divaDataset.getId()) {
+            getThreadLocalRequest().getSession().invalidate();
+        }
+        String colGroupName = "";
+        RankResult rankResults = null;
+        for (String str : colGropNames) {
+            colGroupName = colGroupName + str + "_";
+        }
+        String key = divaDataset.getName() + "_RANK_" + colGroupName + "_" + log2 + ".ser";
         if (computingDataList.contains(key)) {
             rankResults = compute.getRankResult(key);
-            
+
         } else {
-            rankResults = compute.computeRank(datasetId, perm, seed, colGropNames, log2, divaDataset);       
-           compute.saveRankResult(key, rankResults);
-            computingDataList.add(key); 
+            rankResults = compute.computeRank(datasetId, perm, seed, colGropNames, log2, divaDataset);
+            compute.saveRankResult(key, rankResults);
+            computingDataList.add(key);
             return rankResults;
-            }
-           return rankResults;
+        }
+        return rankResults;
     }
 
     @Override
     public Boolean createRowGroup(int datasetId, String name, String color, String type, int[] selection) {
-       if(datasetId != divaDataset.getId())
-             getThreadLocalRequest().getSession().invalidate();
+        if (datasetId != divaDataset.getId()) {
+            getThreadLocalRequest().getSession().invalidate();
+        }
         divaDataset = compute.createRowGroup(datasetId, name, color, type, selection, divaDataset);
         if (divaDataset != null) {
             return true;
         } else {
-            return true;
+            return false;
         }
     }
 
     @Override
     public Boolean createColGroup(int datasetId, String name, String color, String type, String[] strSelection) {
-       if(datasetId != divaDataset.getId())
-             getThreadLocalRequest().getSession().invalidate();
+        if (datasetId != divaDataset.getId()) {
+            getThreadLocalRequest().getSession().invalidate();
+        }
         divaDataset = compute.createColGroup(datasetId, name, color, type, strSelection, divaDataset);
         if (divaDataset != null) {
             return true;
@@ -212,8 +215,9 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
     @Override
     public LineChartResults computeLineChart(int datasetId, double w, double h) {
-        if(datasetId != divaDataset.getId())
-             getThreadLocalRequest().getSession().invalidate();
+        if (datasetId != divaDataset.getId()) {
+            getThreadLocalRequest().getSession().invalidate();
+        }
         LineChartResults lcResults = compute.computeLineChart(datasetId, w, h, divaDataset, path, lineChartImage);
         return lcResults;
     }
@@ -225,8 +229,9 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
     @Override
     public Integer saveDataset(int datasetId, String newName) {
-        if(datasetId != divaDataset.getId())
-             getThreadLocalRequest().getSession().invalidate();
+        if (datasetId != divaDataset.getId()) {
+            getThreadLocalRequest().getSession().invalidate();
+        }
         newName = (divaDataset.getName() + " - " + newName + " - " + dateFormat.format(cal.getTime())).replace(":", " ");
         int id = compute.saveDataset(datasetId, newName, divaDataset, path);
         return id;
@@ -234,26 +239,36 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
     @Override
     public LinkedHashMap<String, String>[] getGroupsPanelData(int datasetId) {
-        if(datasetId != divaDataset.getId())
-             getThreadLocalRequest().getSession().invalidate();
+        if (datasetId != divaDataset.getId()) {
+            getThreadLocalRequest().getSession().invalidate();
+        }
         LinkedHashMap<String, String>[] activeGroupsData = compute.getGroupsPanelData(divaDataset);
         return activeGroupsData;
     }
 
     @Override
     public String[] getPcaColNames(int datasetId) {
-        if(datasetId != divaDataset.getId())
-             getThreadLocalRequest().getSession().invalidate();
+        if (datasetId != divaDataset.getId()) {
+            getThreadLocalRequest().getSession().invalidate();
+        }
         String[] pcaColNames = compute.getPcaColNames(divaDataset);
         return pcaColNames;
     }
 
     @Override
     public LinkedHashMap<String, String> getColNamesMaps(int datasetId) {
-        if(datasetId != divaDataset.getId())
-             getThreadLocalRequest().getSession().invalidate();
+        if (datasetId != divaDataset.getId()) {
+            getThreadLocalRequest().getSession().invalidate();
+        }
         LinkedHashMap<String, String> colNamesMap = compute.getColNamesMaps(divaDataset);
         return colNamesMap;
+    }
+
+    @Override
+    public String exportData(int datasetId, String rowGroup) {
+        String appPath = this.getServletContext().getRealPath("/");
+        String url = this.getThreadLocalRequest().getRequestURL().toString();
+        return compute.exportDataTotext(divaDataset, rowGroup, appPath, url.substring(0, (url.length() - 10)), textFile);
     }
 
 }
