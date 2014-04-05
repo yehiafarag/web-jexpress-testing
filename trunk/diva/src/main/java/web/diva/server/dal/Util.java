@@ -64,12 +64,9 @@ public class Util {
                 if (name.endsWith(".txt")) {
                     ds = reader.readDatasetFile(f2);
                 }
-//                else { //deserialise the file
-//                    ds = deSerializeDataset(name, path);
-//
-//                }
             }
         }
+         System.gc();
         return ds;
 
     }
@@ -78,14 +75,10 @@ public class Util {
         DivaDataset ds = null;
         for (File f2 : appFolder.listFiles()) {
             if (f2.getName().equalsIgnoreCase(name)) {
-//                if (name.endsWith(".txt")) {
-//                    ds = reader.readDatasetFile(f2);
-//                } else { //deserialise the file
                     ds = deSerializeDataset(name, path);
-
-//                }
             }
         }
+         System.gc();
         return ds;
 
     }
@@ -104,6 +97,7 @@ public class Util {
             ObjectInput input = new ObjectInputStream(buffer);
             //deserialize the List
             DivaDataset serDataset = (DivaDataset) input.readObject();
+             System.gc();
             return serDataset;
 
         } catch (ClassNotFoundException ex) {
@@ -126,6 +120,7 @@ public class Util {
             ObjectInput input = new ObjectInputStream(buffer);
             //deserialize the List
             SomClusteringResults serResult = (SomClusteringResults) input.readObject();
+             System.gc();
             return serResult;
 
         } catch (ClassNotFoundException ex) {
@@ -149,6 +144,7 @@ public class Util {
             ObjectInput input = new ObjectInputStream(buffer);
             //deserialize the List
             PCAResults serResult = (PCAResults) input.readObject();
+             System.gc();
             return serResult;
 
         } catch (ClassNotFoundException ex) {
@@ -172,6 +168,7 @@ public class Util {
             ObjectInput input = new ObjectInputStream(buffer);
             //deserialize the List
             RankResult serResult = (RankResult) input.readObject();
+             System.gc();
             return serResult;
 
         } catch (ClassNotFoundException ex) {

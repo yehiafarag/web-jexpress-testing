@@ -40,6 +40,8 @@ public interface GreetingServiceAsync {
     public void updateDatasetInfo(int datasetId, AsyncCallback<DatasetInformation> asyncCallback);
 
     public void activateGroups(int datasetId, String[] rowGroups, String[] colGroups, AsyncCallback<DatasetInformation> asyncCallback);
+    
+    public void exportData(int datasetId, String rowGroups, AsyncCallback<String> asyncCallback);
 
     public void saveDataset(int datasetId, String newName, AsyncCallback<Integer> asyncCallback);
 
