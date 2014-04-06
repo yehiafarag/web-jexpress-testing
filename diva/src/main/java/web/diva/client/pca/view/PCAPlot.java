@@ -29,9 +29,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import web.diva.client.GreetingServiceAsync;
-import web.diva.shared.ModularizedListener;
-import web.diva.shared.Selection;
-import web.diva.shared.SelectionManager;
+import web.diva.client.selectionmanager.ModularizedListener;
+import web.diva.client.selectionmanager.Selection;
+import web.diva.client.selectionmanager.SelectionManager;
 import web.diva.shared.beans.PCAImageResults;
 import web.diva.shared.beans.PCAPoint;
 

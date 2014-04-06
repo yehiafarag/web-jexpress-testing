@@ -12,9 +12,9 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import web.diva.client.GreetingServiceAsync;
-import web.diva.shared.ModularizedListener;
-import web.diva.shared.Selection;
-import web.diva.shared.SelectionManager;
+import web.diva.client.selectionmanager.ModularizedListener;
+import web.diva.client.selectionmanager.Selection;
+import web.diva.client.selectionmanager.SelectionManager;
 import web.diva.shared.beans.LineChartResults;
 
 /**

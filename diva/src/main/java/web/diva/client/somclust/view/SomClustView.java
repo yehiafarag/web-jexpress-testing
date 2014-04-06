@@ -7,9 +7,9 @@ package web.diva.client.somclust.view;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.smartgwt.client.widgets.layout.HLayout;
 import java.util.List;
-import web.diva.shared.ModularizedListener;
-import web.diva.shared.Selection;
-import web.diva.shared.SelectionManager;
+import web.diva.client.selectionmanager.ModularizedListener;
+import web.diva.client.selectionmanager.Selection;
+import web.diva.client.selectionmanager.SelectionManager;
 import web.diva.shared.beans.HeatMapImgResult;
 import web.diva.shared.beans.SomClusteringResults;
 
