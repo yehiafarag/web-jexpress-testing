@@ -16,9 +16,9 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.SelectionChangedHandler;
 import com.smartgwt.client.widgets.grid.events.SelectionEvent;
-import web.diva.shared.ModularizedListener;
-import web.diva.shared.Selection;
-import web.diva.shared.SelectionManager;
+import web.diva.client.selectionmanager.ModularizedListener;
+import web.diva.client.selectionmanager.Selection;
+import web.diva.client.selectionmanager.SelectionManager;
 
 /**
  *

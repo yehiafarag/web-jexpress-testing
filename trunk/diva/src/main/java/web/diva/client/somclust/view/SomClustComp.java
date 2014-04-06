@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.smartgwt.client.widgets.layout.HLayout;
 import java.util.List;
-import web.diva.shared.SelectionManager;
+import web.diva.client.selectionmanager.SelectionManager;
 import web.diva.shared.beans.HeatMapImgResult;
 import web.diva.shared.beans.SomClusteringResults;
 
