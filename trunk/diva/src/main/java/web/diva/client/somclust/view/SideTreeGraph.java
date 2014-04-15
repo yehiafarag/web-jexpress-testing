@@ -164,12 +164,16 @@ public final class SideTreeGraph extends ProtovisWidget {
                         indexers.add(n.nodeName());
                     }
                 }
+                
+                if (n.firstChild() == null) {
+                    return 0.1;
+                }
 
 //                if (n.nodeName().equalsIgnoreCase(overNode)) {
 //                    return 3.0;
 //                }
 //                return 0.5;
-                return 3.0;
+                return 1.0;
             }
         })
                 .shape("square")
