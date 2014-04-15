@@ -105,6 +105,8 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
         String key = divaDataset.getName() + "_SomClust_" + linkage + "_" + distanceMeasure + ".ser";
         if (computingDataList.contains(key)) {
             SomClusteringResults results = compute.getSomClustResult(key);
+            System.out.println(results.getDatasetId());
+            results.setDatasetId(datasetId);
             return results;
         } else {
             SomClusteringResults results = compute.computeSomClustering(datasetId, linkage, distanceMeasure, divaDataset);

@@ -85,9 +85,8 @@ public class SelectionManager implements IsSerializable {
      *
      * @param datasetId - dataset id to set selection on
      * @param s - selection of rows, if null - no selection
-     * @param compType component that made the event
      */
-    public void setSelectedRows(int datasetId, Selection s, int compType) {
+    public void setSelectedRows(int datasetId, Selection s) {
         if (datasetId == 0) {
             Window.alert("dataset is 0");
             throw new IllegalArgumentException("Trying to select rows in a null DataSet");

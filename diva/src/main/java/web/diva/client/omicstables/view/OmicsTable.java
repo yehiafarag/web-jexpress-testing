@@ -28,7 +28,7 @@ import web.diva.shared.model.core.model.dataset.DatasetInformation;
  */
 public final class OmicsTable extends ModularizedListener implements SelectionChangedHandler, IsSerializable {
 
-    private final ListGrid omicsIdTable ;
+    private final ListGrid omicsIdTable;
     private ListGridRecord[] records;
     private final String info;
     private final SelectionManager selectionManager;
@@ -113,13 +113,13 @@ public final class OmicsTable extends ModularizedListener implements SelectionCh
 
             @Override
             public void onDragStart(DragStartEvent event) {
-             mouseSelection = true;   
+                mouseSelection = true;
             }
         });
 
         omicsIdTable.addDragStopHandler(new DragStopHandler() {
             @Override
-            public void onDragStop(DragStopEvent event) {               
+            public void onDragStop(DragStopEvent event) {
                 ListGridRecord[] selectionRecord = omicsIdTable.getSelectedRecords();
                 if (selectionTable != null) {
                     selectionTable.setRecords(selectionRecord);
@@ -132,17 +132,12 @@ public final class OmicsTable extends ModularizedListener implements SelectionCh
 //        omicsIdTable.addSelectionChangedHandler(this);
         omicsIdTable.setCanSort(false);
         records = null;
-        
-        
-        
-       
-       
 
     }
 
     private void updateSelectionManager(int[] selectedIndices) {
         Selection selection = new Selection(Selection.TYPE.OF_ROWS, selectedIndices);
-        selectionManager.setSelectedRows(datasetId, selection, classtype);
+        selectionManager.setSelectedRows(datasetId, selection);
     }
 
     public ListGrid getGwtTable() {
@@ -166,18 +161,19 @@ public final class OmicsTable extends ModularizedListener implements SelectionCh
         return recordsInit;
     }
 
-    
     @Override
     public void onSelectionChanged(SelectionEvent event) {
-        if(mouseSelection)//|| event.isCtrlKeyDown() || EventHandler.shiftKeyDown())
-                return;
-       
+        if (mouseSelection)//|| event.isCtrlKeyDown() || EventHandler.shiftKeyDown())
+        {
+            return;
+        }
+
         ListGridRecord[] selectionRecord = omicsIdTable.getSelectedRecords();
         if (selectionRecord.length > 0) {
             int[] selectedIndices = new int[selectionRecord.length];
             for (int index = 0; index < selectionRecord.length; index++) {
                 ListGridRecord rec = selectionRecord[index];
-                selectedIndices[index] = Integer.valueOf(rec.getAttributeAsInt("index"));
+                selectedIndices[index] = rec.getAttributeAsInt("index");
             }
             updateSelectionManager(selectedIndices);
         }
@@ -188,7 +184,7 @@ public final class OmicsTable extends ModularizedListener implements SelectionCh
             int[] selectedIndices = new int[selectionRecord.length];
             for (int index = 0; index < selectionRecord.length; index++) {
                 ListGridRecord rec = selectionRecord[index];
-                selectedIndices[index] = Integer.valueOf(rec.getAttributeAsInt("index"));
+                selectedIndices[index] = rec.getAttributeAsInt("index");
             }
             updateSelectionManager(selectedIndices);
         }

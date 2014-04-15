@@ -45,11 +45,11 @@ public class SomClustComp extends HLayout {
         this.setBorder("1px solid black");
         width = (RootPanel.get("SomClusteringResults").getOffsetWidth() - 50);
         this.setWidth(width);
-        double topTreeHeight = Double.valueOf(results.getColsNames().length) * 4.0;
+        double topTreeHeight = (double) results.getColsNames().length * 4.0;
 
-        sideTreeHeight = (Double.valueOf(results.getGeneNames().length) * 1.5);
-        if (sideTreeHeight > 3000.0) {
-            sideTreeHeight = 3000.0;
+        sideTreeHeight = ((double) results.getGeneNames().length * 1.5);
+        if (sideTreeHeight > 4000.0) {
+            sideTreeHeight = 4000.0;
         }
         sideTree = new SideTreeGraph(results, "left", selectionManager, sideTreeHeight, (width), (topTreeHeight + 15.0));
         this.addMember(sideTree.asWidget());

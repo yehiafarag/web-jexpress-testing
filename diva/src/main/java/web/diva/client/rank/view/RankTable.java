@@ -140,7 +140,7 @@ public final class RankTable extends ModularizedListener implements SelectionCha
             int[] selectedIndices = new int[selectionRecord.length];
             for (int index = 0; index < selectionRecord.length; index++) {
                 ListGridRecord rec = selectionRecord[index];
-                selectedIndices[index] = rankToIndex[Integer.valueOf(rec.getAttributeAsInt("Rank")) - 1];
+                selectedIndices[index] = rankToIndex[rec.getAttributeAsInt("Rank")- 1];
             }
             updateSelectionManager(selectedIndices);
         }
@@ -171,7 +171,7 @@ public final class RankTable extends ModularizedListener implements SelectionCha
     private void updateSelectionManager(int[] selectedIndices) {
 
         Selection selection = new Selection(Selection.TYPE.OF_ROWS, selectedIndices);
-        selectionManager.setSelectedRows(datasetId, selection, classtype);
+        selectionManager.setSelectedRows(datasetId, selection);
 
     }
 

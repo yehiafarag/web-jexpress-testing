@@ -190,7 +190,7 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
 
     private void updateSelectedList(int[] selIndex) {
         Selection selection = new Selection(Selection.TYPE.OF_ROWS, selIndex);
-        selectionManager.setSelectedRows(datasetId, selection, classtype);
+        selectionManager.setSelectedRows(datasetId, selection);
     }
 
     public VerticalPanel getScatterPlotLayout() {

@@ -37,8 +37,8 @@ public class InitImgs {
         rtImg.setWidth("" + RootPanel.get("RankTablesResults").getOffsetWidth() + "px");
         
           hcImg = new Image("images/hc.png");
-        hcImg.setHeight("580px");
-        hcImg.setWidth("" + (RootPanel.get("SomClusteringResults").getOffsetWidth()-15) + "px");
+        hcImg.setHeight("575px");
+        hcImg.setWidth("" + (RootPanel.get("SomClusteringResults").getOffsetWidth()-26) + "px");
 
     }
 

@@ -4,6 +4,9 @@
  */
 package web.diva.client.somclust.view;
 
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -44,6 +47,7 @@ public final class SideTreeGraph extends ProtovisWidget {
     private final double top;
     private final int datasetId;
     private int somClustAction= 0;
+    final HTML toolTip = new HTML();
     
     
     public void resize(double width,double height)
@@ -74,6 +78,9 @@ public final class SideTreeGraph extends ProtovisWidget {
         this.width = (width*2.0/3.0);
         this.height = height;
         this.top = top;
+         
+        toolTip.setVisible(false);
+        RootPanel.get("tooltip").add(toolTip);
     }
 
     @Override
@@ -115,10 +122,21 @@ public final class SideTreeGraph extends ProtovisWidget {
             PVDomNode d = args.getObject();
             if (_this != null && d != null) {
                 overNode = d.nodeName();
-                getPVPanel().render();
+                toolTip.setHTML("<p style='font-weight: bold; color:white;font-size: 15px;background: #819FF7; border-style:double;'>" + tooltips.get(overNode) + "</p>");
+                toolTip.setVisible(true);                
+//                getPVPanel().render();
             }
         }
+        
     };
+     PVEventHandler nodeMouseOutHandler = new PVEventHandler() {
+        @Override
+        public void onEvent(com.google.gwt.user.client.Event e, String pvEventType, JsArgs args) {           
+            toolTip.setText("");
+            toolTip.setVisible(false);
+            
+        }
+     };
 //    private PVPanel vis;
     private String clickNode = "";
     private String overNode = "";
@@ -147,12 +165,14 @@ public final class SideTreeGraph extends ProtovisWidget {
                     }
                 }
 
-                if (n.nodeName().equalsIgnoreCase(overNode)) {
-                    return 3.0;
-                }
-                return 0.5;
+//                if (n.nodeName().equalsIgnoreCase(overNode)) {
+//                    return 3.0;
+//                }
+//                return 0.5;
+                return 3.0;
             }
-        }).shape("square")
+        })
+                .shape("square")
                 .fillStyle(new JsStringFunction() {
                     @Override
                     public String f(JsArgs args) {
@@ -163,17 +183,19 @@ public final class SideTreeGraph extends ProtovisWidget {
                         return "#ccc";
                     }
                 })
-                .title(
-                        new JsStringFunction() {
-                            @Override
-                            public String f(JsArgs args) {
-                                PVDomNode n = args.getObject();
-                                return tooltips.get(n.nodeName());
-                            }
-                        })
+//                .title(
+//                        new JsStringFunction() {
+//                            @Override
+//                            public String f(JsArgs args) {
+//                                PVDomNode n = args.getObject();
+//                                return tooltips.get(n.nodeName());
+//                            }
+//                        })
                 .events("all")
                 .event(PV.Event.CLICK, nodeMouseClickHandler)
-                .event(PV.Event.MOUSEOVER, nodeMouseOverHandler);
+                .event(PV.Event.MOUSEOVER, nodeMouseOverHandler)
+                .event(PV.Event.MOUSEOUT, nodeMouseOutHandler);
+        
 
         PVLine line = layout.link().add(PV.Line);
 
@@ -193,7 +215,7 @@ public final class SideTreeGraph extends ProtovisWidget {
     private void updateSelectedList(int[] selIndex) {
         somClustAction = 1;
         Selection selection = new Selection(Selection.TYPE.OF_ROWS, selIndex);
-        selectionManager.setSelectedRows(datasetId, selection,2);
+        selectionManager.setSelectedRows(datasetId, selection);
         selection = null;
         
        
