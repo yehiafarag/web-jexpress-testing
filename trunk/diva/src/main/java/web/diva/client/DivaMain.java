@@ -97,6 +97,7 @@ public class DivaMain implements EntryPoint {
         RootPanel.get("geneTable").add(initImgs.getGtImg());
         RootPanel.get("LineChartResults").add(initImgs.getlCImg());
         RootPanel.get("PCAChartResults").add(initImgs.getPcaImg());
+        
         RootPanel.get("RankTablesResults").add(initImgs.getRtImg());
         RootPanel.get("SomClusteringResults").add(initImgs.getHcImg());
 

@@ -36,7 +36,7 @@ public class HeatMapGraph extends VerticalPanel {
         this.image.addMouseMoveHandler(new MouseMoveHandler() {
             @Override
             public void onMouseMove(MouseMoveEvent event) {
-                int y = (int) (Double.valueOf(event.getY()) / rowIndicator);
+                int y = (int) ((double) event.getY() / rowIndicator);
                 int x = ((int) (event.getX() / colIndicator));
                 if (x < imageResult.getColNames().length && y < imageResult.getGeneName().length) {
                     toolTip.setHTML("<p style='font-weight: bold; color:white;font-size: 15px;background: #819FF7; border-style:double;'>" + imageResult.getColNames()[x] + "<br/>" + imageResult.getGeneName()[y] + "</p>");

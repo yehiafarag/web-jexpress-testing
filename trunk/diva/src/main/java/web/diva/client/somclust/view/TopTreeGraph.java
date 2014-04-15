@@ -5,6 +5,7 @@
  */
 package web.diva.client.somclust.view;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Widget;
 import java.util.ArrayList;
@@ -136,6 +137,7 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
                             }
                         })
                         .nodes()).group(false).orient("top");
+       
         layout.node().add(PV.Dot).radius(new JsDoubleFunction() {
             @Override
             public double f(JsArgs args) {
@@ -158,6 +160,7 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
                         PVDomNode n = args.getObject();
                         if (n.nodeName().equalsIgnoreCase(overNode)) {
                             return "#FF4000";
+                             
                         }
                         return "#ccc";
                     }
@@ -183,6 +186,7 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
                 if (clickedNode != null && clickedNode.getChildernList().contains(n.nodeName())) {
                     return "#FF4000";
                 }
+                
                 return "#ccc";
             }
         });
