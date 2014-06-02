@@ -28,7 +28,7 @@ public class PCAResults implements IsSerializable,Serializable {
         return xyName;
     }
 
-    public void setXyName(HashMap<String, String> xyName) {
+    public void setXyName(HashMap<String, String> xyName,int x) {
         this.xyName = xyName;
     }
 

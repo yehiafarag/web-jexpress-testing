@@ -4,22 +4,21 @@ import web.diva.client.GreetingService;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import javax.servlet.http.HttpSession;
 import web.diva.server.model.Computing;
-import web.diva.shared.beans.LineChartResults;
 import web.diva.shared.beans.PCAResults;
 import web.diva.shared.beans.RankResult;
-import web.diva.shared.beans.SomClusteringResults;
 import web.diva.shared.model.core.model.dataset.DatasetInformation;
 import web.diva.server.model.beans.DivaDataset;
-import web.diva.shared.beans.HeatMapImgResult;
-import web.diva.shared.beans.PCAImageResults;
+import web.diva.shared.beans.HeatMapImageResult;
+import web.diva.shared.beans.LineChartResult;
+import web.diva.shared.beans.PCAImageResult;
+import web.diva.shared.beans.SomClusteringResult;
 
 /**
  * The server side implementation of the RPC service.
@@ -44,12 +43,12 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
     private final String textFile = "Export Data" + dateFormat.format(cal.getTime()).replace(":", " ");
     private boolean initSession = true;
-    private Set<String> computingDataList;
+    private HashSet<String> computingDataList;
 
     private final Computing compute = new Computing();
 
     @Override
-    public Map<Integer, String> getAvailableDatasets() {
+    public TreeMap<Integer,String> getAvailableDatasets() {
         if (initSession) {
             HttpSession httpSession = getThreadLocalRequest().getSession();
             httpSession.setAttribute("imgColorName", imgColorName);
@@ -57,12 +56,11 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
             httpSession.setAttribute("pcaChartImage", pcaChartImage);
             httpSession.setAttribute("hmImage", hmImage);
             httpSession.setAttribute("textFile", textFile);
-            String url = this.getThreadLocalRequest().getRequestURL().toString();
             initSession = false;
 
         }
         path = this.getServletContext().getInitParameter("fileFolder");
-        TreeMap<Integer, String> datasetsMap = compute.getAvailableDatasetsMap(path);
+        TreeMap<Integer,String> datasetsMap = compute.getAvailableDatasetsMap(path);
         computingDataList = compute.getAvailableComputingFileList(path);
         return datasetsMap;
     }
@@ -97,19 +95,19 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     }
 
     @Override
-    public SomClusteringResults computeSomClustering(int datasetId, int linkage, int distanceMeasure) throws IllegalArgumentException {
+    public SomClusteringResult computeSomClustering(int datasetId, int linkage, int distanceMeasure) throws IllegalArgumentException {
         if (datasetId != divaDataset.getId()) {
             getThreadLocalRequest().getSession().setMaxInactiveInterval(0);
         }
 
         String key = divaDataset.getName() + "_SomClust_" + linkage + "_" + distanceMeasure + ".ser";
         if (computingDataList.contains(key)) {
-            SomClusteringResults results = compute.getSomClustResult(key);
-            System.out.println(results.getDatasetId());
+            SomClusteringResult results = compute.getSomClustResult(key);
+//            System.out.println(results.getDatasetId());
             results.setDatasetId(datasetId);
             return results;
         } else {
-            SomClusteringResults results = compute.computeSomClustering(datasetId, linkage, distanceMeasure, divaDataset);
+            SomClusteringResult results = compute.computeSomClustering(datasetId, linkage, distanceMeasure, divaDataset);
             compute.saveSomClustResult(key, results);
             computingDataList.add(key);
             return results;
@@ -119,41 +117,44 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     }
 
     @Override
-    public HeatMapImgResult computeHeatmap(int datasetId, List<String> indexer, List<String> colIndexer) {
+    public HeatMapImageResult computeHeatmap(int datasetId, ArrayList indexer, ArrayList colIndexer) {
         if (datasetId != divaDataset.getId()) {
             getThreadLocalRequest().getSession().setMaxInactiveInterval(0);
         }
-        HeatMapImgResult imge = compute.computeHeatmap(datasetId, indexer, colIndexer, divaDataset, path, hmImage);//hmGenerator.getHeatMapResults();
+    HeatMapImageResult  imge = compute.computeHeatmap(datasetId, indexer, colIndexer, divaDataset, path, hmImage);//hmGenerator.getHeatMapResults();
         return imge;
     }
 
     @Override
-    public PCAImageResults computePCA(int datasetId, int comI, int comII) {
+    public PCAImageResult computePCA(int datasetId, int comI, int comII) {
         if (datasetId != divaDataset.getId()) {
             getThreadLocalRequest().getSession().setMaxInactiveInterval(0);
         }
         String key = divaDataset.getName() + "_PCA_" + comI + "_" + comII + ".ser";
         if (computingDataList.contains(key)) {
             PCAResult = compute.getPCAResult(key);
+            PCAResult.setDatasetId(datasetId);
 
         } else {
             PCAResult = compute.computePCA(datasetId, comI, comII, divaDataset);
+            
+////            
             compute.savePCAResult(key, PCAResult);
             computingDataList.add(key);
         }
 
-        PCAImageResults pcaImgResults = new PCAImageResults();
+        PCAImageResult pcaImgResults = new PCAImageResult();
         pcaImgResults.setDatasetId(datasetId);
-        pcaImgResults.setXyName(PCAResult.getXyName());
+//        pcaImgResults.setXyName(PCAResult.getXyName());
         return pcaImgResults;
     }
 
     @Override
-    public PCAImageResults updatePCASelection(int datasetId, int[] subSelectionData, int[] selection, boolean zoom, boolean selectAll, double w, double h) {
+    public PCAImageResult updatePCASelection(int datasetId, int[] subSelectionData, int[] selection, boolean zoom, boolean selectAll, double w, double h) {
         if (datasetId != divaDataset.getId()) {
             getThreadLocalRequest().getSession().setMaxInactiveInterval(0);
         }
-        PCAImageResults pcaImgResults = compute.updatePCASelection(datasetId, subSelectionData, selection, zoom, selectAll, w, h, divaDataset, PCAResult, path, pcaChartImage);
+        PCAImageResult pcaImgResults = compute.updatePCASelection(datasetId, subSelectionData, selection, zoom, selectAll, w, h, divaDataset, PCAResult, path, pcaChartImage);
         return pcaImgResults;
 
     }
@@ -216,11 +217,11 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     }
 
     @Override
-    public LineChartResults computeLineChart(int datasetId, double w, double h) {
+    public LineChartResult computeLineChart(int datasetId, double w, double h) {
         if (datasetId != divaDataset.getId()) {
             getThreadLocalRequest().getSession().invalidate();
         }
-        LineChartResults lcResults = compute.computeLineChart(datasetId, w, h, divaDataset, path, lineChartImage);
+        LineChartResult lcResults = compute.computeLineChart(datasetId, w, h, divaDataset, path, lineChartImage);
         return lcResults;
     }
 

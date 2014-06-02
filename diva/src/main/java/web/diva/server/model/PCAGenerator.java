@@ -23,7 +23,7 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import web.diva.server.model.beans.DivaDataset;
-import web.diva.shared.beans.PCAImageResults;
+import web.diva.shared.beans.PCAImageResult;
 import web.diva.shared.beans.PCAPoint;
 import web.diva.shared.beans.PCAResults;
 
@@ -152,7 +152,7 @@ public class PCAGenerator {
     private final HashSet<Integer> selectionSet = new HashSet<Integer>();
     private final ChartRenderingInfo chartRenderingInfo = new ChartRenderingInfo(new StandardEntityCollection());
 
-    public PCAImageResults generateChart(String path, PCAResults pcaResults, int[] subSelectionData, int[] selection, boolean zoom, boolean selectAll, String imgName, double w, double h, DivaDataset divaDataset) {
+    public PCAImageResult generateChart(String path, PCAResults pcaResults, int[] subSelectionData, int[] selection, boolean zoom, boolean selectAll, String imgName, double w, double h, DivaDataset divaDataset) {
         XYDataset dataset = this.createDataset(pcaResults.getPoints(), subSelectionData, selection, zoom, divaDataset);
         final JFreeChart chart = ChartFactory.createScatterPlot(
                 "", // chart title
@@ -223,7 +223,7 @@ public class PCAGenerator {
 
         chartRenderingInfo.clear();
         String imgUrl = imgGenerator.saveToFile(chart, w, h, path, chartRenderingInfo, imgName);
-        PCAImageResults imgUtilRes = new PCAImageResults();
+        PCAImageResult imgUtilRes = new PCAImageResult();
         imgUtilRes.setImgString(imgUrl);
         imgUtilRes.setDataAreaMaxX(chartRenderingInfo.getPlotInfo().getDataArea().getMaxX());
         imgUtilRes.setDataAreaMaxY(chartRenderingInfo.getPlotInfo().getDataArea().getMaxY());

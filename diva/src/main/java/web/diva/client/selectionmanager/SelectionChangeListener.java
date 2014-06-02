@@ -16,5 +16,6 @@ package web.diva.client.selectionmanager;
 public interface SelectionChangeListener  {
 
     public void selectionChanged(Selection.TYPE type);
+    public void remove();
 
 }

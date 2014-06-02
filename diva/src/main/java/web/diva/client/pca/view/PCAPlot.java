@@ -32,7 +32,7 @@ import web.diva.client.GreetingServiceAsync;
 import web.diva.client.selectionmanager.ModularizedListener;
 import web.diva.client.selectionmanager.Selection;
 import web.diva.client.selectionmanager.SelectionManager;
-import web.diva.shared.beans.PCAImageResults;
+import web.diva.shared.beans.PCAImageResult;
 import web.diva.shared.beans.PCAPoint;
 
 /**
@@ -70,7 +70,7 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
     private final HTML toolTip = new HTML();
     private double height = 290.0;
 
-    public PCAPlot(final PCAImageResults results, SelectionManager selectionManager, GreetingServiceAsync greetingService) {
+    public PCAPlot(final PCAImageResult results, SelectionManager selectionManager, GreetingServiceAsync greetingService) {
 
         this.greetingService = greetingService;
         this.classtype = 3;
@@ -203,14 +203,14 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
 //                zoomed = true;
                 currentDataSet = selection;
             }
-            greetingService.updatePCASelection(datasetId, currentDataSet, selectedRows, zoom, selectAll, RootPanel.get("PCAChartResults").getOffsetWidth(), (height - 25.0), new AsyncCallback<PCAImageResults>() {
+            greetingService.updatePCASelection(datasetId, currentDataSet, selectedRows, zoom, selectAll, RootPanel.get("PCAChartResults").getOffsetWidth(), (height - 25.0), new AsyncCallback<PCAImageResult>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     RootPanel.get("loaderImage").setVisible(false);
                 }
 
                 @Override
-                public void onSuccess(PCAImageResults result) {
+                public void onSuccess(PCAImageResult result) {
                     if (chart != null) {
                         imgLayout.remove(chart);
                         chart = null;
@@ -336,5 +336,7 @@ public class PCAPlot extends ModularizedListener implements IsSerializable {
         this.enable = enabel;
 
     }
+    @Override
+    public void remove(){}
 
 }

@@ -18,16 +18,16 @@ public class DatasetInformation implements IsSerializable{
     private int id;
     private String datasetInfo;
     private String[][] rowGroupsNames;
-    private String[][] geneTabelData;
+    private String[][] omicsTabelData;
 
-    private LinkedHashMap<String,String> colNamesMap;
+    private LinkedHashMap<String, String> colNamesMap;
    
-    public String[][] getGeneTabelData() {
-        return geneTabelData;
+    public String[][] getOmicsTabelData() {
+        return omicsTabelData;
     }
 
-    public void setGeneTabelData(String[][] geneTabelData) {
-        this.geneTabelData = geneTabelData;
+    public void setOmicsTabelData(String[][] geneTabelData) {
+        this.omicsTabelData = geneTabelData;
     }
 
     public int getRowsNumb() {
@@ -87,11 +87,11 @@ public class DatasetInformation implements IsSerializable{
     }
 
 
-    public LinkedHashMap<String,String> getColNamesMap() {
+    public LinkedHashMap<String, String> getColNamesMap() {
         return colNamesMap;
     }
 
-    public void setColNamesMap(LinkedHashMap<String,String> colNamesMap) {
+    public void setColNamesMap(LinkedHashMap<String, String> colNamesMap) {
         this.colNamesMap = colNamesMap;
     }
 }

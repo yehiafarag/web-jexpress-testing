@@ -3,12 +3,11 @@
  * and open the template in the editor.
  */
 package web.diva.client.selectionmanager;
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Template for the main classes.
  */
-public abstract class ModularizedListener  implements SelectionChangeListener, IsSerializable {
+public abstract class ModularizedListener  implements SelectionChangeListener {
 
     //NOTE: mode this variable protected (had default modifier originally)
     protected java.util.Vector components;
@@ -131,5 +130,6 @@ public abstract class ModularizedListener  implements SelectionChangeListener, I
 
     public void columnsHasChanged() {
     }
+    
 }
 

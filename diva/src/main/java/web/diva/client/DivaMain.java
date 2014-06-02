@@ -10,8 +10,7 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.TreeMap;
 import web.diva.client.selectionmanager.SelectionManager;
 import web.diva.client.omicstables.view.LeftPanelView;
@@ -25,10 +24,10 @@ import web.diva.client.somclust.view.SomClustView;
 import web.diva.client.view.ActivateGroupPanel;
 import web.diva.client.view.DatasetPanel;
 import web.diva.client.view.SaveDatasetDialog;
-import web.diva.shared.beans.HeatMapImgResult;
-import web.diva.shared.beans.LineChartResults;
+import web.diva.shared.beans.HeatMapImageResult;
+import web.diva.shared.beans.LineChartResult;
 import web.diva.shared.beans.RankResult;
-import web.diva.shared.beans.SomClusteringResults;
+import web.diva.shared.beans.SomClusteringResult;
 import web.diva.shared.model.core.model.dataset.DatasetInformation;
 import java.util.LinkedHashMap;
 import web.diva.client.selectionmanager.Selection;
@@ -36,7 +35,7 @@ import web.diva.client.view.ButtonsMenu;
 import web.diva.client.view.HeaderLayout;
 import web.diva.client.view.InitImgs;
 import web.diva.client.selectionmanager.ModularizedListener;
-import web.diva.shared.beans.PCAImageResults;
+import web.diva.shared.beans.PCAImageResult;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -52,10 +51,10 @@ public class DivaMain implements EntryPoint {
     private final Label colGroup = new Label();
     private int datasetId;
     private ButtonsMenu btnMenue;
-    private final Map<String, Integer> datasetsNames = new TreeMap<String, Integer>();
+    private final TreeMap datasetsNames = new TreeMap();
     private LeftPanelView resultsTableView;
     private SaveDatasetDialog saveDs;
-    private final GreetingServiceAsync GWTService = GWT.create(GreetingService.class);
+    private final GreetingServiceAsync GWTClientService = GWT.create(GreetingService.class);
     private final ModularizedListener[] compponents = new ModularizedListener[2];
 
     private SomClustView hierarchicalClustering;
@@ -106,7 +105,7 @@ public class DivaMain implements EntryPoint {
             public void onChange(ChangeEvent event) {
                 if (header.getLb().getSelectedIndex() > 0) {
                     try {
-                        datasetId = datasetsNames.get(header.getLb().getItemText(header.getLb().getSelectedIndex()));
+                        datasetId = (Integer)datasetsNames.get(header.getLb().getItemText(header.getLb().getSelectedIndex()));
                         loadDataset(datasetId);
                     } catch (Exception e) {
                         Window.alert("exp " + e.getMessage());
@@ -222,7 +221,7 @@ public class DivaMain implements EntryPoint {
     private void getDatasetsList() {
         RootPanel.get("loaderImage").setVisible(true);
 //        busyTask(true);
-        GWTService.getAvailableDatasets(new AsyncCallback<Map<Integer, String>>() {
+        GWTClientService.getAvailableDatasets(new AsyncCallback<TreeMap<Integer, String>>() {
             @Override
             public void onFailure(Throwable caught) {
                 errorLabel.setText(SERVER_ERROR);
@@ -231,11 +230,12 @@ public class DivaMain implements EntryPoint {
             }
 
             @Override
-            public void onSuccess(Map<Integer, String> results) {
+            public void onSuccess(TreeMap results) {
                 errorLabel.setText("");
                 RootPanel.get("datasetInformation").setVisible(true);
-                for (int key : results.keySet()) {
-                    header.getLb().addItem(results.get(key));
+                for (Object o : results.keySet()) {
+                    int key = (Integer)o;
+                    header.getLb().addItem((String) results.get(key));
                     datasetsNames.put(results.get(key), key);
                 }
                 RootPanel.get("loaderImage").setVisible(false);
@@ -248,7 +248,7 @@ public class DivaMain implements EntryPoint {
     private void loadDataset(int datasetId) {
 //        RootPanel.get("loaderImage").setVisible(true);
         busyTask(true);
-        GWTService.loadDataset(datasetId,
+        GWTClientService.loadDataset(datasetId,
                 new AsyncCallback<DatasetInformation>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -279,8 +279,8 @@ public class DivaMain implements EntryPoint {
     private void runSomClustering(int datasetId, int linkage, int distanceMeasure) {
 //        RootPanel.get("loaderImage").setVisible(true);
         busyTask(true);
-        GWTService.computeSomClustering(datasetId, linkage, distanceMeasure,
-                new AsyncCallback<SomClusteringResults>() {
+        GWTClientService.computeSomClustering(datasetId, linkage, distanceMeasure,
+                new AsyncCallback<SomClusteringResult>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         errorLabel.setText(SERVER_ERROR);
@@ -290,22 +290,22 @@ public class DivaMain implements EntryPoint {
                     }
 
                     @Override
-                    public void onSuccess(SomClusteringResults result) {
+                    public void onSuccess(SomClusteringResult result) {
                         RootPanel.get("datasetInformation").setVisible(true);
                         errorLabel.setText("");
                         hierarchicalClustering = new SomClustView(result, selectionManager);
                         RootPanel.get("SomClusteringResults").clear();
-                        RootPanel.get("SomClusteringResults").add(hierarchicalClustering.asWidget());
+                        RootPanel.get("SomClusteringResults").add(hierarchicalClustering.componentView());
                         generateHeatMap(hierarchicalClustering.getIndexer(), hierarchicalClustering.getColIndexer());
                     }
                 });
 
     }
 
-    private void generateHeatMap(List<String> indexers, List<String> colIndexer) {
+    private void generateHeatMap(ArrayList<String>indexers, ArrayList<String> colIndexer) {
 //        RootPanel.get("loaderImage").setVisible(true);
-        GWTService.computeHeatmap(datasetId, indexers, colIndexer,
-                new AsyncCallback<HeatMapImgResult>() {
+        GWTClientService.computeHeatmap(datasetId, indexers, colIndexer,
+                new AsyncCallback<HeatMapImageResult>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         errorLabel.setText(SERVER_ERROR);
@@ -315,7 +315,7 @@ public class DivaMain implements EntryPoint {
                     }
 
                     @Override
-                    public void onSuccess(HeatMapImgResult result) {
+                    public void onSuccess(HeatMapImageResult result) {
                         RootPanel.get("datasetInformation").setVisible(true);
                         errorLabel.setText("");
                         hierarchicalClustering.setImge(result);
@@ -328,8 +328,8 @@ public class DivaMain implements EntryPoint {
     private void viewLineChart(int datasetId) {
 //        RootPanel.get("loaderImage").setVisible(true);
         busyTask(true);
-        GWTService.computeLineChart(datasetId, RootPanel.get("LineChartResults").getOffsetWidth(), 300.0,
-                new AsyncCallback<LineChartResults>() {
+        GWTClientService.computeLineChart(datasetId, RootPanel.get("LineChartResults").getOffsetWidth(), 300.0,
+                new AsyncCallback<LineChartResult>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         errorLabel.setText(SERVER_ERROR);
@@ -339,10 +339,10 @@ public class DivaMain implements EntryPoint {
                     }
 
                     @Override
-                    public void onSuccess(LineChartResults result) {
+                    public void onSuccess(LineChartResult result) {
                         RootPanel.get("datasetInformation").setVisible(true);
                         errorLabel.setText("");
-                        LineChartComp linechart = new LineChartComp(result, selectionManager, GWTService, initImgs.getlCImg());
+                        LineChartComp linechart = new LineChartComp(result, selectionManager, GWTClientService, initImgs.getlCImg());
                         compponents[0] = linechart;
                         RootPanel.get("LineChartResults").clear();
                         RootPanel.get("LineChartResults").add(linechart.getLayout());
@@ -357,8 +357,8 @@ public class DivaMain implements EntryPoint {
         this.pcaII = pcaII;
 //        RootPanel.get("loaderImage").setVisible(true);
         busyTask(true);
-        GWTService.computePCA(datasetId, pcaI, pcaII,
-                new AsyncCallback<PCAImageResults>() {
+        GWTClientService.computePCA(datasetId, pcaI, pcaII,
+                new AsyncCallback<PCAImageResult>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         errorLabel.setText(SERVER_ERROR);
@@ -368,10 +368,10 @@ public class DivaMain implements EntryPoint {
                     }
 
                     @Override
-                    public void onSuccess(PCAImageResults result) {
+                    public void onSuccess(PCAImageResult result) {
                         errorLabel.setText("");
                         RootPanel.get("datasetInformation").setVisible(true);
-                        pca = new PCAPlot(result, selectionManager, GWTService);
+                        pca = new PCAPlot(result, selectionManager, GWTClientService);
                         compponents[1] = (pca);
                         RootPanel.get("PCAChartResults").clear();
                         RootPanel.get("PCAChartResults").add(pca.getScatterPlotLayout());
@@ -383,7 +383,7 @@ public class DivaMain implements EntryPoint {
 
     private void viewRankTables(int datasetId, String perm, String seed, String[] colGropNames, String log2) {
         RootPanel.get("loaderImage").setVisible(true);
-        GWTService.computeRank(datasetId, perm, seed, colGropNames, log2,
+        GWTClientService.computeRank(datasetId, perm, seed, colGropNames, log2,
                 new AsyncCallback<RankResult>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -426,7 +426,7 @@ public class DivaMain implements EntryPoint {
         if (test) {
 //            RootPanel.get("loaderImage").setVisible(true);
             busyTask(true);
-            GWTService.activateGroups(datasetId, rowGroups, colGroups,
+            GWTClientService.activateGroups(datasetId, rowGroups, colGroups,
                     new AsyncCallback<DatasetInformation>() {
                         @Override
                         public void onFailure(Throwable caught) {
@@ -457,7 +457,7 @@ public class DivaMain implements EntryPoint {
 
     private void exportData(final int datasetId, String rowGroup) {
         busyTask(true);
-        GWTService.exportData(datasetId, rowGroup,
+        GWTClientService.exportData(datasetId, rowGroup,
                 new AsyncCallback<String>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -484,7 +484,7 @@ public class DivaMain implements EntryPoint {
     private void createRowGroup(final int datasetId, String name, String color, String type, int[] selectedRows) {
 //        RootPanel.get("loaderImage").setVisible(true);
         busyTask(true);
-        GWTService.createRowGroup(datasetId, name, color, type, selectedRows,
+        GWTClientService.createRowGroup(datasetId, name, color, type, selectedRows,
                 new AsyncCallback<Boolean>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -510,7 +510,7 @@ public class DivaMain implements EntryPoint {
     private void createColGroup(final int datasetId, String name, String color, String[] selection, String type) {
 //        RootPanel.get("loaderImage").setVisible(true);
         busyTask(true);
-        GWTService.createColGroup(datasetId, name, color, type, selection,
+        GWTClientService.createColGroup(datasetId, name, color, type, selection,
                 new AsyncCallback<Boolean>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -533,7 +533,7 @@ public class DivaMain implements EntryPoint {
     private void saveDataset(String name) {
 //        RootPanel.get("loaderImage").setVisible(true);
         busyTask(true);
-        GWTService.saveDataset(datasetId, name,
+        GWTClientService.saveDataset(datasetId, name,
                 new AsyncCallback<Integer>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -556,7 +556,7 @@ public class DivaMain implements EntryPoint {
     private void createSubDataset(String name, int[] selectedRows) {
 //        RootPanel.get("loaderImage").setVisible(true);
         busyTask(true);
-        GWTService.createSubDataset(name, selectedRows,
+        GWTClientService.createSubDataset(name, selectedRows,
                 new AsyncCallback<Integer>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -579,7 +579,7 @@ public class DivaMain implements EntryPoint {
     private void updateApp(int datasetId) {
 ////        RootPanel.get("loaderImage").setVisible(true);
         busyTask(true);
-        GWTService.updateDatasetInfo(datasetId,
+        GWTClientService.updateDatasetInfo(datasetId,
                 new AsyncCallback<DatasetInformation>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -610,7 +610,7 @@ public class DivaMain implements EntryPoint {
 
     private void initGroupsPanel(final int panelType) {
         RootPanel.get("loaderImage").setVisible(true);
-        GWTService.getGroupsPanelData(datasetId, new AsyncCallback<LinkedHashMap<String, String>[]>() {
+        GWTClientService.getGroupsPanelData(datasetId, new AsyncCallback<LinkedHashMap<String, String>[]>() {
             @Override
             public void onFailure(Throwable caught) {
                 errorLabel.setText(SERVER_ERROR);
@@ -619,7 +619,7 @@ public class DivaMain implements EntryPoint {
             }
 
             @Override
-            public void onSuccess(LinkedHashMap<String, String>[] results) {
+            public void onSuccess(LinkedHashMap[] results) {
                 errorLabel.setText("");
                 if (panelType == 1)//activateGroupPanel
                 {
@@ -688,7 +688,7 @@ public class DivaMain implements EntryPoint {
 
     private void initExportPanel() {
         RootPanel.get("loaderImage").setVisible(true);
-        GWTService.getGroupsPanelData(datasetId, new AsyncCallback<LinkedHashMap<String, String>[]>() {
+        GWTClientService.getGroupsPanelData(datasetId, new AsyncCallback<LinkedHashMap<String, String>[]>() {
             @Override
             public void onFailure(Throwable caught) {
                 errorLabel.setText(SERVER_ERROR);
@@ -697,7 +697,7 @@ public class DivaMain implements EntryPoint {
             }
 
             @Override
-            public void onSuccess(LinkedHashMap<String, String>[] results) {
+            public void onSuccess(LinkedHashMap[] results) {
                 errorLabel.setText("");
                 if (exportGroupPanel == null) {
                     exportGroupPanel = new ActivateGroupPanel(results[0], null);
@@ -735,7 +735,7 @@ public class DivaMain implements EntryPoint {
 
     private void initPcaPanel() {
         RootPanel.get("loaderImage").setVisible(true);
-        GWTService.getPcaColNames(datasetId, new AsyncCallback<String[]>() {
+        GWTClientService.getPcaColNames(datasetId, new AsyncCallback<String[]>() {
             @Override
             public void onFailure(Throwable caught) {
                 errorLabel.setText(SERVER_ERROR);
@@ -776,7 +776,7 @@ public class DivaMain implements EntryPoint {
     private void initDsPanel(final int[] selectedRows, final int[] selectedCol) {
 
         RootPanel.get("loaderImage").setVisible(true);
-        GWTService.getColNamesMaps(datasetId, new AsyncCallback<LinkedHashMap<String, String>>() {
+        GWTClientService.getColNamesMaps(datasetId, new AsyncCallback<LinkedHashMap<String, String>>() {
             @Override
             public void onFailure(Throwable caught) {
                 errorLabel.setText(SERVER_ERROR);
@@ -785,7 +785,7 @@ public class DivaMain implements EntryPoint {
             }
 
             @Override
-            public void onSuccess(LinkedHashMap<String, String> results) {
+            public void onSuccess(LinkedHashMap results) {
                 errorLabel.setText("");
                 if (dsPanel == null) {
                     dsPanel = new DatasetPanel(results, selectedRows, selectedCol);
@@ -903,7 +903,7 @@ public class DivaMain implements EntryPoint {
             }
 
             if (hierarchicalClustering != null) {
-                hierarchicalClustering.asWidget().disable();
+                hierarchicalClustering.componentView().disable();
             }
 
         } else {
@@ -924,7 +924,7 @@ public class DivaMain implements EntryPoint {
                 pca.enable(true);
             }
             if (hierarchicalClustering != null) {
-                hierarchicalClustering.asWidget().enable();
+                hierarchicalClustering.componentView().enable();
             }
 
         }

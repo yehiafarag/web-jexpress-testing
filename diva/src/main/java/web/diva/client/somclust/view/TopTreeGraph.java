@@ -5,12 +5,10 @@
  */
 package web.diva.client.somclust.view;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Widget;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 import java.util.HashMap;
 import org.thechiselgroup.choosel.protovis.client.PV;
@@ -29,7 +27,7 @@ import web.diva.client.selectionmanager.SelectionManager;
 import web.diva.shared.CustomNode;
 import web.diva.shared.Unit;
 import web.diva.shared.UnitDomAdapter;
-import web.diva.shared.beans.SomClusteringResults;
+import web.diva.shared.beans.SomClusteringResult;
 
 /**
  *
@@ -40,7 +38,7 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
     private Unit root;
     private SelectionManager selectionManager;
     private HashMap<String, CustomNode> nodesMap;
-    private List<String> indexers = new ArrayList<String>();
+    private ArrayList<String> indexers = new ArrayList<String>();
     private boolean initIndexer = true;
     private double height;
     private double width;
@@ -53,7 +51,7 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
 
     }
 
-    public List<String> getIndexers() {
+    public ArrayList<String> getIndexers() {
         return indexers;
     }
 
@@ -62,7 +60,7 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
         return this;
     }
 
-    public TopTreeGraph(SomClusteringResults results, String orintation, SelectionManager selectionManager, double height, double width) {
+    public TopTreeGraph(SomClusteringResult results, String orintation, SelectionManager selectionManager, double height, double width) {
 
         this.datasetId = results.getDatasetId();
         this.root = results.getTopTree();
@@ -92,6 +90,7 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
         nodesMap = null;
         selectionManager = null;
         vis = null;
+        indexers = null; 
     }
     PVEventHandler nodeMouseClickHandler = new PVEventHandler() {
         @Override
@@ -211,4 +210,5 @@ public class TopTreeGraph extends ProtovisWidget implements IsSerializable {
             vis.render();
         }
     }
+      
 }

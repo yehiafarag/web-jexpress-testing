@@ -174,5 +174,7 @@ public final class RankTable extends ModularizedListener implements SelectionCha
         selectionManager.setSelectedRows(datasetId, selection);
 
     }
+    @Override
+    public void remove(){}
 
 }

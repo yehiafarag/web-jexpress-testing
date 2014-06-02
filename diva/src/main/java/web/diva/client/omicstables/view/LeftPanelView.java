@@ -101,7 +101,7 @@ public class LeftPanelView extends SectionStack {
             temLGF.setWidth("8px");
             temLGF.setIconVAlign("center");
             temLGF.setType(ListGridFieldType.IMAGE);
-            temLGF.setIcon(datasetInfo.getGeneTabelData()[z + 2][0]);
+            temLGF.setIcon(datasetInfo.getOmicsTabelData()[z + 2][0]);
             fields[z + 3] = temLGF;
         }
         geneTable.setFields(fields);

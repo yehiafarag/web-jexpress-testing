@@ -7,10 +7,10 @@ package web.diva.client.somclust.view;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.smartgwt.client.widgets.layout.HLayout;
-import java.util.List;
+import java.util.ArrayList;
 import web.diva.client.selectionmanager.SelectionManager;
-import web.diva.shared.beans.HeatMapImgResult;
-import web.diva.shared.beans.SomClusteringResults;
+import web.diva.shared.beans.HeatMapImageResult;
+import web.diva.shared.beans.SomClusteringResult;
 
 /**
  *
@@ -18,12 +18,12 @@ import web.diva.shared.beans.SomClusteringResults;
  */
 public class SomClustComp extends HLayout {
 
-    private final SideTreeGraph sideTree;
-    private final TopTreeGraph topTree;
-    private List<String> indexer;
-    private List<String> colIndexer;
+    private  SideTreeGraph sideTree;
+    private  TopTreeGraph topTree;
+    private ArrayList<String> indexer;
+    private ArrayList<String> colIndexer;
     private final int width;
-    private final VerticalPanel vp;
+    private  VerticalPanel vp;
 
     public double getCurrentWidth() {
         return width;
@@ -36,11 +36,11 @@ public class SomClustComp extends HLayout {
     private final double height = 550;
     private double sideTreeHeight;
 
-    public List<String> getIndexer() {
+    public ArrayList<String> getIndexer() {
         return indexer;
     }
 
-    public SomClustComp(SomClusteringResults results, SelectionManager selectionManager) {
+    public SomClustComp(SomClusteringResult results, SelectionManager selectionManager) {
         this.setShowDragPlaceHolder(false);
         this.setBorder("1px solid black");
         width = (RootPanel.get("SomClusteringResults").getOffsetWidth() - 50);
@@ -65,7 +65,7 @@ public class SomClustComp extends HLayout {
 
     }
 
-    public void setImage(final HeatMapImgResult imageResult) {
+    public void setImage(final HeatMapImageResult imageResult) {
         HeatMapGraph hmg = new HeatMapGraph(imageResult, (width), sideTreeHeight);
         vp.add(hmg);
         colIndexer = null;
@@ -75,7 +75,7 @@ public class SomClustComp extends HLayout {
 
     }
 
-    public List<String> getColIndexer() {
+    public ArrayList<String> getColIndexer() {
         return colIndexer;
     }
 
@@ -83,5 +83,12 @@ public class SomClustComp extends HLayout {
         sideTree.clearSelection();
         topTree.clearSelection();
     }
+public void remove(){
+      sideTree = null;
+    topTree = null;
+    indexer = null;
+    colIndexer = null;    
+     vp = null;
 
+}
 }

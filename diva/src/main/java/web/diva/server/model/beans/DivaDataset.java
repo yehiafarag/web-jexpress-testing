@@ -6,11 +6,9 @@
 
 package web.diva.server.model.beans;
 
-import com.google.gwt.dev.util.collect.HashMap;
 import java.io.Serializable;
 import java.util.Map;
 import no.uib.jexpress_modularized.core.dataset.Dataset;
-import web.diva.shared.beans.SomClusteringResults;
 
 /**
  *

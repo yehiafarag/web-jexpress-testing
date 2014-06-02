@@ -17,7 +17,7 @@ import java.util.HashMap;
  *
  * @author Yehia Farag
  */
-public class SelectionManager implements IsSerializable {
+public class SelectionManager  {
 
     /**
      * Column selections per dataset
@@ -132,7 +132,7 @@ public class SelectionManager implements IsSerializable {
             }
         };
         RootPanel.get("loaderImage").setVisible(true);
-        timer.scheduleRepeating(Math.min(100, size));
+        timer.scheduleRepeating(500);
 
     }
 
@@ -151,25 +151,33 @@ public class SelectionManager implements IsSerializable {
             selectionChangeListeners.put(datasetId, new ArrayList<SelectionChangeListener>());
         }
         List<SelectionChangeListener> listeners = selectionChangeListeners.get(datasetId);
+        for(SelectionChangeListener l:listeners){
+           if( l.getClass().equals(listener.getClass())){
+               l.remove();
+               listeners.remove(l);
+               break;
+           }
+        }
         if (!listeners.contains(listener)) {    // dont keep multiple entries for the same listener
             listeners.add(listener);
         }
+        
     }
 
-//    /**
-//     * Remove SelectionChangeListener from dataset
-//     *
-//     * @param datasetId - dataset to stop listening to
-//     * @param listener
-//     */
-//    public void removeSelectionChangeListener(int datasetId, SelectionChangeListener listener) {
-//        if (datasetId == 0 || listener == null) {
-//            throw new IllegalArgumentException("Dataset or listener is null");
-//        }
-//        if (!selectionChangeListeners.containsKey(datasetId)) {
-//            return;
-//        }
-//
-//        selectionChangeListeners.get(datasetId).remove(listener);
-//    }
+    /**
+     * Remove SelectionChangeListener from dataset
+     *
+     * @param datasetId - dataset to stop listening to
+     * @param listener
+     */
+    public void removeSelectionChangeListener(int datasetId, SelectionChangeListener listener) {
+        if (datasetId == 0 || listener == null) {
+            throw new IllegalArgumentException("Dataset or listener is null");
+        }
+        if (!selectionChangeListeners.containsKey(datasetId)) {
+            return;
+        }
+
+        selectionChangeListeners.get(datasetId).remove(listener);
+    }
 }

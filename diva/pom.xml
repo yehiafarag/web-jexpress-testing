@@ -19,7 +19,7 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gwt.version>2.5.1</gwt.version>
+        <gwt.version>2.6.0</gwt.version>
         <runTarget>index.html</runTarget>
     </properties>
     <dependencies>
@@ -97,8 +97,13 @@
             <version>4.0</version> 
             
         </dependency>
-                
-                
+        
+         <!--        <dependency>
+        <groupId>com.isomorphic.smartgwt.lgpl</groupId>
+        <artifactId>smartgwt-lgpl</artifactId>
+        <version>4.1-d20140115</version>
+    </dependency>
+    -->            
                 
         
          
