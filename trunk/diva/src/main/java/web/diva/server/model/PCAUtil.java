@@ -9,7 +9,7 @@ import java.util.TreeMap;
 import no.uib.jexpress_modularized.core.dataset.Group;
 import no.uib.jexpress_modularized.pca.computation.PcaCompute;
 import web.diva.server.model.beans.DivaDataset;
-import web.diva.shared.beans.PCAImageResults;
+import web.diva.shared.beans.PCAImageResult;
 import web.diva.shared.beans.PCAPoint;
 import web.diva.shared.beans.PCAResults;
 //import web.diva.shared.model.core.model.dataset.Group;
@@ -65,7 +65,7 @@ public class PCAUtil {
         return res;
     }
 
-    public Object[] getTooltips(PCAImageResults results, TreeMap<Integer, PCAPoint> pointList) {
+    public Object[] getTooltips(PCAImageResult results, TreeMap<Integer, PCAPoint> pointList) {
         PCAPoint[] indexeMap = new PCAPoint[pointList.size()];
         HashMap<String, String> xyName = new HashMap<String, String>();
         double xTicksNum = results.getMaxX() - results.getMinX();

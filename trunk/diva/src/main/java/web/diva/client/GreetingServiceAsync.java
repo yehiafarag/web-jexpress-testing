@@ -1,33 +1,32 @@
 package web.diva.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import web.diva.shared.beans.HeatMapImgResult;
-import web.diva.shared.beans.LineChartResults;
-import web.diva.shared.beans.PCAImageResults;
+import java.util.TreeMap;
+import web.diva.shared.beans.HeatMapImageResult;
+import web.diva.shared.beans.LineChartResult;
+import web.diva.shared.beans.PCAImageResult;
 import web.diva.shared.beans.RankResult;
-import web.diva.shared.beans.SomClusteringResults;
+import web.diva.shared.beans.SomClusteringResult;
 import web.diva.shared.model.core.model.dataset.DatasetInformation;
 
 /**
  * The async counterpart of <code>GreetingService</code>.
- * <HC>
- * <LC>
+ * 
  *
  */
 public interface GreetingServiceAsync {
 
-    public void getAvailableDatasets(AsyncCallback<Map<Integer, String>> datasetResults);
+    public void getAvailableDatasets(AsyncCallback<TreeMap<Integer,String>> datasetResults);
 
     public void loadDataset(int datasetId, AsyncCallback<DatasetInformation> asyncCallback);
 
-    public void computeLineChart(int datasetId,double w,double h, AsyncCallback<LineChartResults> asyncCallback);
+    public void computeLineChart(int datasetId,double w,double h, AsyncCallback<LineChartResult> asyncCallback);
 
-    public void computeSomClustering(int datasetId, int linkage, int distanceMeasure, AsyncCallback<SomClusteringResults> asyncCallback);
+    public void computeSomClustering(int datasetId, int linkage, int distanceMeasure, AsyncCallback<SomClusteringResult> asyncCallback);
 
-    public void computeHeatmap(int datasetId, List<String> indexer, List<String> colIndexer, AsyncCallback<HeatMapImgResult> asyncCallback);
+    public void computeHeatmap(int datasetId, ArrayList<String> indexer, ArrayList<String> colIndexer, AsyncCallback<HeatMapImageResult> asyncCallback);
 
     public void computeRank(int datasetId, String perm, String seed, String[] colGropNames, String log2, AsyncCallback<RankResult> asyncCallback);
 
@@ -53,8 +52,8 @@ public interface GreetingServiceAsync {
 
     public void updateLineChartSelection(int datasetId, int[] selection,double w,double h, AsyncCallback<String> asyncCallback);
 
-    public void updatePCASelection(int datasetId,int[]subSelectionData, int[] selection, boolean zoom, boolean selectAll,double w,double h, AsyncCallback<PCAImageResults> asyncCallback);
+    public void updatePCASelection(int datasetId,int[]subSelectionData, int[] selection, boolean zoom, boolean selectAll,double w,double h, AsyncCallback<PCAImageResult> asyncCallback);
 
-    public void computePCA(int datasetId, int comI, int comII, AsyncCallback<PCAImageResults> asyncCallback);
+    public void computePCA(int datasetId, int comI, int comII, AsyncCallback<PCAImageResult> asyncCallback);
 
 }

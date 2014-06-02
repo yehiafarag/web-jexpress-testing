@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import web.diva.shared.beans.HeatMapImgResult;
+import web.diva.shared.beans.HeatMapImageResult;
 
 /**
  *
@@ -23,7 +23,7 @@ public class HeatMapGraph extends VerticalPanel {
     private final String width;
     private final Image image;
 
-    public HeatMapGraph(final HeatMapImgResult imageResult, int width, double height) {
+    public HeatMapGraph(final HeatMapImageResult imageResult, int width, double height) {
         this.image = new Image(imageResult.getImgString());
         this.width = ((double) width / 3.0) + "px";
         this.image.setWidth(this.width);

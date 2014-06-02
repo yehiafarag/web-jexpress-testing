@@ -8,24 +8,24 @@ package web.diva.server.model;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.TreeMap;
 import no.uib.jexpress_modularized.core.dataset.Group;
 import no.uib.jexpress_modularized.core.model.Selection;
 import no.uib.jexpress_modularized.rank.computation.ComputeRank;
 import no.uib.jexpress_modularized.rank.computation.RPResult;
-import web.diva.server.dal.DB;
+import web.diva.server.filesystem.DB;
 import web.diva.server.model.beans.DivaDataset;
-import web.diva.shared.beans.HeatMapImgResult;
-import web.diva.shared.beans.LineChartResults;
-import web.diva.shared.beans.PCAImageResults;
+import web.diva.shared.beans.HeatMapImageResult;
+import web.diva.shared.beans.LineChartResult;
+import web.diva.shared.beans.PCAImageResult;
 import web.diva.shared.beans.PCAPoint;
 import web.diva.shared.beans.PCAResults;
 import web.diva.shared.beans.RankResult;
-import web.diva.shared.beans.SomClusteringResults;
+import web.diva.shared.beans.SomClusteringResult;
 import web.diva.shared.model.core.model.dataset.DatasetInformation;
 
 /**
@@ -50,8 +50,8 @@ public class Computing {
      *this method is used to get the available datasets from file system layer (to be replaced by DB later) 
      * 
      */
-    public TreeMap<Integer, String> getAvailableDatasetsMap(String path) {
-        TreeMap<Integer, String> datasetsMap = database.getAvailableDatasets(path);
+    public TreeMap<Integer,String> getAvailableDatasetsMap(String path) {
+        TreeMap<Integer,String> datasetsMap = database.getAvailableDatasets(path);
         return datasetsMap;
     }
     /*
@@ -59,8 +59,8 @@ public class Computing {
      * 
      */
 
-    public Set< String> getAvailableComputingFileList(String path) {
-        Set<String> datasetsMap = database.getAvailableComputingFileList(path);
+    public HashSet< String> getAvailableComputingFileList(String path) {
+        HashSet<String> datasetsMap = database.getAvailableComputingFileList(path);
         return datasetsMap;
     }
 
@@ -147,7 +147,7 @@ public class Computing {
         for (int x = 0; x < divaDataset.getColumnIds().length; x++) {
             colNamesMap.put("" + x, divaDataset.getColumnIds()[x]);
         }
-        datasetInfo.setGeneTabelData(geneTableData);
+        datasetInfo.setOmicsTabelData(geneTableData);
         datasetInfo.setRowGroupsNames(rowGroupsNames);
         datasetInfo.setColNamesMap(colNamesMap);
         return datasetInfo;
@@ -284,6 +284,11 @@ public class Computing {
         return divaDataset;
     }
 
+    /*
+     *
+     *this method is to create coloumns  groups
+     *
+     */
     public DivaDataset createColGroup(int datasetId, String name, String color, String type, String[] strSelection, DivaDataset divaDataset) {
         if (strSelection == null || strSelection.length == 0) {
             return null;
@@ -435,7 +440,7 @@ public class Computing {
      */
     private final SOMClustUtil somClustUtil = new SOMClustUtil();
 
-    public SomClusteringResults computeSomClustering(int datasetId, int linkage, int distanceMeasure, DivaDataset divaDataset) throws IllegalArgumentException {
+    public SomClusteringResult computeSomClustering(int datasetId, int linkage, int distanceMeasure, DivaDataset divaDataset) throws IllegalArgumentException {
         String linkageStr = "WPGMA";
         if (linkage == 0) {
             linkageStr = "SINGLE";
@@ -447,7 +452,7 @@ public class Computing {
             linkageStr = "COMPLETE";
         }
 
-        SomClusteringResults results = somClustUtil.initHC(divaDataset, distanceMeasure, linkageStr, true, divaDataset.getId());
+        SomClusteringResult results = somClustUtil.initHC(divaDataset, distanceMeasure, linkageStr, true, divaDataset.getId());
 
         results = somClustUtil.initSelectedNodes(results);
         HashMap<String, String> toolTipsMap = somClustUtil.initToolTips(results.getSideTree(), divaDataset.getGeneIndexNameMap());
@@ -462,9 +467,9 @@ public class Computing {
     /*
      * this method to compute the clustering heatmap based on indexes from the clustering tree
      */
-    public HeatMapImgResult computeHeatmap(int datasetId, List<String> indexer, List<String> colIndexer, DivaDataset divaDataset, String path, String hmImage) {
-        HMGen hmGenerator = new HMGen(path, divaDataset, indexer, colIndexer, hmImage);
-        HeatMapImgResult imge = hmGenerator.getHeatMapResults();
+    public HeatMapImageResult computeHeatmap(int datasetId, List<String> indexer, List<String> colIndexer, DivaDataset divaDataset, String path, String hmImage) {
+        HeatMapGenerator hmGenerator = new HeatMapGenerator(path, divaDataset, indexer, colIndexer, hmImage);
+        HeatMapImageResult imge = hmGenerator.getHeatMapResults();
         return imge;
     }
 
@@ -473,8 +478,8 @@ public class Computing {
     /*
      *this method to compute linechart 
      */
-    public LineChartResults computeLineChart(int datasetId, double w, double h, DivaDataset divaDataset, String path, String lineChartImage) {
-        LineChartResults lcResults = new LineChartResults();
+    public LineChartResult computeLineChart(int datasetId, double w, double h, DivaDataset divaDataset, String path, String lineChartImage) {
+        LineChartResult lcResults = new LineChartResult();
         lcResults.setDatasetId(datasetId);
         Number[] pointsArr[] = new Number[divaDataset.getDataLength()][divaDataset.getDataWidth()];
         for (int x = 0; x < divaDataset.getMembersMap().size(); x++) {
@@ -518,8 +523,8 @@ public class Computing {
      * this method for pca update selection
      */
 
-    public PCAImageResults updatePCASelection(int datasetId, int[] subSelectionData, int[] selection, boolean zoom, boolean selectAll, double w, double h, DivaDataset divaDataset, PCAResults pCAResult, String path, String pcaChartImage) {
-        PCAImageResults pcaImgResults = pcaGen.generateChart(path, pCAResult, subSelectionData, selection, zoom, selectAll, pcaChartImage, w, h, divaDataset);
+    public PCAImageResult updatePCASelection(int datasetId, int[] subSelectionData, int[] selection, boolean zoom, boolean selectAll, double w, double h, DivaDataset divaDataset, PCAResults pCAResult, String path, String pcaChartImage) {
+        PCAImageResult pcaImgResults = pcaGen.generateChart(path, pCAResult, subSelectionData, selection, zoom, selectAll, pcaChartImage, w, h, divaDataset);
         pcaImgResults.setDatasetId(datasetId);
         Object[] obj = pcaUtil.getTooltips(pcaImgResults, pCAResult.getPoints());
         HashMap<String, String> tooltips = (HashMap<String, String>) obj[0];
@@ -573,15 +578,15 @@ public class Computing {
     /*
      * this method is to store somClust computing results
      */
-    public void saveSomClustResult(String id, SomClusteringResults results) {
+    public void saveSomClustResult(String id, SomClusteringResult results) {
         database.saveSomClustResult(id, results);
     }
     /*
      * this method is to get somClust computing results
      */
 
-    public SomClusteringResults getSomClustResult(String id) {
-        SomClusteringResults results = database.getSomClustResult(id);
+    public SomClusteringResult getSomClustResult(String id) {
+        SomClusteringResult results = database.getSomClustResult(id);
         return results;
     }
 

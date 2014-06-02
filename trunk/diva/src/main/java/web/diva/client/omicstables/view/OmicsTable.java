@@ -146,13 +146,13 @@ public final class OmicsTable extends ModularizedListener implements SelectionCh
 
     private ListGridRecord[] getRecodList(DatasetInformation datasetInfo) {
 
-        ListGridRecord[] recordsInit = new ListGridRecord[datasetInfo.getGeneTabelData()[0].length];
+        ListGridRecord[] recordsInit = new ListGridRecord[datasetInfo.getOmicsTabelData()[0].length];
         for (int x = 0; x < recordsInit.length; x++) {
             ListGridRecord record = new ListGridRecord();
-            record.setAttribute("gene", datasetInfo.getGeneTabelData()[0][x]);
+            record.setAttribute("gene", datasetInfo.getOmicsTabelData()[0][x]);
             for (int c = 0; c < datasetInfo.getRowGroupsNames().length; c++) {
-                if (!datasetInfo.getGeneTabelData()[c + 2][x].equalsIgnoreCase("#FFFFFF")) {
-                    record.setAttribute(datasetInfo.getRowGroupsNames()[c][0], datasetInfo.getGeneTabelData()[c + 2][x]);//  record.setAttribute(datasetInfo.getRowGroupsNames()[c], "b");// "<font color = " + datasetInfo.getGeneTabelData()[c + 2][x] + " >" + "&diams;" + "</font>");
+                if (!datasetInfo.getOmicsTabelData()[c + 2][x].equalsIgnoreCase("#FFFFFF")) {
+                    record.setAttribute(datasetInfo.getRowGroupsNames()[c][0], datasetInfo.getOmicsTabelData()[c + 2][x]);//  record.setAttribute(datasetInfo.getRowGroupsNames()[c], "b");// "<font color = " + datasetInfo.getOmicsTabelData()[c + 2][x] + " >" + "&diams;" + "</font>");
                 }
             }
             record.setAttribute("index", x);
@@ -233,4 +233,7 @@ public final class OmicsTable extends ModularizedListener implements SelectionCh
         this.colSelectionTable = colSelectionTable;
         selectionChanged(Selection.TYPE.OF_COLUMNS);
     }
+    
+    @Override
+    public void remove(){}
 }

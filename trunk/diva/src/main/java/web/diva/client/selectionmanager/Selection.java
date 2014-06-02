@@ -9,7 +9,6 @@
  */
 package web.diva.client.selectionmanager;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -19,7 +18,7 @@ import java.util.Iterator;
  *
  * @author pawels
  */
-public class Selection implements IsSerializable {
+public class Selection  {
 
     public enum TYPE {
 

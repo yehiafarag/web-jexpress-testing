@@ -15,16 +15,18 @@ import web.diva.client.GreetingServiceAsync;
 import web.diva.client.selectionmanager.ModularizedListener;
 import web.diva.client.selectionmanager.Selection;
 import web.diva.client.selectionmanager.SelectionManager;
-import web.diva.shared.beans.LineChartResults;
+import web.diva.shared.beans.LineChartResult;
 
 /**
  *
  * @author Yehia Farag
  */
 public class LineChartComp extends ModularizedListener {
-    
     private SelectionManager selectionManager;
-    
+    private VerticalPanel layout;
+    private Image image;
+    private GreetingServiceAsync greetingService;
+    private int height = 300;
     @Override
     public void selectionChanged(Selection.TYPE type) {
         if (type == Selection.TYPE.OF_ROWS) {
@@ -35,89 +37,84 @@ public class LineChartComp extends ModularizedListener {
             }
         }
     }
-
-    private VerticalPanel layout;
-     private Image image;
-     private final GreetingServiceAsync greetingService;
-     private int height = 300;
-    
-    public LineChartComp(LineChartResults results, SelectionManager selectionManager,GreetingServiceAsync greetingService,Image img) {
-        this.greetingService =  greetingService;
+    public LineChartComp(LineChartResult results, SelectionManager selectionManager, GreetingServiceAsync greetingService, Image img) {
+        this.greetingService = greetingService;
         try {
-            
+
             this.classtype = 3;
             this.datasetId = results.getDatasetId();
             this.components.add(LineChartComp.this);
             this.selectionManager = selectionManager;
+           
             this.selectionManager.addSelectionChangeListener(datasetId, LineChartComp.this);
-            
             layout = new VerticalPanel();
-            
-            if(300.0 < RootPanel.get("LineChartResults").getOffsetHeight())
+            if (300.0 < RootPanel.get("LineChartResults").getOffsetHeight()) {
                 height = RootPanel.get("LineChartResults").getOffsetHeight();
+            }
             layout.setHeight("" + height + "px");
             layout.setWidth("" + RootPanel.get("LineChartResults").getOffsetWidth() + "px");
             layout.setBorderWidth(1);
-          
-            
-            Selection sel = selectionManager.getSelectedRows(datasetId);            
+
+            Selection sel = selectionManager.getSelectedRows(datasetId);
             if (sel != null) {
                 int[] selectedRows = sel.getMembers();
                 this.updateSelection(selectedRows);
-            }else{
+            } else {
                 this.image = img;
                 layout.add(image);
-            
+
             }
-           
-            
+
         } catch (Exception exp) {
             Window.alert(exp.getMessage());
         }
-        
-    }
-    
-    private void updateSelection(int[] selection) {
-        if ((selection != null && selection.length > 0 )) {       
-            if(300.0 < RootPanel.get("LineChartResults").getOffsetHeight())
-                height = RootPanel.get("LineChartResults").getOffsetHeight();
-             greetingService.updateLineChartSelection(datasetId,selection,RootPanel.get("LineChartResults").getOffsetWidth(),height, new AsyncCallback<String>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        RootPanel.get("loaderImage").setVisible(false);
-                    }
 
-                    @Override
-                    public void onSuccess(String result) {
-                        initImage(result);
-                        RootPanel.get("loaderImage").setVisible(false);
-                    }
-                });
-        }
-        
     }
-    
+    private void updateSelection(int[] selection) {
+        if ((selection != null && selection.length > 0)) {
+            if (300.0 < RootPanel.get("LineChartResults").getOffsetHeight()) {
+                height = RootPanel.get("LineChartResults").getOffsetHeight();
+            }
+            greetingService.updateLineChartSelection(datasetId, selection, RootPanel.get("LineChartResults").getOffsetWidth(), height, new AsyncCallback<String>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    RootPanel.get("loaderImage").setVisible(false);
+                }
+
+                @Override
+                public void onSuccess(String result) {
+                    initImage(result);
+                    RootPanel.get("loaderImage").setVisible(false);
+                }
+            });
+        }
+
+    }
     public VerticalPanel getLayout() {
         return layout;
     }
-    
-    private void initImage(String url){ 
-        if(image != null ){
-        layout.remove(image);
-        image = null;
+    private void initImage(String url) {
+        if (image != null) {
+            layout.remove(image);
+            image = null;
         }
         image = new Image(url);
-         if(300.0 < RootPanel.get("LineChartResults").getOffsetHeight())
-                height = RootPanel.get("LineChartResults").getOffsetHeight();
-        image.setHeight(""+height+"px");
-        image.setWidth(RootPanel.get("LineChartResults").getOffsetWidth()+"px");
+        if (300.0 < RootPanel.get("LineChartResults").getOffsetHeight()) {
+            height = RootPanel.get("LineChartResults").getOffsetHeight();
+        }
+        image.setHeight("" + height + "px");
+        image.setWidth(RootPanel.get("LineChartResults").getOffsetWidth() + "px");
         layout.add(image);
         layout.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         layout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-    
-    }
 
-    
-    
-    
+    }
+    @Override
+    public void remove() {
+        selectionManager.removeSelectionChangeListener(datasetId, LineChartComp.this);
+        layout = null;
+        image = null;
+        greetingService = null;
+        selectionManager = null;
+    }
 }

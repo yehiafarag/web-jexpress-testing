@@ -19,7 +19,7 @@ import no.uib.jexpress_modularized.somclust.model.ClusterResults;
 import no.uib.jexpress_modularized.somclust.model.Node;
 import web.diva.shared.CustomNode;
 import web.diva.shared.Unit;
-import web.diva.shared.beans.SomClusteringResults;
+import web.diva.shared.beans.SomClusteringResult;
 
 /**
  *
@@ -33,7 +33,7 @@ public class SOMClustUtil {
         return nodesMap;
     }
 
-    public SomClusteringResults initSelectedNodes(SomClusteringResults results) {
+    public SomClusteringResult initSelectedNodes(SomClusteringResult results) {
         HashMap<String, CustomNode> tNodesMap = results.getSideTree().getNodesMap();
         HashMap<String, CustomNode> updatedNodesMap = results.getSideTree().getNodesMap();
         for (String key : tNodesMap.keySet()) {
@@ -59,7 +59,7 @@ public class SOMClustUtil {
         return results;
     }
 
-    private SomClusteringResults initTopSelectedNodes(SomClusteringResults results) {
+    private SomClusteringResult initTopSelectedNodes(SomClusteringResult results) {
         HashMap<String, CustomNode> tNodesMap = results.getTopTree().getNodesMap();
         HashMap<String, CustomNode> updatedNodesMap = results.getTopTree().getNodesMap();
         for (String key : tNodesMap.keySet()) {
@@ -81,7 +81,7 @@ public class SOMClustUtil {
         return results;
     }
 
-    public SomClusteringResults initHC(Dataset dataset, int distance, String linkageType, boolean clusterColumn, int datasetId) {
+    public SomClusteringResult initHC(Dataset dataset, int distance, String linkageType, boolean clusterColumn, int datasetId) {
         ClusterParameters parameter = new ClusterParameters();
         parameter.setDistance(distance);
         parameter.setClusterSamples(clusterColumn);
@@ -98,7 +98,7 @@ public class SOMClustUtil {
         parameter.setLink(link);
         SOMClustCompute som = new SOMClustCompute(dataset, parameter);
         ClusterResults results = som.runClustering();
-        SomClusteringResults somClustResults = new SomClusteringResults();
+        SomClusteringResult somClustResults = new SomClusteringResult();
         if (clusterColumn) {
             Unit topTree = initTopTree(results.getColumnDendrogramRootNode());
             somClustResults.setTopTree(topTree);
@@ -236,8 +236,9 @@ public class SOMClustUtil {
         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
         otherSymbols.setGroupingSeparator('.');
         df = new DecimalFormat("#.##", otherSymbols);
-        for (String key : results.getNodesMap().keySet()) {
-            CustomNode cNode = results.getNodesMap().get(key);
+        for (Object o : results.getNodesMap().keySet()) {
+            String key = (String)o;
+            CustomNode cNode =(CustomNode) results.getNodesMap().get(key);
             String value = "";
             if (cNode.getName().contains("gene")) {
                 value = "Merged at " + df.format(cNode.getValue()) + " #Nodes : " + (cNode.getSelectedNodes().length);
@@ -254,8 +255,9 @@ public class SOMClustUtil {
         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
         otherSymbols.setGroupingSeparator('.');
         df = new DecimalFormat("#.##", otherSymbols);
-        for (String key : results.getNodesMap().keySet()) {
-            CustomNode cNode = results.getNodesMap().get(key);
+        for (Object o: results.getNodesMap().keySet()) {
+            String key =(String)o;
+            CustomNode cNode = (CustomNode)results.getNodesMap().get(key);
             String value = "";
             if (cNode.getName().contains("col")) {
                 value = "";

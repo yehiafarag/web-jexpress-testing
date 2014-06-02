@@ -6,12 +6,12 @@ package web.diva.client.somclust.view;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.smartgwt.client.widgets.layout.HLayout;
-import java.util.List;
+import java.util.ArrayList;
 import web.diva.client.selectionmanager.ModularizedListener;
 import web.diva.client.selectionmanager.Selection;
 import web.diva.client.selectionmanager.SelectionManager;
-import web.diva.shared.beans.HeatMapImgResult;
-import web.diva.shared.beans.SomClusteringResults;
+import web.diva.shared.beans.HeatMapImageResult;
+import web.diva.shared.beans.SomClusteringResult;
 
 /**
  *
@@ -19,20 +19,20 @@ import web.diva.shared.beans.SomClusteringResults;
  */
 public class SomClustView extends ModularizedListener implements IsSerializable {
 
-    private final SelectionManager selectionManager;
-    private final SomClustComp somClustCom;
-    private final List<String> indexer;
-    private final List<String> colIndexer;
+    private  SelectionManager selectionManager;
+    private  SomClustComp somClustCom;
+    private  ArrayList<String> indexer;
+    private  ArrayList<String> colIndexer;
 
-    public List<String> getColIndexer() {
+    public ArrayList<String> getColIndexer() {
         return colIndexer;
     }
 
-    public void setImge(HeatMapImgResult imgeResut) {
+    public void setImge(HeatMapImageResult imgeResut) {
         somClustCom.setImage(imgeResut);
     }
 
-    public SomClustView(SomClusteringResults somClusteringResults, SelectionManager selectionManager) {
+    public SomClustView(SomClusteringResult somClusteringResults, SelectionManager selectionManager) {
         somClustCom = new SomClustComp(somClusteringResults, selectionManager);
         this.classtype = 2;
         this.datasetId = somClusteringResults.getDatasetId();
@@ -44,11 +44,11 @@ public class SomClustView extends ModularizedListener implements IsSerializable 
         somClusteringResults = null;
     }
 
-    public List<String> getIndexer() {
+    public ArrayList<String> getIndexer() {
         return indexer;
     }
 
-    public HLayout asWidget() {
+    public HLayout componentView() {
         return somClustCom;
     }
 
@@ -69,6 +69,14 @@ public class SomClustView extends ModularizedListener implements IsSerializable 
 
         somClustCom.clearSelection();
 
+    }
+    @Override
+    public void remove(){
+    selectionManager=null;
+    somClustCom.remove();
+     somClustCom=null;
+     indexer=null;
+    colIndexer=null;
     }
 
 }

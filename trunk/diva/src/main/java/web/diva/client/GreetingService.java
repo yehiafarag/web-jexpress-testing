@@ -2,14 +2,14 @@ package web.diva.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import web.diva.shared.beans.HeatMapImgResult;
-import web.diva.shared.beans.LineChartResults;
-import web.diva.shared.beans.PCAImageResults;
+import java.util.TreeMap;
+import web.diva.shared.beans.HeatMapImageResult;
+import web.diva.shared.beans.LineChartResult;
+import web.diva.shared.beans.PCAImageResult;
 import web.diva.shared.beans.RankResult;
-import web.diva.shared.beans.SomClusteringResults;
+import web.diva.shared.beans.SomClusteringResult;
 import web.diva.shared.model.core.model.dataset.DatasetInformation;
 
 /**
@@ -19,17 +19,17 @@ import web.diva.shared.model.core.model.dataset.DatasetInformation;
 public interface GreetingService extends RemoteService {
 
     //load dataset information
-    Map<Integer, String> getAvailableDatasets();
+    TreeMap<Integer,String> getAvailableDatasets();
 
     DatasetInformation loadDataset(int datasetId);
 
-    LineChartResults computeLineChart(int datasetId,double w,double h);
+    LineChartResult computeLineChart(int datasetId,double w,double h);
 
-    SomClusteringResults computeSomClustering(int datasetId, int linkage, int distanceMeasure) throws IllegalArgumentException;
+    SomClusteringResult computeSomClustering(int datasetId, int linkage, int distanceMeasure) throws IllegalArgumentException;
 
-    HeatMapImgResult computeHeatmap(int datasetId, List<String> indexer, List<String> colIndexer);
+    HeatMapImageResult computeHeatmap(int datasetId, ArrayList<String> indexer, ArrayList<String> colIndexer);
 
-    PCAImageResults computePCA(int datasetId, int comI, int comII);
+    PCAImageResult computePCA(int datasetId, int comI, int comII);
 
     RankResult computeRank(int datasetId, String perm, String seed, String[] colGropNames, String log2);
 
@@ -54,6 +54,6 @@ public interface GreetingService extends RemoteService {
 
     String updateLineChartSelection(int datasetId, int[] selection,double w,double h);
 
-    PCAImageResults updatePCASelection(int datasetId,int[]subSelectionData, int[] selection, boolean zoom, boolean selectAll,double w,double h);
+    PCAImageResult updatePCASelection(int datasetId,int[]subSelectionData, int[] selection, boolean zoom, boolean selectAll,double w,double h);
 
 }
